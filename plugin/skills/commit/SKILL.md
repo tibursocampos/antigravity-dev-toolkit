@@ -1,8 +1,8 @@
 ---
 name: commit
 description: >
-  Review staged and unstaged changes, draft a Conventional Commits message, commit on a valid
-  feature branch, and optionally push. Use when the user says "use skill commit",
+  Review staged and unstaged changes, draft a Conventional Commits message, and commit on a valid
+  feature branch. Use when the user says "use skill commit",
   "commit changes", or "/commit". Git-only — no work-item tracker APIs.
 ---
 
@@ -14,7 +14,7 @@ Invoke when the user asks for: `use skill commit`, `commit changes`, or `/commit
 
 ## Outcome
 
-One or more **Conventional Commits** on `feature/<slug>` or `feat/<id>`, with an optional push. No automatic commit without user approval of the message.
+One or more **Conventional Commits** on `feature/<slug>` or `feat/<id>`. No automatic commit without user approval of the message. After committing, ask the user if they want to call `use skill push`.
 
 ## Lazy-load (only when needed)
 
@@ -82,23 +82,18 @@ git commit -m "<message>"
 
 Use **only** `-m`. Do **not** add `--trailer`, `--author` overrides, or extra `-m` blocks for attribution. Do not use `git commit --amend` on shared or pushed history unless the user explicitly requests it.
 
-### 6. Push (optional)
+### 6. Trigger push (optional)
 
-Push only when the user asks:
+After a successful commit, ask the user if they want to push the changes:
 
-```bash
-git push -u origin HEAD
-```
-
-Never `git push --force` to `main`, `master`, or `develop`.
+> Commit realizado com sucesso. Deseja enviar as alterações para o repositório remoto? (Responda com "sim" para invocar `use skill push` ou "não" para manter apenas local).
 
 ### 7. Report
 
 - Branch name
 - Short commit hash (`git rev-parse --short HEAD`)
 - Files included
-- Push status (if applicable)
-- SDD handoff: if mid-PLAN, remind to update PLAN via `implement` before the next step in a new chat
+- SDD handoff: se no meio do PLAN, lembre de atualizar o PLAN via `sdd_develop` antes do próximo passo em um novo chat
 
 ## Must not
 
@@ -112,6 +107,7 @@ Never `git push --force` to `main`, `master`, or `develop`.
 
 | Situação | Próximo |
 |----------|---------|
-| Continue SDD step | Nova sessão → `use skill implement — <full-plan-path> — Step N` |
-| Review antes de PR | `use skill code-review` |
+| Enviar remoto | `use skill push` |
+| Continue SDD step | Nova sessão → `use skill sdd_develop — <full-plan-path> — Step N` |
+| Review antes de PR | `use skill code_review` |
 | Criar PR (usuário pede) | `gh pr create` |

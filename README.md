@@ -8,7 +8,7 @@ Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.
 
 | Capability | Description |
 |------------|-------------|
-| **SDD workflow** | `spec` → `plan` → `implement` with PRD/PLAN stored in the working repo |
+| **SDD workflow** | `sdd_spec` → `sdd_plan` → `sdd_develop` with PRD/PLAN stored in the working repo |
 | **.NET guidelines** | `dotnet-guidelines` (Clean Architecture, xUnit/NUnit, Moq/NSubstitute, Shouldly) |
 | **Git-only flow** | Branching, commits, checklist — no Azure DevOps |
 | **Antigravity-native** | Installed as a plugin under `~/.gemini/antigravity-ide/plugins/` |
@@ -39,16 +39,17 @@ antigravity-dev-toolkit/
 │   ├── plugin.json               # Plugin manifest
 │   └── skills/
 │       ├── dev_persona/          # Router + global rules (replaces AGENTS.md + rules)
-│       ├── spec/
-│       ├── plan/
-│       ├── implement/
+│       ├── sdd_spec/
+│       ├── sdd_plan/
+│       ├── sdd_develop/
 │       ├── code_review/
 │       ├── commit/
-│       ├── dotnet_developer/
+│       ├── push/
+│       ├── developer/
 │       ├── fix_build/
 │       ├── test_coverage/
-│       ├── plan_repo_docs/
-│       ├── document_repo/
+│       ├── document_plan/
+│       ├── document_implement/
 │       └── _shared/
 │           ├── dotnet_guidelines/
 │           ├── code_guidelines/
@@ -64,16 +65,17 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | Skill | Use for |
 |-------|---------|
 | `dev_persona` | Agent identity, global rules, skill catalog (loaded automatically) |
-| `spec` | PRD from a feature request |
-| `plan` | Baby-step PLAN from PRD |
-| `implement` | Execute one PLAN step per session |
+| `sdd_spec` | PRD from a feature request |
+| `sdd_plan` | Baby-step PLAN from PRD |
+| `sdd_develop` | Execute one PLAN step per session |
 | `code_review` | Review diff or branch vs PRD/PLAN |
-| `commit` | Conventional commit and push |
-| `dotnet_developer` | Small .NET task without full SDD |
+| `commit` | Conventional commit with option to push |
+| `push` | Git push current branch |
+| `developer` | Small dev task without full SDD |
 | `fix_build` | Diagnose and fix build/test failures |
 | `test_coverage` | .NET coverage report (Coverlet) |
-| `plan_repo_docs` | Plan repo documentation (RAG-oriented) |
-| `document_repo` | Execute one doc plan step |
+| `document_plan` | Plan repo documentation (RAG-oriented) |
+| `document_implement` | Execute one doc plan step |
 
 ## Conventions
 

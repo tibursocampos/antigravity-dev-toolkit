@@ -1,20 +1,20 @@
 ---
-name: spec
+name: sdd_spec
 description: >
   Create a PRD for a new feature or change. Writes agent PRD .md in pt-BR by default
-  (in PRD/ or docs/PRD/ of the target repo). Use when the user says "use skill spec",
-  "create spec", "new feature", or "/spec". Output feeds the plan skill.
+  (in PRD/ or docs/PRD/ of the target repo). Use when the user says "use skill sdd_spec",
+  "create spec", "new feature", or "/sdd_spec". Output feeds the sdd_plan skill.
 ---
 
-# Skill: spec
+# Skill: sdd_spec
 
 ## Trigger
 
-Invoke when the user asks for: `use skill spec`, `create spec`, `new feature`, or `/spec`.
+Invoke when the user asks for: `use skill sdd_spec`, `create spec`, `new feature`, or `/sdd_spec`.
 
 ## Outcome
 
-A complete **PRD** (agent `.md` artifact) in **Brazilian Portuguese (pt-BR)** at a **canonical** path (`PRD/`, `docs/PRD/`). English only if the user overrides in this invocation. Mandatory input for **plan**.
+A complete **PRD** (agent `.md` artifact) in **Brazilian Portuguese (pt-BR)** at a **canonical** path (`PRD/`, `docs/PRD/`). English only if the user overrides in this invocation. Mandatory input for **sdd_plan**.
 
 ## PRD boundaries
 
@@ -73,7 +73,7 @@ Título, `NNN`, **path canônico completo**, storage, bullets, status **Pronto p
 2. `NNN_short_feature_slug.md`; corpo em pt-BR.
 3. Product `docs/` em escopo: perguntar idioma de documentação primeiro.
 
-Reportar path, idioma, mudanças em `.gitignore`. Handoff: `use skill plan — <full-prd-path>`.
+Reportar path, idioma, mudanças em `.gitignore`. Handoff: `use skill sdd_plan — <full-prd-path>`.
 
 ## Must not
 
@@ -86,5 +86,5 @@ Reportar path, idioma, mudanças em `.gitignore`. Handoff: `use skill plan — <
 ## Handoff
 
 ```
-use skill plan — <full-prd-path>
+use skill sdd_plan — <full-prd-path>
 ```

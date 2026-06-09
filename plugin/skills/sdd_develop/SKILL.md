@@ -1,16 +1,16 @@
 ---
-name: implement
+name: sdd_develop
 description: >
   Execute one PLAN baby step. Code always in English; updates PLAN .md in the file's
-  language (pt-BR default). Use when the user says "use skill implement", "implement step",
-  "/implement". One session = one PLAN step.
+  language (pt-BR default). Use when the user says "use skill sdd_develop", "implement step",
+  "/sdd_develop". One session = one PLAN step.
 ---
 
-# Skill: implement
+# Skill: sdd_develop
 
 ## Trigger
 
-Invoke when the user asks for: `use skill implement`, `implement step`, `execute step`, or `/implement`.
+Invoke when the user asks for: `use skill sdd_develop`, `implement step`, `execute step`, or `/sdd_develop`.
 
 ## Outcome
 
@@ -45,7 +45,7 @@ Não re-perguntar sobre storage SDD ou alterar idioma do artefato no meio do PLA
 
 ### -1. Pipeline e modo
 
-Carregar `PIPELINE.md`. **Agent** necessário para mudanças de código e atualizações de PLAN. Se o usuário pedir PRD/`spec` ou PLAN/`plan` → guiar per § Missing artifacts; não criar PRD/PLAN aqui.
+Carregar `PIPELINE.md`. **Agent** necessário para mudanças de código e atualizações de PLAN. Se o usuário pedir PRD/`sdd_spec` ou PLAN/`sdd_plan` → guiar per § Missing artifacts; não criar PRD/PLAN aqui.
 
 ### 0. Workspace
 
@@ -54,8 +54,8 @@ Repositório alvo. Resolver PLAN:
 | Situação | Ação |
 |----------|------|
 | Path canônico do PLAN fornecido | `Read` no path exato |
-| Nenhum PLAN canônico | `PIPELINE.md` § `implement` without PLAN (opções 1–3) |
-| Usuário pede "criar PRD/plan" | Redirecionar para `spec` / `plan`; parar |
+| Nenhum PLAN canônico | `PIPELINE.md` § `sdd_develop` without PLAN (opções 1–3) |
+| Usuário pede "criar PRD/plan" | Redirecionar para `sdd_spec` / `sdd_plan`; parar |
 
 Detectar stack pelo passo do PLAN.
 
@@ -81,7 +81,7 @@ Marcar passo como concluído, progresso, próximo passo. Salvar antes de pausa d
 
 ### 7. Reportar
 
-Arquivos, testes, `N/M` (pt-BR). Handoff: nova conversa → `use skill implement — <full-plan-path> — Step N+1`.
+Arquivos, testes, `N/M` (pt-BR). Handoff: nova conversa → `use skill sdd_develop — <full-plan-path> — Step N+1`.
 
 ## Must not
 
@@ -94,5 +94,5 @@ Arquivos, testes, `N/M` (pt-BR). Handoff: nova conversa → `use skill implement
 | Situação | Próximo |
 |----------|---------|
 | Commit | `use skill commit` |
-| Próximo passo | Nova sessão → `implement — <plan> — Step N+1` |
-| Todos os passos concluídos | `use skill code-review` (opcional) |
+| Próximo passo | Nova sessão → `sdd_develop — <plan> — Step N+1` |
+| Todos os passos concluídos | `use skill code_review` (opcional) |

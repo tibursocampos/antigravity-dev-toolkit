@@ -1,19 +1,19 @@
 ---
-name: document-repo
+name: document_implement
 description: >
   Execute the next pending step from docs/documentation-plan/plan.md in the open workspace.
   Updates plan progress and writes domain docs for RAG. Use when the user says
-  "use skill document-repo", "document repo", or "/document-repo". Requires a plan;
-  handoff to plan-repo-docs if missing.
+  "use skill document_implement", "document repo", or "/document_implement". Requires a plan;
+  handoff to document_plan if missing.
 ---
 
-# Skill: document-repo
+# Skill: document_implement
 
 ## Trigger
 
-Invoke when the user asks for: `use skill document-repo`, `document repository`, `/document-repo`, or `execute documentation plan`.
+Invoke when the user asks for: `use skill document_implement`, `document repository`, `/document_implement`, or `execute documentation plan`.
 
-Requires `docs/documentation-plan/plan.md` in the **target workspace**. If missing, hand off to `use skill plan-repo-docs` (do not invent steps).
+Requires `docs/documentation-plan/plan.md` in the **target workspace**. If missing, hand off to `use skill document_plan` (do not invent steps).
 
 ## Outcome
 
@@ -31,11 +31,11 @@ One **documentation plan step** completed in the target repo: new/updated markdo
 ### 0. Workspace, plan, and stack
 
 1. Confirm **target repository**.
-2. Read `docs/documentation-plan/plan.md`. If absent → stop and suggest `use skill plan-repo-docs`.
+2. Read `docs/documentation-plan/plan.md`. If absent → stop and suggest `use skill document_plan`.
 3. Read **Doc language** from plan header. If missing, ask: **pt-BR** or **English** before writing `docs/`.
 4. Re-detect stack briefly if plan is stale (Glob: `*.sln`, `*.csproj`, `package.json`, etc.).
 
-**Not SDD:** only `docs/documentation-plan/plan.md` applies here — not workspace `PLAN/PLAN_*.md`. For feature delivery PRD/PLAN, use `spec` / `plan` / `implement` and `STORAGE.md`.
+**Not SDD:** only `docs/documentation-plan/plan.md` applies here — not workspace `PLAN/PLAN_*.md`. For feature delivery PRD/PLAN, use `sdd_spec` / `sdd_plan` / `sdd_develop` and `STORAGE.md`.
 
 ### 1. Select step
 
@@ -84,7 +84,7 @@ Files written, step completed, progress `N/M`, suggested handoff.
 
 | Situação | Próximo |
 |----------|---------|
-| No plan | `use skill plan-repo-docs` |
-| Next doc step (new chat) | `use skill document-repo` |
-| All steps done | `use skill code-review` (optional) or `use skill commit` |
-| Feature code change | `use skill spec` → `plan` → `implement` |
+| No plan | `use skill document_plan` |
+| Next doc step (new chat) | `use skill document_implement` |
+| All steps done | `use skill code_review` (opcional) or `use skill commit` |
+| Feature code change | `use skill sdd_spec` → `sdd_plan` → `sdd_develop` |

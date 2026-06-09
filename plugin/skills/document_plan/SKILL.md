@@ -1,16 +1,16 @@
 ---
-name: plan-repo-docs
+name: document_plan
 description: >
   Create a baby-step documentation plan for the open workspace (overview + domain deep dives for RAG).
   Detects stack via Glob. Asks doc language before writing product docs. Use when the user says
-  "use skill plan-repo-docs", "plan repo docs", or "/plan-repo-docs". Optional path to a reviewed overview file.
+  "use skill document_plan", "plan repo docs", or "/document_plan". Optional path to a reviewed overview file.
 ---
 
-# Skill: plan-repo-docs
+# Skill: document_plan
 
 ## Trigger
 
-Invoke when the user asks for: `use skill plan-repo-docs`, `plan repo documentation`, `/plan-repo-docs`, or `doc plan`.
+Invoke when the user asks for: `use skill document_plan`, `plan repo documentation`, `/document_plan`, or `doc plan`.
 
 Optional argument: path to an existing **reviewed** `docs/overview.md` (or equivalent) to seed the plan.
 
@@ -38,7 +38,7 @@ Product documentation prose follows the **language the user chooses** (pt-BR or 
 2. Detect stack with Glob. Summarize: languages, frameworks, layout — **do not** assume a fixed stack.
 3. Read `README.md` if present.
 
-**Not SDD:** this skill writes `docs/documentation-plan/plan.md` only — not `PLAN/PLAN_*.md`. Feature PRD/PLAN use `spec` / `plan` / `implement` per `STORAGE.md`.
+**Not SDD:** this skill writes `docs/documentation-plan/plan.md` only — not `PLAN/PLAN_*.md`. Feature PRD/PLAN use `sdd_spec` / `sdd_plan` / `sdd_develop` per `STORAGE.md`.
 
 ### 1. Documentation language (blocker)
 
@@ -67,7 +67,7 @@ Create or update `docs/documentation-plan/plan.md`:
 - Baby steps per business/technical domain
 - Steps for integrations, architecture patterns, and folder conventions
 - Progress `0/N`, status per step (**Pending** / **Completed**)
-- Each step sized for one `document-repo` session where possible
+- Each step sized for one `document_implement` session where possible
 
 ### 5. Context checkpoint
 
@@ -78,7 +78,7 @@ After finishing overview + plan (or after each major planning chunk if the repo 
 Report: paths written, language, step count, first pending step id.
 
 ```
-use skill document-repo
+use skill document_implement
 ```
 
 ## Must not
@@ -93,6 +93,6 @@ use skill document-repo
 
 | Situação | Próximo |
 |----------|---------|
-| Execute next doc step | `use skill document-repo` |
-| Code change needed | `use skill dotnet-developer` or SDD `implement` |
+| Execute next doc step | `use skill document_implement` |
+| Code change needed | `use skill developer` or SDD `sdd_develop` |
 | Commit docs | `use skill commit` |

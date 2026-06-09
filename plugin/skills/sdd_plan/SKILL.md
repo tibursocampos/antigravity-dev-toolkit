@@ -1,20 +1,20 @@
 ---
-name: plan
+name: sdd_plan
 description: >
   Create a baby-step PLAN from an existing PRD. Writes agent PLAN .md in pt-BR by default
-  (in PLAN/ or docs/PLAN/ of the target repo). Use when the user says "use skill plan",
-  "create plan", "/plan". Requires a PRD; output feeds implement.
+  (in PLAN/ or docs/PLAN/ of the target repo). Use when the user says "use skill sdd_plan",
+  "create plan", "/sdd_plan". Requires a PRD; output feeds sdd_develop.
 ---
 
-# Skill: plan
+# Skill: sdd_plan
 
 ## Trigger
 
-Invoke when the user asks for: `use skill plan`, `create plan`, `execution plan`, or `/plan`.
+Invoke when the user asks for: `use skill sdd_plan`, `create plan`, `execution plan`, or `/sdd_plan`.
 
 ## Outcome
 
-A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NNN` as PRD. Each step = one `implement` session. Paths and test names in **English**; no code blocks.
+A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NNN` as PRD. Each step = one `sdd_develop` session. Paths and test names in **English**; no code blocks.
 
 ## Lazy-load (only when needed)
 
@@ -41,15 +41,15 @@ Fazer glob de PRDs canônicos no workspace.
 | Situação | Ação |
 |----------|------|
 | Usuário forneceu path canônico do PRD | `Read`; validar status **Pronto para planejamento** |
-| Nenhum PRD canônico | Opções per `PIPELINE.md` § `plan` without PRD — criar PRD primeiro ou coletar texto/arquivo |
-| "Criar PRD" | Handoff para `spec`; não gravar PLAN até PRD existir (exceto usuário escolher opção 2 explicitamente) |
+| Nenhum PRD canônico | Opções per `PIPELINE.md` § `sdd_plan` without PRD — criar PRD primeiro ou coletar texto/arquivo |
+| "Criar PRD" | Handoff para `sdd_spec`; não gravar PLAN até PRD existir (exceto usuário escolher opção 2 explicitamente) |
 | `.md` não canônico | Promover per `PIPELINE.md` ou pedir arquivo |
 
 Resumir PRD; pedir para prosseguir.
 
 ### 2–4. Explorar, perguntas técnicas (≤10), baby steps
 
-Glob/Grep/Read. Passos ~20–45 min cada. Passos de doc: **implement** pergunta idioma de documentação.
+Glob/Grep/Read. Passos ~20–45 min cada. Passos de doc: **sdd_develop** pergunta idioma de documentação.
 
 ### 5. Checkpoint de contexto
 
@@ -67,7 +67,7 @@ Ver `dev_persona` § Gestão de Contexto; rascunho do PLAN em chat se ≥40%.
 
 ### 7. Validar com o usuário
 
-Apresentar passos, dependências, riscos. Confirmar primeiro passo de implement.
+Apresentar passos, dependências, riscos. Confirmar primeiro passo de sdd_develop.
 
 ## Must not
 
@@ -80,7 +80,7 @@ Apresentar passos, dependências, riscos. Confirmar primeiro passo de implement.
 ## Handoff
 
 ```
-use skill implement — <full-plan-path> — Step 1
+use skill sdd_develop — <full-plan-path> — Step 1
 ```
 
 Uma sessão = um passo do PLAN.

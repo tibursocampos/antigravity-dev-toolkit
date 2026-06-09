@@ -1,17 +1,17 @@
 ---
-name: dotnet-developer
+name: developer
 description: >
   Implement or fix small-to-medium .NET features without full SDD. Uses Clean Architecture,
   xUnit/NUnit, Moq/NSubstitute, Shouldly, and Git-only developer flow. Use when the user says
-  "use skill dotnet-developer", "dotnet fix", or for isolated C# work. For large cross-cutting
-  features, prefer spec → plan → implement.
+  "use skill developer", "dotnet fix", or for isolated C# work. For large cross-cutting
+  features, prefer sdd_spec → sdd_plan → sdd_develop.
 ---
 
-# Skill: dotnet-developer
+# Skill: developer
 
 ## Trigger
 
-Invoke when the user asks for: `use skill dotnet-developer`, `dotnet fix`, `implement .NET feature`, or for **small** backend work that does not need a full PRD/PLAN cycle.
+Invoke when the user asks for: `use skill developer`, `dotnet fix`, `implement .NET feature`, or for **small** backend work that does not need a full PRD/PLAN cycle.
 
 ## Outcome
 
@@ -19,7 +19,7 @@ Working **.NET** code and tests in the open workspace: build and tests green, on
 
 ## When to prefer SDD instead
 
-Recommend `use skill spec` → `plan` → `implement` if **two or more** apply:
+Recommend `use skill sdd_spec` → `sdd_plan` → `sdd_develop` if **two or more** apply:
 
 | Signal | Indicator |
 |--------|-----------|
@@ -28,7 +28,7 @@ Recommend `use skill spec` → `plan` → `implement` if **two or more** apply:
 | Repos | Backend and another repo or service |
 | Integrations | New messaging, external APIs, or consumers |
 | Size | 10+ files or estimated 4+ hours |
-| PLAN exists | User already has an approved PLAN — use `implement` |
+| PLAN exists | User already has an approved PLAN — use `sdd_develop` |
 
 ## Lazy-load (only when needed)
 
@@ -96,11 +96,11 @@ Run `_shared/dotnet_guidelines/checklist.md` when appropriate. Offer `use skill 
 If scope grows during work, stop and recommend:
 
 ```
-use skill spec — [feature description]
+use skill sdd_spec — [feature description]
 # then
-use skill plan — PRD/...
+use skill sdd_plan — PRD/...
 # then
-use skill implement — PLAN/... — Step 1
+use skill sdd_develop — PLAN/... — Step 1
 ```
 
 ## Must not
@@ -116,6 +116,6 @@ use skill implement — PLAN/... — Step 1
 | Situação | Próximo |
 |----------|---------|
 | Commit | `use skill commit` |
-| Review | `use skill code-review` |
-| Escopo grande | `use skill spec` → `plan` → `implement` |
-| Próximo passo do PLAN | Nova conversa → `use skill implement — PLAN/... — Step N` |
+| Review | `use skill code_review` |
+| Escopo grande | `use skill sdd_spec` → `sdd_plan` → `sdd_develop` |
+| Próximo passo do PLAN | Nova conversa → `use skill sdd_develop — PLAN/... — Step N` |

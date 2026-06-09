@@ -40,9 +40,9 @@ spec → plan → implement  (um passo do PLAN por sessão)
 
 | Skill | Como invocar | Saída típica |
 |-------|-------------|--------------|
-| `spec` | "use skill spec" | `PRD/NNN_*.md` ou `docs/PRD/NNN_*.md` |
-| `plan` | "use skill plan" | `PLAN/PLAN_NNN_*.md` |
-| `implement` | "use skill implement" | Código + checkbox do passo do PLAN |
+| `sdd_spec` | "use skill sdd_spec" | `PRD/NNN_*.md` ou `docs/PRD/NNN_*.md` |
+| `sdd_plan` | "use skill sdd_plan" | `PLAN/PLAN_NNN_*.md` |
+| `sdd_develop` | "use skill sdd_develop" | Código + checkbox do passo do PLAN |
 
 **Checkpoint:** uma sessão de `implement` = um passo do PLAN. Inicie nova conversa para o próximo passo.
 
@@ -53,20 +53,20 @@ spec → plan → implement  (um passo do PLAN por sessão)
 Para fixes pequenos, refactors simples ou baixa complexidade (área única, sem necessidade de PRD):
 
 ```
-dotnet-developer
+developer
 ```
 
-Invoke: "use skill dotnet-developer". Carrega `_shared/dotnet_guidelines/` sob demanda; dispensa SDD completo quando desnecessário.
+Invoke: "use skill developer". Carrega `_shared/dotnet_guidelines/` sob demanda; dispensa SDD completo quando desnecessário.
 
 ### Fluxos opcionais (Git-only, sem work-item tracker)
 
 | Fluxo | Passos |
 |-------|--------|
-| Documentação do repositório (RAG) | `plan-repo-docs` → `document-repo` (um passo por sessão) |
-| Falha de build / testes | `fix-build` → `commit` opcional |
-| Cobertura de testes .NET | `test-coverage` |
-| Code review | `code-review` → handoff com `spec` se necessário |
-| Commit convencional | `commit` |
+| Documentação do repositório (RAG) | `document_plan` → `document_implement` (um passo por sessão) |
+| Falha de build / testes | `fix_build` → `commit` opcional |
+| Cobertura de testes .NET | `test_coverage` |
+| Code review | `code_review` → handoff com `sdd_spec` se necessário |
+| Commit convencional | `commit` → `push` (opcional) |
 
 ---
 
@@ -74,7 +74,7 @@ Invoke: "use skill dotnet-developer". Carrega `_shared/dotnet_guidelines/` sob d
 
 ### Ordem
 
-`spec` → `plan` → `implement`. Não crie PLAN sem PRD canônico (exceto "PLAN direto" explícito do usuário). Não implemente sem PLAN canônico em disco.
+`sdd_spec` → `sdd_plan` → `sdd_develop`. Não crie PLAN sem PRD canônico (exceto "PLAN direto" explícito do usuário). Não implemente sem PLAN canônico em disco.
 
 ### Paths canônicos
 
@@ -91,7 +91,7 @@ Se PRD ou PLAN não existir, pergunte em **pt-BR** antes de handoff seco:
 Não encontrei o PRD/PLAN canônico para esta feature.
 
 Opções:
-1) Criar PRD agora com "use skill spec"
+1) Criar PRD agora com "use skill sdd_spec"
 2) Você fornece o spec/arquivo na próxima mensagem
 3) Cancelar
 ```
@@ -108,8 +108,8 @@ Grave apenas após **sim**.
 
 ### Limites de escopo
 
-- `spec` / `plan`: sem alterações em código de produção ou testes.
-- `code-review`: não grava PRD/PLAN; handoff de achados com `use skill spec`.
+- `sdd_spec` / `sdd_plan`: sem alterações em código de produção ou testes.
+- `code_review`: não grava PRD/PLAN; handoff de achados com `use skill sdd_spec`.
 
 ---
 
@@ -245,9 +245,9 @@ Aplicar apenas quando o usuário solicita explicitamente na **mesma** invocaçã
 
 | Skill | Comportamento |
 |-------|--------------|
-| `spec` | Novo PRD → pt-BR (exceto override) |
-| `plan` | Novo PLAN → pt-BR (exceto override); lê PRD existente em qualquer idioma |
-| `implement` | Código → English; atualiza PLAN no **idioma do arquivo existente** |
+| `sdd_spec` | Novo PRD → pt-BR (exceto override) |
+| `sdd_plan` | Novo PLAN → pt-BR (exceto override); lê PRD existente em qualquer idioma |
+| `sdd_develop` | Código → English; atualiza PLAN no **idioma do arquivo existente** |
 
 ---
 
@@ -257,16 +257,17 @@ Instalado em `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-t
 
 | Skill | Como invocar | Usar para |
 |-------|-------------|-----------|
-| `spec` | "use skill spec" | PRD a partir de um pedido de feature |
-| `plan` | "use skill plan" | PLAN baby-step a partir do PRD |
-| `implement` | "use skill implement" | Executar um passo do PLAN |
-| `code-review` | "use skill code-review" | Revisar diff ou branch vs PRD/PLAN |
-| `commit` | "use skill commit" | Commit convencional e push |
-| `dotnet-developer` | "use skill dotnet-developer" | Trabalho .NET simples sem SDD completo |
-| `fix-build` | "use skill fix-build" | Diagnosticar/corrigir falhas de build ou teste |
-| `test-coverage` | "use skill test-coverage" | Relatório de cobertura .NET (Coverlet) |
-| `plan-repo-docs` | "use skill plan-repo-docs" | Plano de documentação para repositório alvo |
-| `document-repo` | "use skill document-repo" | Um passo de `docs/documentation-plan/plan.md` |
+| `sdd_spec` | "use skill sdd_spec" | PRD a partir de um pedido de feature |
+| `sdd_plan` | "use skill sdd_plan" | PLAN baby-step a partir do PRD |
+| `sdd_develop` | "use skill sdd_develop" | Executar um passo do PLAN |
+| `code_review` | "use skill code_review" | Revisar diff ou branch vs PRD/PLAN |
+| `commit` | "use skill commit" | Commit convencional e trigger de push |
+| `push` | "use skill push" | Enviar os commits do branch atual ao repositório remoto |
+| `developer` | "use skill developer" | Trabalho pequeno sem SDD completo |
+| `fix_build` | "use skill fix_build" | Diagnosticar/corrigir falhas de build ou teste |
+| `test_coverage` | "use skill test_coverage" | Relatório de cobertura .NET (Coverlet) |
+| `document_plan` | "use skill document_plan" | Plano de documentação para repositório alvo |
+| `document_implement` | "use skill document_implement" | Um passo de `docs/documentation-plan/plan.md` |
 
 ### Guidelines compartilhados (carregar sob demanda)
 

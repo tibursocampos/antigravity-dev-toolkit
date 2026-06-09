@@ -5,7 +5,7 @@ The `antigravity-dev-toolkit` is a personal Antigravity IDE (Google DeepMind) ag
 
 ## Architecture and Layout
 - **`plugin/`**: Contains the core plugin manifest (`plugin.json`) and the individual skills used by the Antigravity IDE. It is deployed to `~/.gemini/antigravity-ide/plugins/<id>/`.
-  - **`plugin/skills/`**: The bounded contexts of the toolkit, containing specific skills like `dev_persona`, `spec`, `plan`, `implement`, `code_review`, `commit`, `dotnet_developer`, `fix_build`, `test_coverage`, `plan_repo_docs`, and `document_repo`.
+  - **`plugin/skills/`**: The bounded contexts of the toolkit, containing specific skills like `dev_persona`, `sdd_spec`, `sdd_plan`, `sdd_develop`, `code_review`, `commit`, `push`, `developer`, `fix_build`, `test_coverage`, `document_plan`, and `document_implement`.
   - **`plugin/skills/_shared/`**: Contains shared guidelines (`dotnet_guidelines`, `code_guidelines`, `sdd_artifacts`) utilized across different skills.
 - **`scripts/`**: Contains deployment scripts, primarily `sync-antigravity.ps1`, which is an idempotent script used to deploy the toolkit to the local Antigravity IDE plugins directory.
 - **`docs/`**: Documentation folder containing installation guides, skills catalog, and further technical documentation.

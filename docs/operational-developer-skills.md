@@ -4,9 +4,9 @@ The Antigravity Dev Toolkit provides a suite of operational and developer-focuse
 
 ## Developer Skills
 
-### `dotnet_developer`
-- **Purpose**: Implement or fix small-to-medium .NET features without needing a full SDD PRD/PLAN cycle.
-- **Workflow**: Operates directly on the codebase using Clean Architecture and the specified testing stack. It checkpoints frequently but is intended for isolated tasks under ~4 hours. If scope expands, it recommends escalating to the full `spec` → `plan` → `implement` SDD flow.
+### `developer`
+- **Purpose**: Implement or fix small-to-medium features without needing a full SDD PRD/PLAN cycle.
+- **Workflow**: Operates directly on the codebase using Clean Architecture and the specified testing stack. It checkpoints frequently but is intended for isolated tasks under ~4 hours. If scope expands, it recommends escalating to the full `sdd_spec` → `sdd_plan` → `sdd_develop` SDD flow.
 
 ## Operational & Validation Skills
 
@@ -24,7 +24,11 @@ The Antigravity Dev Toolkit provides a suite of operational and developer-focuse
 
 ### `commit`
 - **Purpose**: Manages Git state by reviewing changes, ensuring branch validity, and drafting Conventional Commits.
-- **Workflow**: Validates that the branch follows the `feature/<slug>` or `feat/<id>` convention. It drafts a commit message (`type(scope): description`) and explicitly waits for user approval before staging (`git add`) and committing. It enforces a strict Git-only flow without requiring Azure DevOps or other corporate trackers.
+- **Workflow**: Validates that the branch follows the `feature/<slug>` or `feat/<id>` convention. It drafts a commit message (`type(scope): description`) and explicitly waits for user approval before staging (`git add`) and committing. It enforces a strict Git-only flow without requiring Azure DevOps or other corporate trackers. After a successful commit, it will suggest using the `push` skill.
+
+### `push`
+- **Purpose**: Sends the committed changes to the remote repository.
+- **Workflow**: Pushes the current branch upstream and sets up tracking if needed. Explicitly avoids force pushing to main integration branches.
 
 ## Expected Testing Stack
 All .NET skills in the toolkit strictly adhere to the following testing stack philosophies and tools:

@@ -13,7 +13,7 @@ Contains architectural rules and coding patterns specifically for .NET projects.
 
 ### 2. `_shared/code_guidelines`
 Contains general software engineering principles that apply regardless of the specific programming language.
-- **Key Files**: Includes a `principles/` folder for fundamental rules (like SOLID, DRY, and KISS) referenced during the `code_review` and `implement` phases.
+- **Key Files**: Includes a `principles/` folder for fundamental rules (like SOLID, DRY, and KISS) referenced during the `code_review` and `sdd_develop` phases.
 
 ### 3. `_shared/sdd_artifacts`
 Governs the lifecycle, storage, and validation of the PRD and PLAN artifacts within the repository.
@@ -41,6 +41,6 @@ Consistency in naming allows the toolkit to reliably auto-discover files using G
 
 - **PRD Files**: `NNN_short_feature_slug.md` (e.g., `001_authentication.md`)
 - **PLAN Files**: `PLAN_NNN_short_feature_slug.md` (e.g., `PLAN_001_authentication.md`)
-- **Skill Directories**: `snake_case` (e.g., `dotnet_developer`, `code_review`)
-- **Skill Manifest Names**: `kebab-case` inside the `SKILL.md` frontmatter (e.g., `name: dotnet-developer`)
+- **Skill Directories**: `snake_case` (e.g., `developer`, `code_review`)
+- **Skill Manifest Names**: `snake_case` inside the `SKILL.md` frontmatter (e.g., `name: developer`)
 - **Git Branches**: `feature/<slug>` or `feat/<id>` (nested directories like `feature/a/b` are explicitly rejected by the `commit` skill).
