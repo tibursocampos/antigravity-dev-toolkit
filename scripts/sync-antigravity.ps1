@@ -26,7 +26,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $script:ToolkitTag = '[antigravity-dev-toolkit]'
-$script:PluginId   = 'Local.raphadev.antigravity-dev-toolkit'
+$script:PluginId = 'Local.raphadev.antigravity-dev-toolkit'
 
 function Write-ToolkitMessage {
     param(
@@ -67,7 +67,7 @@ function Copy-FileIfChanged {
     }
 
     $sourceHash = Get-FileSha256 $SourcePath
-    $destHash   = Get-FileSha256 $DestPath
+    $destHash = Get-FileSha256 $DestPath
     if ($sourceHash -eq $destHash) {
         return $false
     }
@@ -94,17 +94,17 @@ function Sync-DirectoryTree {
 
     $changed = 0
     Get-ChildItem -LiteralPath $SourceRoot -Recurse -File |
-        Where-Object {
-            $ExcludeFileNames -notcontains $_.Name -and
-            $_.Name -ne '.gitkeep'
-        } |
-        ForEach-Object {
-            $relative = $_.FullName.Substring($SourceRoot.Length).TrimStart('\', '/')
-            $destPath = Join-Path $DestRoot $relative
-            if (Copy-FileIfChanged -SourcePath $_.FullName -DestPath $destPath) {
-                $changed++
-            }
+    Where-Object {
+        $ExcludeFileNames -notcontains $_.Name -and
+        $_.Name -ne '.gitkeep'
+    } |
+    ForEach-Object {
+        $relative = $_.FullName.Substring($SourceRoot.Length).TrimStart('\', '/')
+        $destPath = Join-Path $DestRoot $relative
+        if (Copy-FileIfChanged -SourcePath $_.FullName -DestPath $destPath) {
+            $changed++
         }
+    }
     return $changed
 }
 
@@ -116,7 +116,9 @@ function Sync-DirectoryTree {
 function Get-AntigravityPluginsRoot {
     $candidates = @(
         (Join-Path $env:APPDATA 'antigravity-ide\plugins'),
-        (Join-Path $env:LOCALAPPDATA 'Google\antigravity-ide\plugins')
+        (Join-Path $env:LOCALAPPDATA 'Google\antigravity-ide\plugins'),
+        (Join-Path $env:APPDATA 'antigravity\plugins'),
+        (Join-Path $env:LOCALAPPDATA 'Google\antigravity\plugins')
     )
     foreach ($c in $candidates) {
         if (Test-Path -LiteralPath $c) {
@@ -129,9 +131,9 @@ function Get-AntigravityPluginsRoot {
 
 # ── Main ──────────────────────────────────────────────────────────────────────
 
-$repoRoot    = Get-RepoRoot
+$repoRoot = Get-RepoRoot
 $pluginsRoot = Get-AntigravityPluginsRoot
-$pluginDest  = Join-Path $pluginsRoot $script:PluginId
+$pluginDest = Join-Path $pluginsRoot $script:PluginId
 
 Write-ToolkitMessage "Repo  : $repoRoot"
 Write-ToolkitMessage "Target: $pluginDest"
@@ -148,7 +150,7 @@ if (-not $DryRun) {
 $totalChanges = 0
 
 # Deploy plugin.json
-$pluginJsonSrc  = Join-Path $repoRoot 'plugin\plugin.json'
+$pluginJsonSrc = Join-Path $repoRoot 'plugin\plugin.json'
 $pluginJsonDest = Join-Path $pluginDest 'plugin.json'
 if (Test-Path -LiteralPath $pluginJsonSrc) {
     if (Copy-FileIfChanged -SourcePath $pluginJsonSrc -DestPath $pluginJsonDest) {
@@ -165,16 +167,21 @@ $totalChanges += Sync-DirectoryTree `
     -DestRoot   (Join-Path $pluginDest 'skills')
 
 # Deploy Knowledge Item (KI)
-$knowledgeRoot = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\custom_skills'
-if (-not $DryRun) {
-    if (-not (Test-Path -LiteralPath $knowledgeRoot)) {
-        New-Item -ItemType Directory -Path $knowledgeRoot -Force | Out-Null
-    }
-}
+$kiTargets = @(
+    (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\custom_skills'),
+    (Join-Path $env:USERPROFILE '.gemini\antigravity\knowledge\custom_skills')
+)
 
-$metadataPath = Join-Path $knowledgeRoot 'metadata.json'
-$escapedPluginDest = $pluginDest.Replace('\', '\\')
-$metadataJson = @"
+foreach ($knowledgeRoot in $kiTargets) {
+    if (-not $DryRun) {
+        if (-not (Test-Path -LiteralPath $knowledgeRoot)) {
+            New-Item -ItemType Directory -Path $knowledgeRoot -Force | Out-Null
+        }
+    }
+
+    $metadataPath = Join-Path $knowledgeRoot 'metadata.json'
+    $escapedPluginDest = $pluginDest.Replace('\', '\\')
+    $metadataJson = @"
 {
   "summary": "Custom Skills Toolkit: The user has a custom skills toolkit. Whenever the user mentions 'use skill [name]', 'use a skill [name]', or uses the '/[name]' command, you MUST read the corresponding SKILL.md file at: $($escapedPluginDest)\\skills\\[name]\\SKILL.md BEFORE executing any action. Consider this directory as the source of truth for user execution rules.",
   "createdAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
@@ -183,15 +190,18 @@ $metadataJson = @"
 }
 "@
 
-if ($DryRun) {
-    Write-ToolkitMessage "Would sync Knowledge Item: $metadataPath" ([ConsoleColor]::Cyan)
-} else {
-    try {
-        [System.IO.File]::WriteAllText($metadataPath, $metadataJson, [System.Text.Encoding]::UTF8)
-        Write-ToolkitMessage "Synced KI: $metadataPath" ([ConsoleColor]::Green)
-        $totalChanges++
-    } catch {
-        Write-ToolkitMessage "Warning: Could not sync KI. The file may be locked by the IDE: $($_.Exception.Message)" ([ConsoleColor]::Yellow)
+    if ($DryRun) {
+        Write-ToolkitMessage "Would sync Knowledge Item: $metadataPath" ([ConsoleColor]::Cyan)
+    }
+    else {
+        try {
+            [System.IO.File]::WriteAllText($metadataPath, $metadataJson, [System.Text.Encoding]::UTF8)
+            Write-ToolkitMessage "Synced KI: $metadataPath" ([ConsoleColor]::Green)
+            $totalChanges++
+        }
+        catch {
+            Write-ToolkitMessage "Warning: Could not sync KI to $metadataPath. It may be locked: $($_.Exception.Message)" ([ConsoleColor]::Yellow)
+        }
     }
 }
 
