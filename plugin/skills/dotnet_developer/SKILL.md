@@ -2,7 +2,7 @@
 name: dotnet-developer
 description: >
   Implement or fix small-to-medium .NET features without full SDD. Uses Clean Architecture,
-  xUnit/Moq/FluentAssertions, and Git-only developer flow. Use when the user says
+  xUnit/NUnit, Moq/NSubstitute, Shouldly, and Git-only developer flow. Use when the user says
   "use skill dotnet-developer", "dotnet fix", or for isolated C# work. For large cross-cutting
   features, prefer spec → plan → implement.
 ---
@@ -51,7 +51,7 @@ Confirm target repo (`*.sln` / `*.csproj`). Read `README.md`. Summarize the user
 
 ### 1. Guidelines
 
-Load `_shared/dotnet_guidelines/` files needed for this task only. Confirm test stack: **xUnit**, **Moq**, **FluentAssertions**, `Should_<Result>_When_<Condition>`.
+Load `_shared/dotnet_guidelines/` files needed for this task only. Confirm test stack: **xUnit/NUnit**, **Moq/NSubstitute**, **Shouldly**, `Should_<Result>_When_<Condition>`.
 
 ### 2. Branch
 
@@ -106,7 +106,7 @@ use skill implement — PLAN/... — Step 1
 ## Must not
 
 - Trabalho com work-items corporativos ou APIs de terceiros
-- Stacks de teste obsoletos (usar apenas xUnit/Moq/`Should_When_`)
+- Stacks de teste obsoletos (usar apenas xUnit/NUnit, Moq/NSubstitute, Shouldly, `Should_When_`)
 - Branches `feature/base/...` aninhados; commit em branches de integração padrão
 - Features especulativas fora do acceptance declarado (YAGNI)
 - Auto-commit ou auto-PR sem solicitação do usuário

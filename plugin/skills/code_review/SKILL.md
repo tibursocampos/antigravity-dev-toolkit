@@ -72,7 +72,7 @@ Flag PLAN/PRD drift as **important** (not necessarily blocking if scope is other
 ### 3. Standards and guidelines
 
 1. Project `docs/standards/` or equivalent
-2. `_shared/dotnet_guidelines/` para .NET (camadas, testes: xUnit, Moq, FluentAssertions, `Should_<Result>_When_<Condition>`)
+2. `_shared/dotnet_guidelines/` para .NET (camadas, testes: xUnit/NUnit, Moq/NSubstitute, Shouldly, `Should_<Result>_When_<Condition>`)
 3. Principles cheatsheet quando instalado
 
 ### 4. Code analysis
