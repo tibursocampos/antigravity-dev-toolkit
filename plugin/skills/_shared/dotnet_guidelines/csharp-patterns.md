@@ -276,12 +276,13 @@ public class IntegrationClient
 
 | Framework | Usage |
 |-----------|--------|
-| **xUnit** | `[Fact]`, `[Theory]`, `[InlineData]`, `IClassFixture<T>` |
-| **FluentAssertions** | Assertions via `.Should().*` |
-| **Moq** | Mocks via `new Mock<T>()` / `Mock.Of<T>()` |
+| **xUnit** / **NUnit** | `[Fact]`/`[Test]`, `[Theory]`/`[TestCase]`, fixtures |
+| **Shouldly** | Assertions via `.ShouldBe()`, `.ShouldNotBeNull()`, etc. |
+| **Moq** / **NSubstitute** | Mocks/Substitutes for dependencies |
+| **Bogus** / **Fake** | Test data generation and entity fakers |
 | **WireMock.Net** | HTTP stubbing in integration/infrastructure tests (when needed) |
 
-Prefer **xUnit + Moq + FluentAssertions** for all new tests.
+Prefer **xUnit/NUnit + Moq/NSubstitute + Shouldly** for all new tests.
 
 ---
 
@@ -306,8 +307,9 @@ Should_<ExpectedResult>_When_<Condition>
 
 ---
 
-### Test structure
+### Test structure and strategy
 
+- **Strategy Priority:** Prefer **Integration Tests** over Unit Tests whenever feasible. Testing the actual flow (DB, API) provides more value. Use Unit Tests primarily for isolated, complex domain logic.
 - Structure each test with **Arrange / Act / Assert** — use `// Arrange`, `// Act`, and `// Assert` section comments.
 - One test validates **one behavior**.
 - No loops or conditional logic inside tests.
@@ -386,9 +388,10 @@ var orderRepositoryMock = new Mock<IOrderRepository>();
 
 ---
 
-### Fakes (required for arrange data)
+### Fakes and Data Generation (Bogus) (required for arrange data)
 
 **All DTOs, entities, and collections used in arrange belong in reusable static `*Fake` classes.**
+Tools like **Bogus** or **Fake** are explicitly permitted and encouraged to optimize test data setup.
 
 - Place fakes under `Fake/` or `Fixtures/` in the test project.
 - Reuse named constants in **PascalCase**.
@@ -400,8 +403,12 @@ public static class OrderFake
 {
     public const string DefaultOrderNumber = "ORD-001";
 
+    public static Faker<Order> Valid() => new Faker<Order>()
+        .RuleFor(o => o.OrderNumber, f => DefaultOrderNumber)
+        .RuleFor(o => o.IsActive, f => true);
+
     public static Order CreateValid(string orderNumber = DefaultOrderNumber) =>
-        new() { OrderNumber = orderNumber, IsActive = true };
+        Valid().RuleFor(o => o.OrderNumber, orderNumber).Generate();
 }
 ```
 
@@ -423,16 +430,16 @@ orderRepositoryMock.Verify(
 
 ---
 
-### FluentAssertions
+### Shouldly
 
 ```csharp
-result.Should().NotBeNull();
-result.Should().BeTrue();
-result.Should().BeFalse();
-result.Should().BeNull();
-result.Should().HaveCount(3);
-result.Should().Contain(x => x.Id == expectedId);
-action.Should().Throw<InvalidOperationException>();
+result.ShouldNotBeNull();
+result.ShouldBeTrue();
+result.ShouldBeFalse();
+result.ShouldBeNull();
+result.Count.ShouldBe(3);
+result.ShouldContain(x => x.Id == expectedId);
+Should.Throw<InvalidOperationException>(() => action());
 
 // Avoid classic Assert.That / Assert.Equal for new tests
 ```
@@ -448,7 +455,7 @@ action.Should().Throw<InvalidOperationException>();
 public void Should_Validate_Command(RegisterOrderCommand command, bool expectedValid)
 {
     var result = _validator.Validate(command);
-    result.IsValid.Should().Be(expectedValid);
+    result.IsValid.ShouldBe(expectedValid);
 }
 ```
 
@@ -463,7 +470,9 @@ public void Should_Validate_Command(RegisterOrderCommand command, bool expectedV
 
 ---
 
-### Integration tests
+### Integration tests (Preferred)
+
+Integration tests are prioritized over unit tests. Use `WebApplicationFactory` to test end-to-end flows.
 
 ```csharp
 public class OrderApiTests : IClassFixture<WebApplicationFactory<Program>>
@@ -479,7 +488,7 @@ public class OrderApiTests : IClassFixture<WebApplicationFactory<Program>>
     public async Task Should_Return_200_When_Order_Exists()
     {
         var response = await _client.GetAsync("/api/orders/1");
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 }
 ```
@@ -495,12 +504,12 @@ Any of the following in new `*Test*.cs` / `*Tests.cs` files should be fixed befo
 | 1 | Manual `new` on injectable handlers/services | Resolve via `GetRequiredService<T>()` |
 | 2 | Full DI rebuild in every test method | Move registration to fixture / `IAsyncLifetime` |
 | 3 | Inline `new DomainEntity { ... }` in tests | Move to `*Fake` |
-| 4 | Private `Create*` / `Build*` helpers on fixture for domain data | Move to `*Fake` |
-| 5 | Classic `Assert.*` in new tests | Use FluentAssertions `.Should()` |
+| 4 | Private `Create*` / `Build*` helpers on fixture for domain data | Move to `*Fake` / `Bogus` |
+| 5 | Classic `Assert.*` in new tests | Use Shouldly `.ShouldBe()` |
 | 6 | Test name not `Should_*_When_*` | Rename |
 | 7 | `.Result` / `.Wait()` on tasks | Use `await` |
 
-**Accepted patterns:** `IClassFixture<T>`, `CreateScope()`, `*Fake.*`, `Mock<T>`, `.Should()`, `[Theory]`, `Should_*_When_*`.
+**Accepted patterns:** `IClassFixture<T>`, `CreateScope()`, `*Fake.*`, `Mock<T>`, `NSubstitute`, `.ShouldBe()`, `[Theory]`, `Should_*_When_*`, `Bogus`.
 
 **Legitimate exceptions:**
 

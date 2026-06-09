@@ -275,7 +275,7 @@ Instalado em `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-t
 | Quando | Path (relativo ao plugin instalado) |
 |--------|-------------------------------------|
 | Implementação .NET / Clean Architecture | `_shared/dotnet_guidelines/clean-architecture.md` |
-| Estilo C# e testes (xUnit, Moq, FluentAssertions) | `_shared/dotnet_guidelines/csharp-patterns.md` |
+| Estilo C# e testes (xUnit/NUnit, Moq/NSubstitute, Shouldly) | `_shared/dotnet_guidelines/csharp-patterns.md` |
 | Checklist pré-PR / pré-push | `_shared/dotnet_guidelines/checklist.md` |
 | SOLID, DRY, KISS, YAGNI, encapsulamento | `_shared/code_guidelines/principles/` (arquivo por princípio) |
 | Pipeline SDD (ordem, paths, confirmação) | `_shared/sdd_artifacts/PIPELINE.md` |

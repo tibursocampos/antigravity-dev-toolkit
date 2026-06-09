@@ -66,9 +66,9 @@ Use before opening a pull request.
 
 ## Tests (new code)
 
-- [ ] xUnit (`[Fact]` / `[Theory]`)
-- [ ] FluentAssertions (`.Should()`)
-- [ ] Moq for mocks
+- [ ] xUnit/NUnit (`[Fact]`/`[Test]`)
+- [ ] Shouldly (`.ShouldBe()`)
+- [ ] Moq/NSubstitute for mocks
 - [ ] Names follow `Should_<Result>_When_<Condition>`
 - [ ] English identifiers in tests
 - [ ] Mock variables suffixed with `Mock`
