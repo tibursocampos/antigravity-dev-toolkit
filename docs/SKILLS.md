@@ -11,7 +11,7 @@ Este toolkit adiciona as seguintes skills ao Antigravity IDE:
 ## Skills de Desenvolvimento
 - **`code_review`**: Analisa um diff ou branch em relação a requisitos e boas práticas (SOLID, DRY, KISS, Guidelines).
 - **`commit`**: Gera mensagens de commit no padrão Conventional Commits e aplica validações rigorosas de branch.
-- **`dotnet_developer`**: Desenvolvimento rápido em C#/.NET sem o ciclo completo SDD. Segue Clean Architecture e testes baseados em xUnit/Moq/FluentAssertions.
+- **`dotnet_developer`**: Desenvolvimento rápido em C#/.NET sem o ciclo completo SDD. Segue Clean Architecture e testes baseados em xUnit/NUnit, Moq/NSubstitute e Shouldly.
 
 ## Skills Operacionais e de Setup
 - **`fix_build`**: Resolve problemas de build/testes quebrando no workspace atual.

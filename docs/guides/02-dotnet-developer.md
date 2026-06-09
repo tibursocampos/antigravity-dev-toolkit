@@ -12,7 +12,7 @@ Para correções menores, refatorações pontuais ou tarefas técnicas curtas (m
 4. Modificará o código seguindo estritamente os padrões definidos em `_shared/dotnet_guidelines/`:
    - Clean Architecture
    - FluentValidation
-   - xUnit + Moq + FluentAssertions para a stack de testes
+   - xUnit/NUnit + Moq/NSubstitute + Shouldly para a stack de testes
    - Regras rígidas de formatação em `csharp-patterns.md` (ex: um tipo por arquivo, assinaturas de método quebradas corretamente, proibição de magic strings e substituição por consts PascalCase).
 5. Executará build e testes locais via `dotnet test` e validará o sucesso.
 6. Sugerirá o uso da skill de commit (`use skill commit`) para confirmar as mudanças.
