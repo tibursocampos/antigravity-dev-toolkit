@@ -10,3 +10,12 @@ Thumbs.db
 # Secrets — never commit tokens or user-specific paths
 *.env
 *.token
+
+# SDD artifacts (local agent workflow — antigravity-dev-toolkit)
+/PRD/
+/PLAN/
+/docs/PRD/
+/docs/PLAN/
+
+# Documentation plan
+/docs/documentation-plan/

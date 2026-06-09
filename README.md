@@ -9,7 +9,7 @@ Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.
 | Capability | Description |
 |------------|-------------|
 | **SDD workflow** | `spec` → `plan` → `implement` with PRD/PLAN stored in the working repo |
-| **.NET guidelines** | `dotnet-guidelines` (Clean Architecture, xUnit, Moq, FluentAssertions) |
+| **.NET guidelines** | `dotnet-guidelines` (Clean Architecture, xUnit/NUnit, Moq/NSubstitute, Shouldly) |
 | **Git-only flow** | Branching, commits, checklist — no Azure DevOps |
 | **Antigravity-native** | Installed as a plugin under `~/.gemini/antigravity-ide/plugins/` |
 | **Operational skills** | fix-build, test-coverage, code-review, repo docs |
@@ -84,19 +84,8 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | SDD agent artifacts (PRD, PLAN `.md`) | Brazilian Portuguese (pt-BR) |
 | Production code & tests | English always |
 | User chat replies | Brazilian Portuguese (pt-BR) |
-| Test stack | xUnit + Moq + FluentAssertions |
+| Test stack | xUnit/NUnit + Moq/NSubstitute + Shouldly |
 
-## Lineage
-
-```
-ai-prompts (Claude Code / corporate)
-    │  "port, clean, decouple"
-    ▼
-cursor-dev-toolkit (Cursor IDE / personal, Git-only)
-    │  "port and adapt again"
-    ▼
-antigravity-dev-toolkit (Antigravity IDE / Gemini — this repo)
-```
 
 ## License
 
