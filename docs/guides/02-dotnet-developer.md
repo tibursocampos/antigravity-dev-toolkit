@@ -1,21 +1,21 @@
-# Desenvolvimento .NET (`dotnet_developer`)
+# .NET Development (`dotnet_developer`)
 
-Para correções menores, refatorações pontuais ou tarefas técnicas curtas (menos de 4 horas, tocando poucos arquivos), você pode pular o ciclo completo SDD e usar a skill direta de desenvolvimento .NET.
+For minor fixes, targeted refactoring, or short technical tasks (less than 4 hours, touching few files), you can skip the full SDD cycle and use the direct .NET development skill.
 
-## Exemplo de uso
-`use skill dotnet_developer — corrigir null pointer no OrderService quando pedido não tem itens`
+## Usage example
+`use skill dotnet_developer — fix null pointer in OrderService when order has no items`
 
-## O que o agente fará:
-1. Analisará o repositório (`*.sln`) e a estrutura de pastas existente.
-2. Pedirá que você crie/checkout em uma branch válida (`feature/` ou `feat/`) se ainda não estiver em uma.
-3. Proporá micro-passos no próprio chat para organizar as alterações.
-4. Modificará o código seguindo estritamente os padrões definidos em `_shared/dotnet_guidelines/`:
+## What the agent will do:
+1. Analyze the repository (`*.sln`) and the existing folder structure.
+2. Ask you to create/checkout a valid branch (`feature/` or `feat/`) if you aren't already on one.
+3. Propose micro-steps in the chat itself to organize the changes.
+4. Modify the code strictly following the patterns defined in `_shared/dotnet_guidelines/`:
    - Clean Architecture
    - FluentValidation
-   - xUnit/NUnit + Moq/NSubstitute + Shouldly para a stack de testes
-   - Regras rígidas de formatação em `csharp-patterns.md` (ex: um tipo por arquivo, assinaturas de método quebradas corretamente, proibição de magic strings e substituição por consts PascalCase).
-5. Executará build e testes locais via `dotnet test` e validará o sucesso.
-6. Sugerirá o uso da skill de commit (`use skill commit`) para confirmar as mudanças.
+   - xUnit/NUnit + Moq/NSubstitute + Shouldly for the testing stack
+   - Strict formatting rules in `csharp-patterns.md` (e.g., one type per file, correctly wrapped method signatures, prohibition of magic strings and replacement with PascalCase consts).
+5. Execute local build and tests via `dotnet test` and validate success.
+6. Suggest using the commit skill (`use skill commit`) to confirm the changes.
 
-## Quando NÃO usar
-Se a feature for transversal abrangendo múltiplas camadas densas (UI + Backend + Banco + Mensageria), se envolver migrações grandes do EF Core, ou se houver grande ambiguidade/complexidade de negócio nos requisitos, o agente (orientado pela `dev_persona`) te interromperá e recomendará o fluxo de `spec` e `plan`.
+## When NOT to use
+If the feature is cross-cutting and spans multiple dense layers (UI + Backend + Database + Messaging), if it involves large EF Core migrations, or if there is significant business ambiguity/complexity in the requirements, the agent (guided by the `dev_persona`) will interrupt you and recommend the `spec` and `plan` flow.

@@ -1,7 +1,7 @@
-# Guias de Uso
+# Usage Guides
 
-Este diretório contém guias explicativos de como utilizar os fluxos do `antigravity-dev-toolkit`:
+This directory contains explanatory guides on how to use the `antigravity-dev-toolkit` workflows:
 
-1. [01-sdd-workflow.md](01-sdd-workflow.md) — O fluxo principal de planejamento estruturado (spec → plan → implement).
-2. [02-dotnet-developer.md](02-dotnet-developer.md) — Desenvolvimento rápido e direto ao ponto para projetos C#.
-3. [03-operational-skills.md](03-operational-skills.md) — Uso das skills de apoio, revisão e qualidade.
+1. [01-sdd-workflow.md](01-sdd-workflow.md) — The main structured planning workflow (spec → plan → implement).
+2. [02-dotnet-developer.md](02-dotnet-developer.md) — Rapid and targeted development for C# projects.
+3. [03-operational-skills.md](03-operational-skills.md) — Usage of support, review, and quality skills.

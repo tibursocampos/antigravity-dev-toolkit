@@ -1,24 +1,24 @@
-# Instalação: antigravity-dev-toolkit
+# Installation: antigravity-dev-toolkit
 
-Este repositório contém o toolkit pessoal de desenvolvimento para o Antigravity IDE (Gemini).
+This repository contains the personal development toolkit for the Antigravity IDE (Gemini).
 
-## Pré-requisitos
+## Prerequisites
 - Windows (Powershell)
-- Antigravity IDE instalado e em execução (para que a pasta `~/.gemini` exista)
+- Antigravity IDE installed and running (so that the `~/.gemini` folder exists)
 
-## Passos para Instalação
+## Installation Steps
 
-1. Clone o repositório na sua máquina (ex: `D:\Source\Repos\antigravity-dev-toolkit`).
-2. Abra um terminal PowerShell na raiz do repositório.
-3. Execute o script de sincronização:
+1. Clone the repository to your machine (e.g., `D:\Source\Repos\antigravity-dev-toolkit`).
+2. Open a PowerShell terminal in the repository root.
+3. Run the synchronization script:
 
    ```powershell
    .\scripts\sync-antigravity.ps1
    ```
 
-4. O script copiará o diretório `plugin/` para a pasta de plugins do Antigravity IDE (`~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit`).
-5. A cópia é idempotente (baseada em hashes SHA-256), copiando apenas arquivos modificados, evitando overwrites desnecessários.
-6. Opcionalmente reinicie as sessões de chat no Antigravity IDE para que ele carregue/indexe as novas skills com eficácia.
+4. The script will copy the `plugin/` directory to the Antigravity IDE plugins folder (`~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit`).
+5. The copy process is idempotent (based on SHA-256 hashes), copying only modified files and avoiding unnecessary overwrites.
+6. Optionally restart the chat sessions in the Antigravity IDE so that it loads/indexes the new skills effectively.
 
-## Atualização
-Sempre que fizer alterações locais nas skills ou regras (`_shared/`) neste repositório base, rode `.\scripts\sync-antigravity.ps1` novamente para aplicar as mudanças ao IDE.
+## Updating
+Whenever you make local changes to the skills or rules (`_shared/`) in this base repository, run `.\scripts\sync-antigravity.ps1` again to apply the changes to the IDE.
