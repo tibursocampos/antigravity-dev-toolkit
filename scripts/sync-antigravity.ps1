@@ -164,6 +164,37 @@ $totalChanges += Sync-DirectoryTree `
     -SourceRoot (Join-Path $repoRoot 'plugin\skills') `
     -DestRoot   (Join-Path $pluginDest 'skills')
 
+# Deploy Knowledge Item (KI)
+$knowledgeRoot = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\custom_skills'
+if (-not $DryRun) {
+    if (-not (Test-Path -LiteralPath $knowledgeRoot)) {
+        New-Item -ItemType Directory -Path $knowledgeRoot -Force | Out-Null
+    }
+}
+
+$metadataPath = Join-Path $knowledgeRoot 'metadata.json'
+$escapedPluginDest = $pluginDest.Replace('\', '\\')
+$metadataJson = @"
+{
+  "summary": "Custom Skills Toolkit: The user has a custom skills toolkit. Whenever the user mentions 'use skill [name]', 'use a skill [name]', or uses the '/[name]' command, you MUST read the corresponding SKILL.md file at: $($escapedPluginDest)\\skills\\[name]\\SKILL.md BEFORE executing any action. Consider this directory as the source of truth for user execution rules.",
+  "createdAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
+  "updatedAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
+  "references": []
+}
+"@
+
+if ($DryRun) {
+    Write-ToolkitMessage "Would sync Knowledge Item: $metadataPath" ([ConsoleColor]::Cyan)
+} else {
+    try {
+        [System.IO.File]::WriteAllText($metadataPath, $metadataJson, [System.Text.Encoding]::UTF8)
+        Write-ToolkitMessage "Synced KI: $metadataPath" ([ConsoleColor]::Green)
+        $totalChanges++
+    } catch {
+        Write-ToolkitMessage "Warning: Could not sync KI. The file may be locked by the IDE: $($_.Exception.Message)" ([ConsoleColor]::Yellow)
+    }
+}
+
 Write-Host ''
 if ($totalChanges -eq 0) {
     Write-ToolkitMessage 'Deploy complete - already up to date (idempotent).' ([ConsoleColor]::Green)
