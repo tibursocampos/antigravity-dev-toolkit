@@ -101,7 +101,7 @@ After a successful commit, ask the user if they want to push the changes:
 - Work-item APIs, mandatory PR creation, or corporate PR templates
 - `git add -A` / `git add .` without review (unless user explicitly requests)
 - Auto-commit without message approval
-- **AI co-author trailers** — forbidden in any form
+- **AI co-author trailers** — forbidden in any form. Under NO circumstances should you include `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity`, or any other AI agent attribution. The commit message must contain JUST the commit message.
 
 ## Handoff
 

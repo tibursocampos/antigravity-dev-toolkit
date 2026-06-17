@@ -195,7 +195,7 @@ Todo `git commit` deve seguir [Conventional Commits](https://www.conventionalcom
 - Separar corpo e footers do subject com linha em branco
 
 **Nunca** atribuir o agente de IA como co-autor:
-- Sem `Co-authored-by: Antigravity …` (ou variantes)
+- Em hipótese alguma inclua `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity …` (ou variantes), ou qualquer coisa de agente de IA nas mensagens de commit. Apenas a mensagem de commit deve ser enviada.
 - Sem `--trailer` para atribuição de co-autoria
 
 Footers permitidos: `Refs: #…`, `BREAKING CHANGE:`, `Fixes: #…` — por convenção do projeto apenas.
