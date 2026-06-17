@@ -124,6 +124,7 @@ gh pr create --base <base> --head "$(git rev-parse --abbrev-ref HEAD)" \
 - Work-item tracker APIs, external PR platform APIs, or corporate templates
 - Block on coverage only when no target applies
 - Paste entire guideline files into the review output
+- **AI co-author trailers** — in any form. Under NO circumstances should you include `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity`, or any other AI agent attribution in commit messages or PR descriptions.
 
 ## Handoff
 
