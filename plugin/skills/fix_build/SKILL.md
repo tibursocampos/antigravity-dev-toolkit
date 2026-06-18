@@ -32,8 +32,17 @@ Structured diagnosis, proposed fixes with rationale, fixes applied only after us
 |------|------|
 | C# patterns | `_shared/dotnet_guidelines/csharp-patterns.md` |
 | Commit | `use skill commit` |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
 
 ## Process
+
+### -1. Caveman Mode
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
 ### 0. Workspace
 

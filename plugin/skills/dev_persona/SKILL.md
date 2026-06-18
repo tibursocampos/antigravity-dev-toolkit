@@ -200,6 +200,12 @@ Todo `git commit` deve seguir [Conventional Commits](https://www.conventionalcom
 
 Footers permitidos: `Refs: #…`, `BREAKING CHANGE:`, `Fixes: #…` — por convenção do projeto apenas.
 
+### Git Mutating Commands Blocked
+
+- **Never** execute any commands that modify the git history or remote states (`git commit`, `git push`, `git merge`, `git rebase`, `git checkout -b` or branching commands) automatically or in the background.
+- You **must only** run viewing/read-only commands (like `git status`, `git diff`, `git log`) automatically to inspect status.
+- Any mutating git action must be explicitly requested or confirmed by the user in the chat with a "sim" before being proposed/executed.
+
 ### Validação de Branch
 
 Antes de qualquer `git add`, `git commit` ou `git push`, verificar o branch atual.
@@ -280,12 +286,36 @@ Instalado em `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-t
 | Checklist pré-PR / pré-push | `_shared/dotnet_guidelines/checklist.md` |
 | SOLID, DRY, KISS, YAGNI, encapsulamento | `_shared/code_guidelines/principles/` (arquivo por princípio) |
 | Pipeline SDD (ordem, paths, confirmação) | `_shared/sdd_artifacts/PIPELINE.md` |
+| Caveman Mode (compressão de respostas) | `_shared/caveman/CAVEMAN.md` — carregar no passo -1 das skills participantes |
 
 ### Exclusões explícitas (budget de tokens)
 
 - **Nunca pré-carregar** `_shared/code_guidelines/languages/**` ou fazer glob de toda a árvore `code-guidelines/`
 - **Nunca pré-carregar** `dotnet_guidelines/` sem estar prestes a escrever ou revisar código .NET
 - **Fora deste toolkit:** pipeline corporativo, Azure DevOps / work-item tracker APIs (PAT, PATCH, MCP), `setup`, `fix-pr-comments`, `fix-sonar-issues`, fluxos de análise estática
+
+---
+
+## Caveman Mode — Compressão de Respostas
+
+Modo opcional de compressão do texto narrativo das respostas do agente.
+Guideline completo: `_shared/caveman/CAVEMAN.md` (carregar sob demanda, passo -1).
+
+### Toggle global
+
+Estado persistido em `~/.gemini/antigravity-ide/sdd/preferences.json`:
+```json
+{ "caveman_mode": false }
+```
+Padrão: **desativado**. O usuário pode digitar `caveman on` / `caveman off` a qualquer momento durante uma skill participante.
+
+### Participação das skills
+
+| Level | Skills |
+|---|---|
+| **NEVER** | `commit`, `push`; blocos de confirmação `(sim / ajustar / cancelar)` em qualquer skill; rascunhos de artefatos apresentados no chat |
+| **LITE** (só framing e introduções) | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` |
+| **FULL** (toda prosa conversacional) | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop` |
 
 ---
 

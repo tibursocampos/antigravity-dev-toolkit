@@ -40,13 +40,20 @@ Não re-perguntar sobre storage SDD ou alterar idioma do artefato no meio do PLA
 | Pipeline, diálogo de PLAN ausente | `_shared/sdd_artifacts/PIPELINE.md` |
 | Storage | `_shared/sdd_artifacts/STORAGE.md` |
 | .NET, Git, contexto | `_shared/dotnet_guidelines/*.md`, `dev_persona` § Git, § Contexto |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
 
 ## Process
 
-### -1. Pipeline e modo
+### -1. Pipeline, modo e Caveman
 
 Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
 **Agent** necessário para mudanças de código e atualizações de PLAN. Se o usuário pedir PRD/`sdd_spec` ou PLAN/`sdd_plan` → guiar per § Missing artifacts; não criar PRD/PLAN aqui.
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
 ### 0. Workspace
 

@@ -58,3 +58,4 @@ O agente irá:
 - Implementar o código e testes (em inglês).
 - Atualizar a tarefa no arquivo `tasks.md` como concluída (`[x]`).
 - Oferecer o conventional commit para salvar o progresso.
+

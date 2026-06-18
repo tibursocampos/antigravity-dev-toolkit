@@ -38,10 +38,17 @@ Does not modify code unless the user asks for test additions in a follow-up.
 |------|------|
 | Add tests for gaps | `_shared/dotnet_guidelines/csharp-patterns.md` |
 | Commit | `use skill commit` |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
 
 ## Process
 
-### -1. Modo
+### -1. Caveman Mode + Modo
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
 **Agent** necessário para `dotnet test` e ReportGenerator. Em outros contextos, explicar limitação e listar paths esperados em `TestResults/` após o usuário trocar para o modo adequado.
 

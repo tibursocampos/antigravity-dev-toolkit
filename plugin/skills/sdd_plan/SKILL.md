@@ -23,6 +23,7 @@ A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NN
 | Pipeline guards, missing PRD dialog | `_shared/sdd_artifacts/PIPELINE.md` |
 | Storage, manifest, `.gitignore` | `_shared/sdd_artifacts/STORAGE.md` |
 | SDD language, context, .NET | `dev_persona` § Idioma, `_shared/dotnet_guidelines/*.md` |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — **Lite mode** (only framing and introductions) |
 
 ## Process
 
@@ -30,6 +31,13 @@ A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NN
 
 Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
 Sem autoria de PRD; sem código de produção/testes.
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas — Lite). Digite `caveman off` a qualquer momento para desativar.
+- In Lite mode: compress only framing and introductions. Plan drafts, confirmation gates, and clarifying questions are **never** compressed.
+- Honor `caveman on` / `caveman off` at any point during the session.
 
 ### 0. Workspace
 

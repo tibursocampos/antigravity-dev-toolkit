@@ -40,10 +40,19 @@ Recommend `use skill sdd_spec` → `sdd_plan` → `sdd_develop` if **two or more
 | C# / tests | `_shared/dotnet_guidelines/csharp-patterns.md` |
 | Final checklist | `_shared/dotnet_guidelines/checklist.md` |
 | Contexto | `dev_persona` § Gestão de Contexto |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
 
 Do **not** preload `code_guidelines/languages/**`.
 
 ## Process
+
+### -1. Caveman Mode
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
 ### 0. Workspace
 

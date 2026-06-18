@@ -6,6 +6,22 @@ Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antig
 
 Companion: `STORAGE.md` (folders, numbering, `.gitignore`).
 
+## Strict Git and Execution Guardrails (Non-Negotiable)
+
+To prevent the agent from bypassing steps, running unauthorized actions, or modifying the repository history automatically:
+
+1. **Mutating Git Commands Blocked**:
+   - **Never** execute `git commit`, `git push`, `git rebase`, `git merge`, or any other mutating/writing Git commands automatically under the hood or via background tasks.
+   - The agent **must only** run viewing/read-only commands (like `git status`, `git diff`, `git log`) automatically to inspect the repository.
+   - Any commit, push, merge, or rebase must be explicitly suggested in the chat, presenting the exact command, and executed **only** after the user responds with an explicit **sim** or run it themselves.
+
+2. **No Automatic Code Changes Across Tasks**:
+   - In `sdd_develop` or `speckit_develop`, the agent **must not** implement more than one task or step per session. 
+   - After writing the code for a single task and verifying it with tests, the agent **must stop**, present the file changes (diff/status) to the user, and ask for permission to proceed or review. Do not run code changes for Task N+1 in the same session without an explicit new invocation or user command.
+
+3. **Strict Validation of Order**:
+   - Always verify that the current step's dependencies are met (e.g. do not implement a plan that has not been approved or does not exist on disk, do not create a plan for a spec that does not exist).
+
 ## Skill order
 
 Fixed sequence: **`spec` → `plan` → `implement`**. Never skip a stage unless the user explicitly chooses a documented shortcut (see § Missing artifacts).
@@ -125,8 +141,10 @@ If validation fails, do not write — fix path or promote.
 | `code-review` | Handoff to `spec` for new PRD; read-only SDD discovery |
 | `test-coverage` | Agent required for shell; report paths in skill body |
 | `speckit_spec`, `speckit_plan`, `speckit_develop` | Step -1 load; use § Spec Kit path validation |
+| `_shared/caveman/CAVEMAN.md` | Loaded on demand at step -1 by participating skills. Confirmation gates `(sim / ajustar / cancelar)` and artifact drafts shown in chat are **never** subject to compression regardless of Caveman mode state |
 
 ---
+
 
 ## Spec Kit path validation
 
