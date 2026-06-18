@@ -141,8 +141,10 @@ If validation fails, do not write — fix path or promote.
 | `code-review` | Handoff to `spec` for new PRD; read-only SDD discovery |
 | `test-coverage` | Agent required for shell; report paths in skill body |
 | `speckit_spec`, `speckit_plan`, `speckit_develop` | Step -1 load; use § Spec Kit path validation |
+| `_shared/caveman/CAVEMAN.md` | Loaded on demand at step -1 by participating skills. Confirmation gates `(sim / ajustar / cancelar)` and artifact drafts shown in chat are **never** subject to compression regardless of Caveman mode state |
 
 ---
+
 
 ## Spec Kit path validation
 

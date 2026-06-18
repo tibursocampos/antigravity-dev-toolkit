@@ -27,12 +27,20 @@ Both in **pt-BR**. Paths and technical identifiers in **English**.
 | Path validation and confirm gate | `_shared/sdd_artifacts/PIPELINE.md` § Spec Kit path validation |
 | Project architecture rules | `.specify/memory/constitution.md` (at resolved destination) |
 | .NET / C# context if relevant | `_shared/dotnet_guidelines/clean-architecture.md` |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — **Lite mode** (only framing and introductions) |
 
 ## Process
 
 ### -1. Pipeline and storage
 
 Load `STORAGE.md` § Resolution algorithm and `PIPELINE.md` § Spec Kit path validation. No production code or tests in this session.
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas — Lite). Digite `caveman off` a qualquer momento para desativar.
+- In Lite mode: compress only framing and introductions. Plan/tasks drafts, confirmation gates `(sim / ajustar / cancelar)`, and clarifying questions are **never** compressed.
+- Honor `caveman on` / `caveman off` at any point during the session.
 
 ### 1. Resolve spec.md
 

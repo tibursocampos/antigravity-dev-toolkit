@@ -21,6 +21,12 @@ Governs the lifecycle, storage, and validation of the PRD and PLAN artifacts wit
   - `PIPELINE.md`: Defines the state machine rules (e.g., you cannot plan without a PRD, you cannot implement without a PLAN).
   - `STORAGE.md`: Defines where artifacts are stored (supporting local `/PRD/`, `/PLAN/` folders or external/global path resolution via manifest.json) and how they are numbered.
 
+### 4. `_shared/caveman`
+Governs the behavior, rules, and triggers of Caveman Mode across all participating skills.
+- **Key Files**:
+  - `CAVEMAN.md`: The central rulebook defining Full vs Lite compression behaviors, universal safety exclusions, and `preferences.json` state resolution.
+
+
 ## Language Rules
 
 The toolkit strictly partitions the languages used for communication and artifacts versus production code to maintain a clean codebase while ensuring comfortable interactions for the user.

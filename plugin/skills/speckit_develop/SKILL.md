@@ -23,12 +23,19 @@ Production code and/or tests written (in **English**) for one pending task from 
 | Project architecture rules | `.specify/memory/constitution.md` (at resolved destination) |
 | .NET / C# rules | `_shared/dotnet_guidelines/clean-architecture.md`, `csharp-patterns.md` |
 | General code guidelines | `_shared/code_guidelines/*.md` (based on detected stack) |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
 
 ## Process
 
 ### -1. Load context
 
 Resolve storage per `STORAGE.md`. `Read` `.specify/memory/constitution.md` — apply constraints. Load guidelines relevant to the project stack.
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing → create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
 ### 1. Resolve tasks.md
 
