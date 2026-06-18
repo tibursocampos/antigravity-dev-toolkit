@@ -24,8 +24,8 @@ Executes .NET test coverage locally (Coverlet + ReportGenerator) reporting detai
 
 If the build or any test breaks and you want a quick diagnosis. It will run `dotnet build/test` (or read logs pasted in the chat), diagnose the root cause (culture issue, assertion failure, introduced bug, package mismatch), suggest the fix, and apply the fix only if you approve, re-running the test to ensure stability.
 
-## 5. RAG-based Documentation (`plan_repo_docs` and `document_repo`)
+## 5. RAG-based Documentation (`document_plan` and `document_implement`)
 Essential when the Antigravity IDE is about to work on a new, unknown repository and needs rich textual context for Retrieval-Augmented Generation (RAG).
 
-- `use skill plan_repo_docs`: Explores the repository, sets a target language for the product's technical documentation, writes a comprehensive `docs/overview.md`, and sets up an atomic documentation roadmap in `docs/documentation-plan/plan.md`.
-- `use skill document_repo`: Runs as a standalone step to execute the next pending task mapped by the documentation plan created above.
+- `use skill document_plan`: Explores the repository, sets a target language for the product's technical documentation, writes a comprehensive `docs/overview.md`, and sets up an atomic documentation roadmap in `docs/documentation-plan/plan.md`.
+- `use skill document_implement`: Runs as a standalone step to execute the next pending task mapped by the documentation plan created above.
