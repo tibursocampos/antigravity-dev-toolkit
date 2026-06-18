@@ -28,7 +28,8 @@ A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NN
 
 ### -1. Pipeline e modo
 
-Carregar `PIPELINE.md`. Sem autoria de PRD; sem código de produção/testes.
+Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
+Sem autoria de PRD; sem código de produção/testes.
 
 ### 0. Workspace
 
@@ -36,7 +37,7 @@ Repositório alvo. Ler `README.md` se presente.
 
 ### 1. Resolver PRD
 
-Fazer glob de PRDs canônicos no workspace.
+Fazer glob de PRDs canônicos sob o diretório de destino resolvido (local ou global).
 
 | Situação | Ação |
 |----------|------|
@@ -57,13 +58,15 @@ Ver `dev_persona` § Gestão de Contexto; rascunho do PLAN em chat se ≥40%.
 
 ### 5.75. Confirmar antes de gravar
 
-`PLAN_NNN_*`, path completo, link do PRD, contagem de passos. **sim** obrigatório antes de `Write`.
+`PLAN_NNN_*`, path completo (resolvido sob o diretório do storage mode ativo), link do PRD, contagem de passos. **sim** obrigatório antes de `Write`.
 
 ### 6. Gravar PLAN (após sim)
 
-1. Validar path canônico do PLAN; `NNN` **igual** ao do PRD.
-2. Cabeçalho do PRD = path completo do PRD; passos **Pendente**; `0/N`.
-3. Avisar se sobrescrevendo PLAN com passos concluídos.
+1. Validar path per `PIPELINE.md` § Path validation helper — abortar se inválido.
+2. Criar subpasta `PLAN/` no destino resolvido se não existir.
+3. Gravar `PLAN_NNN_*` com `NNN` **igual** ao do PRD. Cabeçalho do PRD = path completo do PRD; passos **Pendente**; `0/N`.
+4. Avisar se sobrescrevendo PLAN com passos concluídos.
+5. Se `storage_mode` for `repository`, garantir os padrões no `.gitignore` conforme `STORAGE.md` § Repository mode — .gitignore.
 
 ### 7. Validar com o usuário
 

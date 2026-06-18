@@ -106,8 +106,12 @@ Não encontrei um PLAN em PLAN/PLAN_NNN_*.md.
 
 Before `Write`, confirm the target matches:
 
-- PRD: `(PRD|docs/PRD)/\d{3}_.+\.md` (workspace-relative)
-- PLAN: `PLAN/PLAN_\d{3}_.+\.md`
+- If `storage_mode` is `repository` (workspace-relative):
+  - PRD: `(PRD|docs/PRD)/\d{3}_.+\.md`
+  - PLAN: `PLAN/PLAN_\d{3}_.+\.md`
+- If `storage_mode` is `global` (absolute path under resolved path):
+  - PRD: `.*[/\\]PRD[/\\]\d{3}_.+\.md$` or `.*[/\\]docs[/\\]PRD[/\\]\d{3}_.+\.md$`
+  - PLAN: `.*[/\\]PLAN[/\\]PLAN_\d{3}_.+\.md$`
 
 If validation fails, do not write — fix path or promote.
 
@@ -115,8 +119,42 @@ If validation fails, do not write — fix path or promote.
 
 | Consumer | Use |
 |----------|-----|
-| `spec`, `plan`, `implement` | Step -1 load; steps reference § by name |
+| sdd_spec, sdd_plan, sdd_develop | Step -1 load; use § Path validation helper and STORAGE.md § Global Manifest and Dynamic Storage Resolution |
 | `STORAGE.md` | Folders, numbering, invalid-path summary |
 | `dev_persona` | Always-on pipeline reminder (inline in skill) |
 | `code-review` | Handoff to `spec` for new PRD; read-only SDD discovery |
 | `test-coverage` | Agent required for shell; report paths in skill body |
+| `speckit_spec`, `speckit_plan`, `speckit_develop` | Step -1 load; use § Spec Kit path validation |
+
+---
+
+## Spec Kit path validation
+
+> **Used by:** `speckit_spec`, `speckit_plan`, `speckit_develop`. Load at step -1 alongside `STORAGE.md`.
+
+Before any `Write` to Spec Kit artifacts, validate that the path resolves to the canonical `.specify/` structure.
+
+### Validation regexes (required)
+
+| Artifact | Regex |
+|---|---|
+| `spec.md` | `.*\.specify[/\\]specs[/\\]\d{3}-[^/\\]+[/\\]spec\.md$` |
+| `plan.md` | `.*\.specify[/\\]specs[/\\]\d{3}-[^/\\]+[/\\]plan\.md$` |
+| `tasks.md` | `.*\.specify[/\\]specs[/\\]\d{3}-[^/\\]+[/\\]tasks\.md$` |
+| `constitution.md` | `.*\.specify[/\\]memory[/\\]constitution\.md$` |
+
+### Blocking rule
+
+If the write path does **not** match the expected artifact regex:
+
+1. **Do not write** — abort immediately.
+2. Show in chat (pt-BR): *"Caminho inválido para artefato Spec Kit. O arquivo deve estar em `.specify/specs/NNN-<slug>/` com o nome correto. Operação cancelada."*
+3. Log the attempted path for debugging.
+
+### Confirm before write (Spec Kit)
+
+Same semantics as the classic § Confirm before write, adapted for Spec Kit:
+
+1. Show: spec title, `NNN`, **resolved absolute path**, storage mode, 3–5 content bullets.
+2. Ask the user (pt-BR): **"Posso gravar em `{path}`? (sim / ajustar / cancelar)"**
+3. `Write` only after explicit **sim**.

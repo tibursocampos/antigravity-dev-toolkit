@@ -20,14 +20,20 @@ The Antigravity Dev Toolkit utilizes a structured Software-Driven Development (S
 
 ## SDD Artifacts and Storage Locations
 
-Both PRD and PLAN artifacts are stored directly within the consumer repository. The default prose language for these SDD artifacts is **Brazilian Portuguese (pt-BR)** unless explicitly overridden by the user. Identifiers and code references within these documents remain in English.
+Both PRD and PLAN artifacts can be stored either locally inside the consumer repository or in a global shared directory outside the codebase. This is determined dynamically via the `manifest.json` storage resolution prompt on the first execution in a repository.
 
-### Product Requirements Document (PRD)
-- **Location**: `/PRD/` or `/docs/PRD/` at the repository root.
-- **Naming Convention**: `NNN_short_feature_slug.md` (e.g., `001_user_login.md`), where `NNN` is an auto-incrementing 3-digit number.
+The default prose language for these SDD artifacts is **Brazilian Portuguese (pt-BR)** unless explicitly overridden by the user. Identifiers and code references within these documents remain in English.
 
-### Execution Plan (PLAN)
-- **Location**: `/PLAN/` or `/docs/PLAN/` at the repository root.
-- **Naming Convention**: `PLAN_NNN_short_feature_slug.md` (e.g., `PLAN_001_user_login.md`), ensuring the prefix number exactly matches its source PRD.
+### Repository Mode
+PRDs and PLANs are written directly inside the repository.
+- **Product Requirements Document (PRD)**: `/PRD/` or `/docs/PRD/` at the repository root.
+  - **Naming Convention**: `NNN_short_feature_slug.md` (e.g., `001_user_login.md`), where `NNN` is an auto-incrementing 3-digit number.
+- **Execution Plan (PLAN)**: `/PLAN/` at the repository root.
+  - **Naming Convention**: `PLAN_NNN_short_feature_slug.md` (e.g., `PLAN_001_user_login.md`).
+- **Git Integration**: The four directories (`/PRD/`, `/PLAN/`, `/docs/PRD/`, `/docs/PLAN/`) must be explicitly ignored in the repository's `.gitignore`.
 
-All four of these directories (`/PRD/`, `/PLAN/`, `/docs/PRD/`, `/docs/PLAN/`) must be explicitly ignored in the consumer repository's `.gitignore` to prevent committing incomplete agent working files to the remote repository.
+### Global Mode
+PRDs and PLANs are written to a central folder outside the git tree to keep the repository clean.
+- **Base Directory**: `~/.gemini/antigravity-ide/sdd/<RepositoryName>/`
+- **Subdirectories**: `/PRD/` and `/PLAN/` with the same naming conventions as Repository Mode.
+- **Git Integration**: No changes are required in the repository's `.gitignore` as no files are created locally.

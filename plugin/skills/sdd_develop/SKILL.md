@@ -45,7 +45,8 @@ Não re-perguntar sobre storage SDD ou alterar idioma do artefato no meio do PLA
 
 ### -1. Pipeline e modo
 
-Carregar `PIPELINE.md`. **Agent** necessário para mudanças de código e atualizações de PLAN. Se o usuário pedir PRD/`sdd_spec` ou PLAN/`sdd_plan` → guiar per § Missing artifacts; não criar PRD/PLAN aqui.
+Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
+**Agent** necessário para mudanças de código e atualizações de PLAN. Se o usuário pedir PRD/`sdd_spec` ou PLAN/`sdd_plan` → guiar per § Missing artifacts; não criar PRD/PLAN aqui.
 
 ### 0. Workspace
 
@@ -53,8 +54,8 @@ Repositório alvo. Resolver PLAN:
 
 | Situação | Ação |
 |----------|------|
-| Path canônico do PLAN fornecido | `Read` no path exato |
-| Nenhum PLAN canônico | `PIPELINE.md` § `sdd_develop` without PLAN (opções 1–3) |
+| Path canônico do PLAN fornecido | `Read` no path exato (absoluto ou relativo ao storage ativo) |
+| Nenhum PLAN canônico | Glob sob o diretório do storage ativo; se não encontrado: `PIPELINE.md` § `sdd_develop` without PLAN (opções 1–3) |
 | Usuário pede "criar PRD/plan" | Redirecionar para `sdd_spec` / `sdd_plan`; parar |
 
 Detectar stack pelo passo do PLAN.
