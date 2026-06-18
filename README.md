@@ -1,6 +1,6 @@
 # antigravity-dev-toolkit
 
-Personal Antigravity IDE (Google DeepMind) agent toolkit: SDD workflow, .NET guidelines, Git-only developer flow. No corporate tracker or pipeline integrations.
+Personal Antigravity IDE (Google DeepMind) agent toolkit: SDD (classic and Spec Kit) workflows, .NET guidelines, Git-only developer flow. No corporate tracker or pipeline integrations.
 
 Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.ps1` (see [docs/INSTALL.md](docs/INSTALL.md)).
 
@@ -8,7 +8,7 @@ Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.
 
 | Capability | Description |
 |------------|-------------|
-| **SDD workflow** | `sdd_spec` → `sdd_plan` → `sdd_develop` with PRD/PLAN stored in the working repo |
+| **SDD workflow** | Classic (`sdd_spec` → `sdd_plan` → `sdd_develop`) and Spec Kit (`speckit_spec` → `speckit_plan` → `speckit_develop`) workflows supporting local or global manifest-based storage |
 | **.NET guidelines** | `dotnet-guidelines` (Clean Architecture, xUnit/NUnit, Moq/NSubstitute, Shouldly) |
 | **Git-only flow** | Branching, commits, checklist — no Azure DevOps |
 | **Antigravity-native** | Installed as a plugin under `~/.gemini/antigravity-ide/plugins/` |
@@ -25,6 +25,7 @@ Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.
 
 3. Restart Antigravity IDE to pick up the new skills.
 4. In any project chat: invoke skills via natural language (auto-discovered from `description` field in each SKILL.md).
+5. (Optional) Run `use skill speckit_setup` to install Spec Kit CLI prerequisites and run `use skill speckit_init` to initialize Spec Kit folders in your active repositories.
 
 Re-run sync after pulling toolkit updates (idempotent).
 
@@ -39,9 +40,14 @@ antigravity-dev-toolkit/
 │   ├── plugin.json               # Plugin manifest
 │   └── skills/
 │       ├── dev_persona/          # Router + global rules (replaces AGENTS.md + rules)
-│       ├── sdd_spec/
-│       ├── sdd_plan/
-│       ├── sdd_develop/
+│       ├── sdd_spec/             # Classic SDD PRD phase
+│       ├── sdd_plan/             # Classic SDD PLAN phase
+│       ├── sdd_develop/          # Classic SDD execution phase
+│       ├── speckit_setup/        # Spec Kit prerequisites install
+│       ├── speckit_init/         # Spec Kit folder initializer
+│       ├── speckit_spec/         # Spec Kit spec.md phase
+│       ├── speckit_plan/         # Spec Kit plan.md/tasks.md phase
+│       ├── speckit_develop/      # Spec Kit tasks execution phase
 │       ├── code_review/
 │       ├── commit/
 │       ├── push/
@@ -53,9 +59,11 @@ antigravity-dev-toolkit/
 │       └── _shared/
 │           ├── dotnet_guidelines/
 │           ├── code_guidelines/
-│           └── sdd_artifacts/
+│           └── sdd_artifacts/    # Shared STORAGE.md and PIPELINE.md guidelines
 └── scripts/
-    └── sync-antigravity.ps1      # Deploy script (SHA-256 idempotent)
+    ├── sync-antigravity.ps1      # Deploy script (SHA-256 idempotent)
+    ├── setup-speckit.ps1         # Spec Kit initialization helper
+    └── configure-repo-sdd.ps1    # Repository configuration script
 ```
 
 ## Skills
@@ -76,6 +84,11 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | `test_coverage` | .NET coverage report (Coverlet) |
 | `document_plan` | Plan repo documentation (RAG-oriented) |
 | `document_implement` | Execute one doc plan step |
+| `speckit_setup` | Verify and install Spec Kit CLI prerequisites (Python, uv, specify-cli) |
+| `speckit_init` | Initialize `.specify/` structure in the active repository (local or global) |
+| `speckit_spec` | Create technical specification `spec.md` under `.specify/specs/NNN-<slug>/` |
+| `speckit_plan` | Generate technical `plan.md` and atomic checklist `tasks.md` from a spec |
+| `speckit_develop` | Implement code and run tests for a single Spec Kit task |
 
 ## Conventions
 
@@ -87,7 +100,7 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | Production code & tests | English always |
 | User chat replies | Brazilian Portuguese (pt-BR) |
 | Test stack | xUnit/NUnit + Moq/NSubstitute + Shouldly |
-
+| SDD Storage Mode | Local `repository` (in-repo) or `global` (centralized `~/.gemini/antigravity-ide/sdd/`) resolved via `manifest.json` |
 
 ## License
 

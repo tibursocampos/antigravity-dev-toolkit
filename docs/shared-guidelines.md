@@ -19,7 +19,7 @@ Contains general software engineering principles that apply regardless of the sp
 Governs the lifecycle, storage, and validation of the PRD and PLAN artifacts within the repository.
 - **Key Files**:
   - `PIPELINE.md`: Defines the state machine rules (e.g., you cannot plan without a PRD, you cannot implement without a PLAN).
-  - `STORAGE.md`: Defines where artifacts must be stored (`/PRD/`, `/PLAN/`) and how they are numbered.
+  - `STORAGE.md`: Defines where artifacts are stored (supporting local `/PRD/`, `/PLAN/` folders or external/global path resolution via manifest.json) and how they are numbered.
 
 ## Language Rules
 
@@ -39,8 +39,8 @@ The toolkit strictly partitions the languages used for communication and artifac
 
 Consistency in naming allows the toolkit to reliably auto-discover files using Glob patterns.
 
-- **PRD Files**: `NNN_short_feature_slug.md` (e.g., `001_authentication.md`)
-- **PLAN Files**: `PLAN_NNN_short_feature_slug.md` (e.g., `PLAN_001_authentication.md`)
+- **PRD Files**: `NNN_short_feature_slug.md` (e.g., `001_authentication.md`) under the active storage folder (local or global)
+- **PLAN Files**: `PLAN_NNN_short_feature_slug.md` (e.g., `PLAN_001_authentication.md`) under the active storage folder (local or global)
 - **Skill Directories**: `snake_case` (e.g., `developer`, `code_review`)
 - **Skill Manifest Names**: `snake_case` inside the `SKILL.md` frontmatter (e.g., `name: developer`)
 - **Git Branches**: `feature/<slug>` or `feat/<id>` (nested directories like `feature/a/b` are explicitly rejected by the `commit` skill).
