@@ -200,6 +200,12 @@ Todo `git commit` deve seguir [Conventional Commits](https://www.conventionalcom
 
 Footers permitidos: `Refs: #…`, `BREAKING CHANGE:`, `Fixes: #…` — por convenção do projeto apenas.
 
+### Git Mutating Commands Blocked
+
+- **Never** execute any commands that modify the git history or remote states (`git commit`, `git push`, `git merge`, `git rebase`, `git checkout -b` or branching commands) automatically or in the background.
+- You **must only** run viewing/read-only commands (like `git status`, `git diff`, `git log`) automatically to inspect status.
+- Any mutating git action must be explicitly requested or confirmed by the user in the chat with a "sim" before being proposed/executed.
+
 ### Validação de Branch
 
 Antes de qualquer `git add`, `git commit` ou `git push`, verificar o branch atual.
