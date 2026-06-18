@@ -13,6 +13,7 @@ Deploy to your Antigravity IDE plugins directory with `scripts/sync-antigravity.
 | **Git-only flow** | Branching, commits, checklist — no Azure DevOps |
 | **Antigravity-native** | Installed as a plugin under `~/.gemini/antigravity-ide/plugins/` |
 | **Operational skills** | fix-build, test-coverage, code-review, repo docs |
+| **Caveman Mode** | Optional response compression mode to reduce token usage and speed up interactions |
 
 ## Quick start
 
@@ -101,6 +102,21 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | User chat replies | Brazilian Portuguese (pt-BR) |
 | Test stack | xUnit/NUnit + Moq/NSubstitute + Shouldly |
 | SDD Storage Mode | Local `repository` (in-repo) or `global` (centralized `~/.gemini/antigravity-ide/sdd/`) resolved via `manifest.json` |
+
+## Caveman Mode (Response Compression)
+
+Caveman Mode is an optional feature designed to reduce output token consumption by stripping away polite filler text and verbose progress narration, while fully protecting technical facts, code blocks, and confirmation gates.
+
+- **Persisted State**: Configured in `~/.gemini/antigravity-ide/sdd/preferences.json` under `"caveman_mode"`.
+- **In-Session Toggles**: 
+  - Send `caveman on` in chat to enable response compression.
+  - Send `caveman off` in chat to disable response compression.
+- **Participation Levels**:
+  - **NEVER**: `commit`, `push` (kept verbose for safety).
+  - **LITE**: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` (compresses headers/preambles, but keeps questions and drafts intact).
+  - **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop` (compresses all prose to telegraphic bullet points).
+
+For a complete explanation, see [docs/guides/05-caveman-mode.md](docs/guides/05-caveman-mode.md).
 
 ## License
 

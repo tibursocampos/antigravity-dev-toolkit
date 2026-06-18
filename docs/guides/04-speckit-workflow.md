@@ -1,61 +1,60 @@
 # Spec Kit Workflow (setup → init → spec → plan → develop)
 
-O workflow do Spec Kit é uma alternativa ao SDD clássico baseada na CLI oficial do [GitHub Spec Kit](https://github.com/github/spec-kit) e na estrutura de pastas `.specify/`.
+The Spec Kit workflow is an alternative to classic SDD, based on the official [GitHub Spec Kit](https://github.com/github/spec-kit) CLI and the `.specify/` folder structure.
 
 ---
 
-## Passo Inicial: `use skill speckit_setup`
-Verifica os pré-requisitos no Windows e instala a CLI.
-**Exemplo:** `use skill speckit_setup`
+## Initial Step: `use skill speckit_setup`
+Verifies prerequisites on Windows and installs the CLI.
+**Example:** `use skill speckit_setup`
 
-O agente irá:
-- Verificar o Python 3.10+.
-- Perguntar e instalar o gerenciador `uv` caso não exista.
-- Instalar a ferramenta `specify-cli` via `uv tool install`.
-- Configurar o diretório global de manifestos do SDD.
-
----
-
-## Passo 2: `use skill speckit_init`
-Inicializa a estrutura do Spec Kit no repositório ativo.
-**Exemplo:** `use skill speckit_init`
-
-O agente irá:
-- **Resolução de Storage:** Na primeira execução, pergunta se você prefere armazenar os planos localmente (no repositório) ou de forma global (em `~/.gemini/antigravity-ide/sdd/`) para não poluir o git do projeto. Essa escolha é salva no `manifest.json`.
-- Criar a pasta `.specify/` no destino escolhido e gerar o arquivo de princípios do projeto (`.specify/memory/constitution.md`).
+The agent will:
+- Verify Python 3.10+.
+- Ask to install the `uv` package manager if it does not exist.
+- Install the `specify-cli` tool via `uv tool install`.
+- Configure the global SDD manifest directory.
 
 ---
 
-## Passo 3: `use skill speckit_spec`
-Cria uma nova especificação técnica para uma funcionalidade.
-**Exemplo:** `use skill speckit_spec`
+## Step 2: `use skill speckit_init`
+Initializes the Spec Kit structure in the active repository.
+**Example:** `use skill speckit_init`
 
-O agente irá:
-- Coletar a descrição da feature, o comportamento atual e o esperado.
-- Gerar o identificador sequencial `NNN` (ex: `001`) e o slug da feature.
-- Criar e salvar o arquivo `spec.md` sob o caminho `.specify/specs/NNN-<slug>/spec.md` (no local definido pelo storage ativo).
-
----
-
-## Passo 4: `use skill speckit_plan`
-Gera o plano e o checklist detalhados a partir da especificação.
-**Exemplo:** `use skill speckit_plan — <path-to-spec.md>`
-
-O agente irá:
-- Analisar a `spec.md` e o `constitution.md` do projeto.
-- Criar dois arquivos na mesma subpasta da feature:
-  - `plan.md`: Design de arquitetura técnica e lista de arquivos afetados.
-  - `tasks.md`: Lista de tarefas atômicas de 20-45 minutos com caixas de seleção (`- [ ]`).
+The agent will:
+- **Storage Resolution:** On the first execution, asks whether you prefer to store plans locally (in the repository) or globally (in `~/.gemini/antigravity-ide/sdd/`) to avoid cluttering the project's git. This choice is saved in `manifest.json`.
+- Create the `.specify/` folder in the chosen destination and generate the project principles file (`.specify/memory/constitution.md`).
 
 ---
 
-## Passo 5: `use skill speckit_develop`
-Executa as tarefas de forma iterativa passo a passo.
-**Exemplo:** `use skill speckit_develop — <path-to-tasks.md>`
+## Step 3: `use skill speckit_spec`
+Creates a new technical specification for a feature.
+**Example:** `use skill speckit_spec`
 
-O agente irá:
-- Ler a primeira tarefa pendente do arquivo `tasks.md`.
-- Implementar o código e testes (em inglês).
-- Atualizar a tarefa no arquivo `tasks.md` como concluída (`[x]`).
-- Oferecer o conventional commit para salvar o progresso.
+The agent will:
+- Collect the feature description, current behavior, and expected behavior.
+- Generate the sequential identifier `NNN` (e.g., `001`) and the feature slug.
+- Create and save the `spec.md` file under the path `.specify/specs/NNN-<slug>/spec.md` (at the location defined by the active storage).
 
+---
+
+## Step 4: `use skill speckit_plan`
+Generates the detailed plan and checklist from the specification.
+**Example:** `use skill speckit_plan — <path-to-spec.md>`
+
+The agent will:
+- Analyze the `spec.md` and the `constitution.md` of the project.
+- Create two files in the same feature subfolder:
+  - `plan.md`: Technical architecture design and list of affected files.
+  - `tasks.md`: List of atomic tasks of 20-45 minutes with checkboxes (`- [ ]`).
+
+---
+
+## Step 5: `use skill speckit_develop`
+Executes tasks iteratively step by step.
+**Example:** `use skill speckit_develop — <path-to-tasks.md>`
+
+The agent will:
+- Read the first pending task from the `tasks.md` file.
+- Implement the code and tests (in English).
+- Update the task in the `tasks.md` file as completed (`[x]`).
+- Offer a conventional commit to save progress.
