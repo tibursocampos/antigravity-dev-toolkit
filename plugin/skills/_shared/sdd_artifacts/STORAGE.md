@@ -12,7 +12,7 @@ Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antig
 |------|------------|-------------|
 | **repository** | `PRD/` (preferred) or `docs/PRD/` | `PLAN/` at workspace root |
 
-> **Nota:** O antigravity-dev-toolkit usa apenas o modo `repository` (sem global `~/.gemini/sdd/`). PRDs e PLANs ficam sempre dentro do repositório alvo.
+> **Nota:** O antigravity-dev-toolkit pode usar o modo `repository` (pastas locais) ou `global` (salvos externamente sob o caminho resolvido no `manifest.json`), dependendo da escolha registrada no `manifest.json`.
 
 ## Repository mode — `.gitignore`
 
@@ -101,3 +101,71 @@ When a skill needs an **existing** SDD PRD or PLAN and the user did not pass a f
 
 - Pipeline guards: `_shared/sdd_artifacts/PIPELINE.md`
 - Context management: `dev_persona` § Gestão de Contexto
+
+---
+
+## Global Manifest and Dynamic Storage Resolution
+
+> **Used by:** `speckit_setup`, `speckit_init`, `speckit_spec`, `speckit_plan`, `speckit_develop`, `sdd_spec`, `sdd_plan`, `sdd_develop`. All Spec Kit and classic SDD skills now use this resolution algorithm.
+
+### Manifest location
+
+```
+$env:USERPROFILE\.gemini\antigravity-ide\sdd\manifest.json
+```
+
+### Manifest structure
+
+```json
+{
+  "repositories": {
+    "D:/Source/Repos/Blip/GM.Flows": {
+      "storage_mode": "global",
+      "path": "C:/Users/rapha/.gemini/antigravity-ide/sdd/Blip_GM_Flows"
+    },
+    "D:/Source/Repos/antigravity-dev-toolkit": {
+      "storage_mode": "repository",
+      "path": "D:/Source/Repos/antigravity-dev-toolkit"
+    }
+  }
+}
+```
+
+### Resolution algorithm (Spec Kit skills only)
+
+Execute at skill load time, before any read or write:
+
+```
+1. Read $Cwd (active workspace working directory).
+2. Check whether $env:USERPROFILE\.gemini\antigravity-ide\sdd\manifest.json exists.
+   - If it does not exist: create the sdd/ folder and manifest.json with {"repositories": {}}.
+3. Look up the key matching $Cwd in the "repositories" object.
+
+4. If the key is NOT found (first run on this repository):
+   a. Pause and ask the user (pt-BR):
+      "Identifiquei que este é o primeiro uso das skills de SDD neste repositório.
+       Onde você prefere salvar as especificações e planos (.md)?
+       1) No repositório local (pastas /PRD e /PLAN ou /.specify)
+       2) No diretório global compartilhado (salvo externamente em
+          ~/.gemini/antigravity-ide/sdd/ para não poluir o repositório)"
+   b. If "1" or "local":
+      - storage_mode: "repository"
+      - path: $Cwd
+   c. If "2" or "global":
+      - storage_mode: "global"
+      - path: $env:USERPROFILE\.gemini\antigravity-ide\sdd\<RepositoryName>
+   d. Write the entry to manifest.json.
+   e. If global mode: create the folder at the defined path if it does not exist.
+
+5. If the key IS found: read storage_mode and path directly.
+```
+
+### Physical path mapping
+
+| storage_mode | Spec Kit target | Classic SDD PRD | Classic SDD PLAN |
+|---|---|---|---|
+| `repository` | `$Cwd/.specify/` | `$Cwd/PRD/` | `$Cwd/PLAN/` |
+| `global` | `<path>/.specify/` | `<path>/PRD/` | `<path>/PLAN/` |
+
+`<path>` = resolved value of the `path` field in the manifest for the active repository.
+`<RepositoryName>` = last segment of `$Cwd` with path separators replaced by `_`.

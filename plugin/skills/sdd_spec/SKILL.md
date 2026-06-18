@@ -32,7 +32,8 @@ The PRD answers **what**, not **how**. No implementation code. Identifiers (type
 
 ### -1. Pipeline e modo
 
-Carregar `PIPELINE.md`. Confirmar antes de gravar — nenhum `Write` sem **sim** do usuário. Guard: sem PLAN, sem `Write` em `*.cs`, `*.csproj`, migrations.
+Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
+Confirmar antes de gravar — nenhum `Write` sem **sim** do usuário. Guard: sem PLAN, sem `Write` em `*.cs`, `*.csproj`, migrations.
 
 ### 0. Workspace
 
@@ -65,15 +66,16 @@ Em ≥40%, rascunho em chat ou arquivo parcial; avisar antes de continuar. Ver `
 
 ### 6.75. Confirmar antes de gravar
 
-Título, `NNN`, **path canônico completo**, storage, bullets, status **Pronto para planejamento**. Aguardar **sim** / **ajustar** / **cancelar**.
+Título, `NNN`, **path canônico completo** (resolvido sob o diretório do storage mode ativo), storage, bullets, status **Pronto para planejamento**. Aguardar **sim** / **ajustar** / **cancelar**.
 
 ### 7. Gravar PRD (após sim)
 
-1. Validar path per `PIPELINE.md` § Path validation — abortar se não canônico.
-2. `NNN_short_feature_slug.md`; corpo em pt-BR.
-3. Product `docs/` em escopo: perguntar idioma de documentação primeiro.
+1. Validar path per `PIPELINE.md` § Path validation helper — abortar se inválido.
+2. Criar subpasta `PRD/` ou `docs/PRD/` no destino resolvido se não existir.
+3. Gravar `NNN_short_feature_slug.md`; corpo em pt-BR.
+4. Se `storage_mode` for `repository`, garantir os padrões no `.gitignore` conforme `STORAGE.md` § Repository mode — .gitignore.
 
-Reportar path, idioma, mudanças em `.gitignore`. Handoff: `use skill sdd_plan — <full-prd-path>`.
+Reportar path gravado, idioma e storage mode. Handoff: `use skill sdd_plan — <full-prd-path>`.
 
 ## Must not
 

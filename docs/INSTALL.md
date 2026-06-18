@@ -22,3 +22,27 @@ This repository contains the personal development toolkit for the Antigravity ID
 
 ## Updating
 Whenever you make local changes to the skills or rules (`_shared/`) in this base repository, run `.\scripts\sync-antigravity.ps1` again to apply the changes to the IDE.
+
+---
+
+## Setup do Spec Kit (Opcional)
+
+As skills do Spec Kit dependem da CLI oficial do projeto GitHub. Você pode configurar tudo automaticamente via chat executando:
+
+```
+/speckit_setup
+```
+
+Caso prefira instalar os pré-requisitos manualmente no Windows:
+
+1. Instale o Python 3.10+
+2. Instale o gerenciador de pacotes `uv`:
+   ```powershell
+   powershell -ExecutionPolicy Bypass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
+3. Instale a ferramenta CLI do Spec Kit globalmente:
+   ```powershell
+   uv tool install specify-cli --from git+https://github.com/github/spec-kit.git --force
+   ```
+
+Após a instalação, inicialize o Spec Kit em um repositório com `/speckit_init`.

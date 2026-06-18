@@ -1,5 +1,5 @@
 {
   "name": "antigravity-dev-toolkit",
-  "description": "Personal dev toolkit: SDD workflow (spec→plan→implement), .NET guidelines, Git-only flow. No corporate tracker integrations.",
+  "description": "Personal dev toolkit: SDD (spec-kit/classic) workflow, .NET guidelines, Git-only flow. Supports local repository and global manifest-based storage.",
   "disabled": false
 }
