@@ -24,12 +24,21 @@ This toolkit adds the following skills to the Antigravity IDE:
 
 ## Spec Kit (GitHub Spec Kit Integration)
 
-Workflow alternativo ao SDD clássico, baseado na estrutura `.specify/` da CLI oficial do [GitHub Spec Kit](https://github.com/github/spec-kit). Ambos os fluxos (clássico e Spec Kit) suportam armazenamento local (no repositório) ou global (via manifest `~/.gemini/antigravity-ide/sdd/manifest.json`).
+Alternative workflow to classic SDD, based on the `.specify/` structure of the official [GitHub Spec Kit](https://github.com/github/spec-kit) CLI. Both workflows (classic and Spec Kit) support local storage (in the repository) or global storage (via manifest `~/.gemini/antigravity-ide/sdd/manifest.json`).
 
-**Fluxo encadeado:** `speckit_setup` → `speckit_init` → `speckit_spec` → `speckit_plan` → `speckit_develop`
+**Chained flow:** `speckit_setup` → `speckit_init` → `speckit_spec` → `speckit_plan` → `speckit_develop`
 
-- **`speckit_setup`**: Verifica e instala pré-requisitos (Python 3.10+, `uv`, `specify-cli`) e configura o diretório global de SDD. Gatilhos: `setup speckit`, `/speckit_setup`.
-- **`speckit_init`**: Inicializa a estrutura `.specify/` no repositório ativo (local ou global), gerando `constitution.md` via CLI. Gatilhos: `inicializar speckit`, `/speckit_init`.
-- **`speckit_spec`**: Cria `spec.md` na estrutura `.specify/specs/NNN-<slug>/`, com numeração automática e template oficial. Gatilhos: `nova spec`, `criar spec speckit`, `/speckit_spec`.
-- **`speckit_plan`**: Gera `plan.md` (design técnico) e `tasks.md` (checklist atômico de 20–45 min por tarefa) a partir de uma `spec.md`. Carrega `constitution.md` para respeitar restrições do projeto. Gatilhos: `planejar speckit`, `/speckit_plan`.
-- **`speckit_develop`**: Executa a próxima tarefa pendente do `tasks.md`, implementa código em inglês, roda testes e atualiza o checklist. Sugere conventional commit ao final. Gatilhos: `executar tarefa speckit`, `/speckit_develop`.
+- **`speckit_setup`**: Verifies and installs prerequisites (Python 3.10+, `uv`, `specify-cli`) and configures the global SDD directory. Triggers: `setup speckit`, `/speckit_setup`.
+- **`speckit_init`**: Initializes the `.specify/` structure in the active repository (local or global), generating `constitution.md` via the CLI. Triggers: `initialize speckit`, `/speckit_init`.
+- **`speckit_spec`**: Creates `spec.md` in the `.specify/specs/NNN-<slug>/spec.md` structure, with automatic numbering and the official template. Triggers: `new spec`, `create spec speckit`, `/speckit_spec`.
+- **`speckit_plan`**: Generates `plan.md` (technical design) and `tasks.md` (atomic checklist of 20–45 min per task) from a `spec.md`. Loads `constitution.md` to respect project constraints. Triggers: `plan speckit`, `/speckit_plan`.
+- **`speckit_develop`**: Executes the next pending task in `tasks.md`, implements code in English, runs tests, and updates the checklist. Suggests a conventional commit at the end. Triggers: `execute task speckit`, `/speckit_develop`.
+
+---
+
+## Caveman Mode Support
+
+Most skills in this toolkit support **Caveman Mode**, which automatically compresses agent responses to save tokens and speed up interactions without omitting code or critical gates.
+
+- **Toggle**: Use chat commands `caveman on` and `caveman off`.
+- **Reference**: Detailed behavior rules can be found in [docs/guides/05-caveman-mode.md](guides/05-caveman-mode.md).

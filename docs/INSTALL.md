@@ -25,45 +25,45 @@ Whenever you make local changes to the skills or rules (`_shared/`) in this base
 
 ---
 
-## Setup do Spec Kit (Opcional)
+## Spec Kit Setup (Optional)
 
-As skills do Spec Kit dependem da CLI oficial do projeto GitHub.
+Spec Kit skills depend on the official CLI of the GitHub project.
 
-### 1. Configuração Automática via Script PowerShell
-Você pode configurar todos os pré-requisitos (Python, `uv` e `specify-cli`) e inicializar os diretórios globais executando o script utilitário a partir da raiz do repositório:
+### 1. Automatic Configuration via PowerShell Script
+You can configure all prerequisites (Python, `uv`, and `specify-cli`) and initialize global directories by running the utility script from the repository root:
 ```powershell
 .\scripts\setup-speckit.ps1
 ```
 
-### 2. Configuração Automática via Chat
-Alternativamente, chame a skill correspondente no chat do IDE:
+### 2. Automatic Configuration via Chat
+Alternatively, call the corresponding skill in the IDE chat:
 ```
 /speckit_setup
 ```
 
-### 3. Configuração Manual no Windows
-Caso prefira instalar os pré-requisitos manualmente:
-1. Instale o Python 3.10+
-2. Instale o gerenciador de pacotes `uv`:
+### 3. Manual Configuration on Windows
+If you prefer to install prerequisites manually:
+1. Install Python 3.10+
+2. Install the `uv` package manager:
    ```powershell
    powershell -ExecutionPolicy Bypass -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
-3. Instale a ferramenta CLI do Spec Kit globalmente:
+3. Install the Spec Kit CLI tool globally:
    ```powershell
    uv tool install specify-cli --from git+https://github.com/github/spec-kit.git --force
    ```
 
 ---
 
-## Inicializando o Repositório
+## Initializing the Repository
 
-### Via Script PowerShell
-Você pode inicializar a estrutura `.specify/` e registrar o repositório ativo no `manifest.json` com o modo de armazenamento desejado (`global` ou `repository`):
+### Via PowerShell Script
+You can initialize the `.specify/` structure and register the active repository in the `manifest.json` with the desired storage mode (`global` or `repository`):
 ```powershell
 .\scripts\configure-repo-sdd.ps1 -StorageMode global
 ```
 
 ### Via Chat
-Ou chame as skills correspondentes no chat:
-1. Inicializar e escolher o modo de armazenamento: `/speckit_init`
-2. Criar especificações: `/speckit_spec`
+Or call the corresponding skills in the chat:
+1. Initialize and select the storage mode: `/speckit_init`
+2. Create specifications: `/speckit_spec`
