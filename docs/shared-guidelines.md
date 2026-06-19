@@ -9,19 +9,46 @@ Contains architectural rules and coding patterns specifically for .NET projects.
 - **Key Files**: 
   - `clean-architecture.md`: Enforces separation of concerns (Domain, Application, Infrastructure, API).
   - `csharp-patterns.md`: Defines preferred C# language features, LINQ usage, and test structures.
+  - `csharp-formatting.md`: Details Allman braces, indentations, line limits, and other layout conventions.
   - `checklist.md`: A pre-commit and pre-review checklist to catch common omissions.
 
 ### 2. `_shared/code_guidelines`
 Contains general software engineering principles that apply regardless of the specific programming language.
 - **Key Files**: Includes a `principles/` folder for fundamental rules (like SOLID, DRY, and KISS) referenced during the `code_review` and `sdd_develop` phases.
 
-### 3. `_shared/sdd_artifacts`
+### 3. `_shared/python_guidelines`
+Contains Python-specific clean architecture and coding styles.
+- **Key Files**:
+  - `principles.md`: Outlines clean code basics, modular functions, and SOLID design patterns adapted for Python.
+  - `google-style.md`: Defines code naming conventions, type hint guidelines, and docstring formatting based on the Google Style Guide.
+
+### 4. `_shared/javascript_guidelines`
+Contains core conventions and styling standards for JavaScript and TypeScript.
+- **Key Files**:
+  - `clean-code-js.md`: Core code principles for ES6+ clean JS formatting and variables.
+  - `clean-code-ts.md`: TypeScript-specific rules for strict type safety, interfaces vs types, and generics.
+  - `google-ts-style.md`: Style guidelines based on `google/gts` (Egyptian braces, line length, semicolons).
+
+### 5. `_shared/react_guidelines`
+Details component design and architectural boundaries in React codebases.
+- **Key Files**:
+  - `clean-react.md`: Restricts network boundaries, promotes custom controller hooks, and features domain organization.
+  - `philosophies.md`: Outlines state management (Zustand, Query) and hook rules.
+
+### 6. `_shared/angular_guidelines`
+Governs modern Angular projects and AI-oriented code generation.
+- **Key Files**:
+  - `angular-skills.md`: Code rules for Signal reactivity, standalone components, and modern inputs.
+  - `styleguide.md`: Path structures and suffix naming rules (`.component.ts`, `.service.ts`).
+  - `best-practices.md`: AI-agent optimized patterns for new control flows and template imports.
+
+### 7. `_shared/sdd_artifacts`
 Governs the lifecycle, storage, and validation of the PRD and PLAN artifacts within the repository.
 - **Key Files**:
   - `PIPELINE.md`: Defines the state machine rules (e.g., you cannot plan without a PRD, you cannot implement without a PLAN).
   - `STORAGE.md`: Defines where artifacts are stored (supporting local `/PRD/`, `/PLAN/` folders or external/global path resolution via manifest.json) and how they are numbered.
 
-### 4. `_shared/caveman`
+### 8. `_shared/caveman`
 Governs the behavior, rules, and triggers of Caveman Mode across all participating skills.
 - **Key Files**:
   - `CAVEMAN.md`: The central rulebook defining Full vs Lite compression behaviors, universal safety exclusions, and `preferences.json` state resolution.

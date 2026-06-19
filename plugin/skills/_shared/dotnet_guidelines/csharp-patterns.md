@@ -187,6 +187,59 @@ public sealed class OrderService
 }
 ```
 
+### Microsoft C# Language Conventions
+
+To ensure C# implementations align with official Microsoft guidelines, enforce the following patterns:
+
+#### 1. Language Keywords vs. BCL Runtime Types
+* Use language keywords instead of BCL runtime types (e.g., use `string` instead of `System.String`, `int` instead of `System.Int32`, `nint` instead of `System.IntPtr`).
+* Prefer `int` over unsigned types (like `uint` or `ulong`) unless strictly required.
+
+#### 2. Type Inference (`var`)
+* Use `var` only when the type is obvious from the right-hand side of the assignment (e.g., using `new`, explicit casts, or literals).
+* Do **not** use `var` if the type isn't apparent from the right side.
+* Use implicit typing (`var`) in `for` loops and LINQ query sequences, but use explicit types in `foreach` loops to prevent accidental type casting or execution context shifts (like query execution).
+
+#### 3. String Data
+* Use **string interpolation** (`$""`) for concatenating short strings.
+* Use `System.Text.StringBuilder` for concatenating strings in loops or large text operations.
+* Prefer **raw string literals** (`"""..."""`) over escape sequences or verbatim strings for multiline text blocks.
+* Use expression-based string interpolation rather than positional string formatting.
+
+#### 4. Object Instantiation and Initialization
+* Use target-typed `new()` expressions when the variable type matches the object type exactly:
+  ```csharp
+  ExampleClass instance = new();
+  ```
+* Use object initializers (`new ExampleClass { Property = value }`) instead of setting properties line-by-line.
+* Use `required` properties instead of complex constructors to enforce initialization of property values.
+
+#### 5. Arrays and Collections
+* Use **collection expressions** (`[...]`) to initialize all collection types:
+  ```csharp
+  string[] vowels = [ "a", "e", "i", "o", "u" ];
+  List<int> numbers = [ 1, 2, 3 ];
+  ```
+
+#### 6. Exception Handling & Resources
+* Catch only exceptions that can be properly handled. Do **not** catch general `System.Exception` without an exception filter.
+* Use specific exception types for precise diagnostics.
+* Use brace-less `using` statement declarations for resources implementing `IDisposable` or `IAsyncDisposable`:
+  ```csharp
+  using Font normalStyle = new("Arial", 10.0f);
+  ```
+
+#### 7. Namespace & Using Directives
+* Use **file-scoped namespace** declarations:
+  ```csharp
+  namespace MyProject.Features.Orders;
+  ```
+* Place `using` directives **outside** the namespace declaration to avoid relative namespace resolution conflicts.
+
+#### 8. Delegates & Events
+* Use `Func<>` and `Action<>` instead of defining custom delegate types.
+* Use lambda expressions for event handlers that do not need to be unregistered.
+
 ### Async/await
 
 - Async methods must use the `Async` suffix.

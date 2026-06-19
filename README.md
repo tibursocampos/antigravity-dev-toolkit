@@ -57,9 +57,18 @@ antigravity-dev-toolkit/
 │       ├── test_coverage/
 │       ├── document_plan/
 │       ├── document_implement/
+│       ├── refactor/             # Safe incremental refactoring
+│       ├── api_integrate/        # OpenAPI integration client generator
+│       ├── performance_profile/  # SQL/LINQ and execution optimizer
+│       ├── containerize/         # Multi-stage Docker & Compose generator
+│       ├── i18n_manager/         # String literal extractor and localizer
 │       └── _shared/
 │           ├── dotnet_guidelines/
 │           ├── code_guidelines/
+│           ├── python_guidelines/
+│           ├── javascript_guidelines/
+│           ├── react_guidelines/
+│           ├── angular_guidelines/
 │           └── sdd_artifacts/    # Shared STORAGE.md and PIPELINE.md guidelines
 └── scripts/
     ├── sync-antigravity.ps1      # Deploy script (SHA-256 idempotent)
@@ -90,6 +99,11 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 | `speckit_spec` | Create technical specification `spec.md` under `.specify/specs/NNN-<slug>/` |
 | `speckit_plan` | Generate technical `plan.md` and atomic checklist `tasks.md` from a spec |
 | `speckit_develop` | Implement code and run tests for a single Spec Kit task |
+| `refactor` | Identify code smells and safely refactor structures step-by-step |
+| `api-integrate` | Generate strongly typed clients and DTOs from OpenAPI/Swagger definitions |
+| `performance-profile` | Optimize SQL/LINQ query paths and code execution using benchmarks |
+| `containerize` | Scaffold Dockerfiles, docker-compose.yml files and .dockerignore |
+| `i18n-manager` | Scan and extract raw strings to localization RESX/JSON bundles |
 
 ## Conventions
 

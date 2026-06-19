@@ -5,8 +5,8 @@ The `antigravity-dev-toolkit` is a personal Antigravity IDE (Google DeepMind) ag
 
 ## Architecture and Layout
 - **`plugin/`**: Contains the core plugin manifest (`plugin.json`) and the individual skills used by the Antigravity IDE. It is deployed to `~/.gemini/antigravity-ide/plugins/<id>/`.
-  - **`plugin/skills/`**: The bounded contexts of the toolkit, containing specific skills like `dev_persona`, `sdd_spec`, `sdd_plan`, `sdd_develop`, `speckit_setup`, `speckit_init`, `speckit_spec`, `speckit_plan`, `speckit_develop`, `code_review`, `commit`, `push`, `developer`, `fix_build`, `test_coverage`, `document_plan`, and `document_implement`.
-  - **`plugin/skills/_shared/`**: Contains shared guidelines (`dotnet_guidelines`, `code_guidelines`, `sdd_artifacts`, `caveman`) utilized across different skills.
+  - **`plugin/skills/`**: The bounded contexts of the toolkit, containing specific skills like `dev_persona`, `sdd_spec`, `sdd_plan`, `sdd_develop`, `speckit_setup`, `speckit_init`, `speckit_spec`, `speckit_plan`, `speckit_develop`, `code_review`, `commit`, `push`, `developer`, `fix_build`, `test_coverage`, `document_plan`, `document_implement`, `refactor`, `api_integrate`, `performance_profile`, `containerize`, and `i18n_manager`.
+  - **`plugin/skills/_shared/`**: Contains shared guidelines (`dotnet_guidelines`, `code_guidelines`, `python_guidelines`, `javascript_guidelines`, `react_guidelines`, `angular_guidelines`, `sdd_artifacts`, `caveman`) utilized across different skills.
 - **`scripts/`**: Contains deployment scripts, primarily `sync-antigravity.ps1`, which is an idempotent script used to deploy the toolkit to the local Antigravity IDE plugins directory.
 - **`docs/`**: Documentation folder containing installation guides, skills catalog, and further technical documentation.
 

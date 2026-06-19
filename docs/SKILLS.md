@@ -13,12 +13,19 @@ This toolkit adds the following skills to the Antigravity IDE:
 - **`commit`**: Generates commit messages in the Conventional Commits standard and applies strict branch validations. Has an option to call `push` afterwards.
 - **`push`**: Executes `git push` on the current branch.
 - **`developer`**: Rapid C#/.NET development without the full SDD cycle. Follows Clean Architecture and tests based on xUnit/NUnit, Moq/NSubstitute, and Shouldly.
+- **`refactor`**: Analyzes target files for cognitive complexity and code smells, and safely refactors structures step-by-step.
+- **`api-integrate`**: Generates strongly typed HTTP clients and DTO models from OpenAPI/Swagger definitions.
+- **`performance-profile`**: Audits execution paths and database query bottlenecks, setting up benchmarks to compare execution metrics.
 
-## Setup and Operational Skills
+## Setup, Infrastructure and Operational Skills
 - **`fix_build`**: Resolves breaking build/test issues in the current workspace.
 - **`test_coverage`**: Executes test coverage in .NET using Coverlet and ReportGenerator, returning metrics based on the target threshold.
 - **`document_plan`**: Creates an iterative (RAG-oriented) documentation plan in a consuming repository.
 - **`document_implement`**: Executes a pending step from the documentation plan, creating technical Markdown files.
+- **`containerize`**: Scaffolds optimized multi-stage Dockerfiles and local development `docker-compose.yml` environments.
+- **`i18n-manager`**: Scans files for raw string literals, extracts them into resource dictionaries, and replaces them with localization keys.
+
+*Note: The new development and infrastructure skills feature workflow orchestration, allowing you to choose whether to implement changes directly or spawn formal SDD/Spec Kit plans. See [06-developer-skills.md](guides/06-developer-skills.md) for details.*
 
 ---
 

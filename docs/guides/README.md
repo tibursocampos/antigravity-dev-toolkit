@@ -7,4 +7,4 @@ This directory contains explanatory guides on how to use the `antigravity-dev-to
 3. [03-operational-skills.md](03-operational-skills.md) — Usage of support, review, and quality skills.
 4. [04-speckit-workflow.md](04-speckit-workflow.md) — The Spec-Driven Development workflow based on GitHub Spec Kit.
 5. [05-caveman-mode.md](05-caveman-mode.md) — How Caveman Mode compresses responses while keeping tech content intact.
-
+6. [06-developer-skills.md](06-developer-skills.md) — Specialized developer and infrastructure skills (refactoring, client generation, profiling, containerization, and localization).

@@ -30,6 +30,26 @@ The Antigravity Dev Toolkit provides a suite of operational and developer-focuse
 - **Purpose**: Sends the committed changes to the remote repository.
 - **Workflow**: Pushes the current branch upstream and sets up tracking if needed. Explicitly avoids force pushing to main integration branches.
 
+### `refactor`
+- **Purpose**: Identify code smells (cognitive complexity, long methods) and safely refactor structures.
+- **Workflow**: Performs static analysis, presents a checklist of debt, and prompts the user to select an execution workflow. Performs safe step-by-step code transformations, verifying against compiler and test runners at each iteration.
+
+### `api-integrate`
+- **Purpose**: Scaffold strongly typed client integrations from OpenAPI schemas.
+- **Workflow**: Parses Swagger/OpenAPI files, details operations, and asks the user for the workflow path. Generates client configurations, endpoints, and request/response models.
+
+### `performance-profile`
+- **Purpose**: Profile and optimize runtime code or query paths.
+- **Workflow**: Audits code for SQL/LINQ bottlenecks, scaffolds micro-benchmarks (like BenchmarkDotNet), compares execution speed, and optimizes.
+
+### `containerize`
+- **Purpose**: Dockerize projects for production and development.
+- **Workflow**: Scans the tech stack, proposes multi-stage Dockerfiles and compose dependencies, and builds clean settings templates.
+
+### `i18n-manager`
+- **Purpose**: Internationalize and localize code variables.
+- **Workflow**: Extracts hardcoded string literals into resource dictionaries (RESX or JSON) and rewrites files to use dynamic locale lookup.
+
 ## Expected Testing Stack
 All .NET skills in the toolkit strictly adhere to the following testing stack philosophies and tools:
 - **Test Framework**: `xUnit` (default) or `NUnit`
