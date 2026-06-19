@@ -29,7 +29,7 @@ Expected savings: 22–87% of output prose tokens per session.
 }
 ```
 
-**Resolution algorithm (run at step -1 of participating skills):**
+**Resolution algorithm (run globally by dev_persona and at step -1 of participating skills):**
 
 ```
 1. Check if preferences.json exists at the location above.
@@ -37,9 +37,10 @@ Expected savings: 22–87% of output prose tokens per session.
 2. Read value of "caveman_mode".
    - If true:  Mode = ON  → load this file, display activation notice.
    - If false: Mode = OFF → skip rest of this file.
-3. During session: watch for user typing "caveman off" or "caveman on".
-   - "caveman off" → set caveman_mode: false in preferences.json. Confirm in chat (pt-BR): "🪨 Modo Caveman desativado."
-   - "caveman on"  → set caveman_mode: true  in preferences.json. Confirm in chat (pt-BR): "🪨 Modo Caveman ativado."
+3. During session: watch for user commands:
+   - "caveman off"    → set caveman_mode: false in preferences.json. Confirm: "🪨 Modo Caveman desativado."
+   - "caveman on"     → set caveman_mode: true  in preferences.json. Confirm: "🪨 Modo Caveman ativado."
+   - "caveman status" → check preferences.json. Confirm: "🪨 Modo Caveman: ativado (respostas compactas)" or "🪨 Modo Caveman: desativado."
 ```
 
 **Activation notice (display in chat when mode is ON):**
@@ -49,12 +50,12 @@ Expected savings: 22–87% of output prose tokens per session.
 
 ## Participation Levels
 
-| Skill | Level |
+| Skill / Context | Level |
 |---|---|
 | `commit`, `push` | **NEVER** — excluded regardless of setting |
 | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | **LITE** when mode ON |
 | `code_review`, `developer`, `fix_build`, `test_coverage` | **FULL** when mode ON |
-| `sdd_develop`, `speckit_develop` | **FULL** when mode ON |
+| `sdd_develop`, `speckit_develop`, conversas gerais / chat normal | **FULL** when mode ON |
 
 **Always protected in every skill (never compressed under any mode):**
 - Confirmation gates: `(sim / ajustar / cancelar)` blocks
@@ -137,5 +138,5 @@ Posso gravar em `{path}`? (sim / ajustar / cancelar)
 | `sdd_develop`, `speckit_develop` | Step -1, if caveman_mode check passes |
 | `code_review`, `developer`, `fix_build`, `test_coverage` | Step -1, if caveman_mode check passes |
 | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | Step -1, if caveman_mode check passes (Lite rules only) |
-| `dev_persona` | Reference only — documents the toggle and participation table |
+| `dev_persona` | Global boot check (first message) and active in-session command listener |
 | `PIPELINE.md` | Reference only — documents confirmation gate protection |
