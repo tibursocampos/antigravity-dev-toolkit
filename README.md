@@ -107,14 +107,15 @@ Skills are auto-discovered by the Antigravity IDE from the `description` field i
 
 Caveman Mode is an optional feature designed to reduce output token consumption by stripping away polite filler text and verbose progress narration, while fully protecting technical facts, code blocks, and confirmation gates.
 
-- **Persisted State**: Configured in `~/.gemini/antigravity-ide/sdd/preferences.json` under `"caveman_mode"`.
-- **In-Session Toggles**: 
+- **Persisted State**: Configured in `~/.gemini/antigravity-ide/sdd/preferences.json` under `"caveman_mode"`. Checked globally at the first turn of any conversation.
+- **In-Session Toggles & Status**: 
   - Send `caveman on` in chat to enable response compression.
   - Send `caveman off` in chat to disable response compression.
+  - Send `caveman status` in chat to check the current compression status.
 - **Participation Levels**:
   - **NEVER**: `commit`, `push` (kept verbose for safety).
   - **LITE**: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` (compresses headers/preambles, but keeps questions and drafts intact).
-  - **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop` (compresses all prose to telegraphic bullet points).
+  - **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, general chat / normal conversations (compresses all prose to telegraphic bullet points).
 
 For a complete explanation, see [docs/guides/05-caveman-mode.md](docs/guides/05-caveman-mode.md).
 

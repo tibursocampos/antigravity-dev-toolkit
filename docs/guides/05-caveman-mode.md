@@ -26,29 +26,30 @@ Caveman Mode's state is persisted globally on the user's machine:
   }
   ```
 
-### Lifecycle & Resolution Algorithm (Step -1)
-Every participating skill executes a validation and load check at **Step -1**:
-1. **Detection**: Check if `preferences.json` exists.
-2. **Auto-creation**: If the file is missing, create it with `"caveman_mode": false` (disabled by default).
-3. **Execution**: If `"caveman_mode": true`, the skill loads `_shared/caveman/CAVEMAN.md` rules and displays this activation notice in the chat:
+### Lifecycle & Resolution Algorithm (Boot & Step -1)
+Every chat session and participating skill validates and loads the state:
+1. **Boot Check**: In the first turn of any conversation, the central agent persona checks if `preferences.json` exists (creates it with `false` if missing).
+2. **Execution**: If `"caveman_mode": true`, the agent loads `_shared/caveman/CAVEMAN.md` rules and displays this activation notice in the chat:
    > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+3. **Lazy-load**: Participating skills perform an additional confirmation at Step -1.
 
 ### In-Session Control Commands
-The user can toggle the state at any point in the chat session:
+The user can toggle and verify the state at any point in the chat session:
 * **`caveman on`**: Modifies the file to set `caveman_mode: true` and confirms in chat: `"🪨 Modo Caveman ativado."`
 * **`caveman off`**: Modifies the file to set `caveman_mode: false` and confirms in chat: `"🪨 Modo Caveman desativado."`
+* **`caveman status`**: Checks preferences file and reports status: `"🪨 Modo Caveman: ativado (respostas compactas)"` or `"🪨 Modo Caveman: desativado."`
 
 ---
 
 ## 3. Participation Levels
 
-Different skills implement compression to varying degrees to preserve clarity where it matters most:
+Different skills and contexts implement compression to varying degrees to preserve clarity where it matters most:
 
-| Participation Level | Skills | Behavior |
+| Participation Level | Skills / Context | Behavior |
 |---|---|---|
 | **NEVER** | `commit`, `push` | Standard communication. Excluded to ensure critical git operations and commit messages remain completely natural. |
 | **LITE** | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | Compresses preambles and greeting text, but preserves clarifying questions and artifact drafts (like `spec.md`/`plan.md` previews) 100% intact. |
-| **FULL** | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop` | Compresses all prose. Strips introductory and concluding pleasantries entirely. Uses direct bullet points and action statements instead of sentences. |
+| **FULL** | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, general chat / normal conversations | Compresses all prose. Strips introductory and concluding pleasantries entirely. Uses direct bullet points and action statements instead of sentences. |
 
 ---
 

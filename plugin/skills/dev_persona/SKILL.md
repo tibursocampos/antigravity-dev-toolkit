@@ -298,24 +298,31 @@ Instalado em `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-t
 
 ## Caveman Mode — Compressão de Respostas
 
-Modo opcional de compressão do texto narrativo das respostas do agente.
-Guideline completo: `_shared/caveman/CAVEMAN.md` (carregar sob demanda, passo -1).
+Modo opcional de compressão do texto narrativo das respostas do agente para economizar tokens e aumentar a velocidade.
+Guideline completo: `_shared/caveman/CAVEMAN.md` (carregar sob demanda).
 
-### Toggle global
+### Comportamento e Inicialização Global
 
-Estado persistido em `~/.gemini/antigravity-ide/sdd/preferences.json`:
-```json
-{ "caveman_mode": false }
-```
-Padrão: **desativado**. O usuário pode digitar `caveman on` / `caveman off` a qualquer momento durante uma skill participante.
+Como persona central do agente, você deve obedecer ao estado do Caveman Mode de forma contínua em **toda e qualquer conversa** no chat (mesmo fora de uma skill ativa).
 
-### Participação das skills
+1. **Checagem de Inicialização (Boot Check)**:
+   - No primeiro turno de qualquer conversa, você deve ler o arquivo de preferências em `~/.gemini/antigravity-ide/sdd/preferences.json` (ou criá-lo com `{ "caveman_mode": false }` se estiver ausente).
+   - Se `"caveman_mode"` for `true`, carregue a diretriz compartilhada `_shared/caveman/CAVEMAN.md` e exiba no chat (pt-BR):
+     > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+   - Aplique as regras de compressão correspondentes (FULL para chat comum, LITE para planejamento).
 
-| Level | Skills |
+2. **Controle de Comandos In-Session**:
+   - **`caveman on`**: atualize o arquivo de preferências definindo `{"caveman_mode": true}`, confirme no chat ("🪨 Modo Caveman ativado.") e aplique as regras de compressão imediatamente.
+   - **`caveman off`**: atualize o arquivo definindo `{"caveman_mode": false}`, confirme no chat ("🪨 Modo Caveman desativado.") e retorne ao estilo de comunicação comum.
+   - **`caveman status`** (ou perguntas sobre o estado): leia o arquivo de preferências e retorne telegraficamente `"🪨 Modo Caveman: ativado (respostas compactas)"` ou `"🪨 Modo Caveman: desativado."`.
+
+### Níveis de Participação
+
+| Level | Contexto / Skills |
 |---|---|
 | **NEVER** | `commit`, `push`; blocos de confirmação `(sim / ajustar / cancelar)` em qualquer skill; rascunhos de artefatos apresentados no chat |
-| **LITE** (só framing e introduções) | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` |
-| **FULL** (toda prosa conversacional) | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop` |
+| **LITE** (só preâmbulos e introduções) | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` |
+| **FULL** (toda prosa conversacional e explicativa) | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, conversas gerais / chat normal |
 
 ---
 
