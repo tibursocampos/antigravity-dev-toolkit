@@ -1,24 +1,65 @@
-# Core Plugin Architecture
+# Core Architecture
 
-## Plugin Manifest
-The Antigravity Dev Toolkit operates as a native Antigravity IDE plugin. The core of this integration is the `plugin.json` manifest located in the `plugin/` directory.
+## Plugin layer
 
-- **Name**: `antigravity-dev-toolkit`
-- **Description**: Defines the toolkit's purpose, including its SDD workflow, .NET guidelines, and Git-only flow without external corporate trackers.
-- **State**: Enabled by default (`"disabled": false`).
+The toolkit is deployed as a local Antigravity plugin:
+- Manifest: `plugin/plugin.json`
+- Rule root: `plugin/GUARDRAILS.md`
+- Skills: `plugin/skills/<skill_name>/SKILL.md`
+- Shared references: `plugin/skills/_shared/`
 
-## Skills and Auto-Discovery
-Skills within the toolkit are organized under `plugin/skills/`. Each skill directory contains a `SKILL.md` file.
+## Enforcement layers
 
-The Antigravity IDE automatically discovers and loads skills by parsing the `description` field in the frontmatter of each `SKILL.md` file. When the user writes a natural language prompt, the IDE matches the prompt to these descriptions to activate the corresponding skill logic.
+Because Antigravity currently lacks native local hooks for hard tool interception, this toolkit uses layered enforcement:
 
-## Deployment Process
-The deployment of the toolkit is handled by a PowerShell script: `scripts/sync-antigravity.ps1`.
+1. **Plugin guardrails** (`GUARDRAILS.md`)
+2. **Knowledge items** injected at sync:
+   - `custom_skills`
+   - `global_guardrails`
+3. **Session-state gates** from `SESSION.md`
+4. **Gate-first Step -1 blocks** in all skills
 
-### Sync Mechanism
-1. **Target Directory**: The script discovers the IDE's plugins directory. It primarily checks `%APPDATA%\antigravity-ide\plugins\` and falls back to `%LOCALAPPDATA%\Google\antigravity-ide\plugins\`. The target folder for this plugin is `Local.raphadev.antigravity-dev-toolkit`.
-2. **Idempotent Copy**: It synchronizes `plugin.json` and the entire `skills/` directory tree. It uses SHA-256 hash comparisons (`Get-FileHash`) to ensure files are only copied if they have been modified.
-3. **Knowledge Item (KI) Sync**: It also generates and writes a `metadata.json` under `%USERPROFILE%\.gemini\antigravity-ide\knowledge\custom_skills` to explicitly instruct the IDE agent to read `SKILL.md` files before executing skills.
-4. **Non-Destructive**: The script is non-destructive. It does not delete other existing plugins in the target directory and offers a `-DryRun` parameter for testing.
+This is why docs must explain KI-based enforcement when discussing always-on behavior.
 
-After running the sync script, restarting the Antigravity IDE is required to load any new or updated skills into memory.
+## Storage architecture (manifest v2)
+
+Storage decisions are resolved by:
+
+`~/.gemini/antigravity-ide/sdd/manifest.json`
+
+Schema v2 stores both workflows independently:
+
+- `classic` for `sdd_*`
+- `speckit` for `speckit_*`
+
+Each supports:
+- `storage_mode: repository | global`
+- `path`
+
+Speckit also tracks init status:
+- `initialized`
+- `init_validated_at`
+
+## Session-state architecture
+
+Per-repo state:
+
+`~/.gemini/antigravity-ide/sdd/sessions/{repo-hash}.json`
+
+Gates:
+- `storage_confirmed`
+- `write_confirmed`
+- `step_confirmed`
+- `tests_run`
+
+These gates are the runtime contract before Write/Shell actions.
+
+## Deployment pipeline
+
+`scripts/sync-antigravity.ps1` performs idempotent SHA-256 synchronization and KI updates.
+
+Recommended validation sequence:
+
+1. `validate-toolkit-deploy.ps1`
+2. `validate-docs-consistency.ps1`
+3. `validate-skills-english.ps1`

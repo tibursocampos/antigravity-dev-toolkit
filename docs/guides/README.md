@@ -1,10 +1,10 @@
-# Usage Guides
+# Guides Index
 
-This directory contains explanatory guides on how to use the `antigravity-dev-toolkit` workflows:
+Guides in this folder use current naming and guardrail behavior.
 
-1. [01-sdd-workflow.md](01-sdd-workflow.md) — The main structured planning workflow (spec → plan → implement).
-2. [02-developer.md](02-developer.md) — Rapid and targeted development for C# projects.
-3. [03-operational-skills.md](03-operational-skills.md) — Usage of support, review, and quality skills.
-4. [04-speckit-workflow.md](04-speckit-workflow.md) — The Spec-Driven Development workflow based on GitHub Spec Kit.
-5. [05-caveman-mode.md](05-caveman-mode.md) — How Caveman Mode compresses responses while keeping tech content intact.
-6. [06-developer-skills.md](06-developer-skills.md) — Specialized developer and infrastructure skills (refactoring, client generation, profiling, containerization, and localization).
+1. [01-sdd-workflow.md](01-sdd-workflow.md) — Classic SDD (`sdd_spec` → `sdd_plan` → `sdd_develop`).
+2. [02-developer.md](02-developer.md) — Direct development path with `developer`.
+3. [03-operational-skills.md](03-operational-skills.md) — Operational quality flow (`code_review`, `fix_build`, `test_coverage`, `commit`, `push`).
+4. [04-speckit-workflow.md](04-speckit-workflow.md) — Spec Kit flow with manifest v2.
+5. [05-caveman-mode.md](05-caveman-mode.md) — Response compression behavior and hard exclusions.
+6. [06-developer-skills.md](06-developer-skills.md) — Specialized engineering skills (`refactor`, `api_integrate`, `performance_profile`, `containerize`, `i18n_manager`).

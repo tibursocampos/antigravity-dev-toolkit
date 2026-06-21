@@ -1,25 +1,44 @@
-# Antigravity Dev Toolkit Overview
+# Toolkit Overview
 
-## Repository Purpose
-The `antigravity-dev-toolkit` is a personal Antigravity IDE (Google DeepMind) agent toolkit. It provides a Software-Driven Development (SDD) workflow, .NET guidelines, and a Git-only developer flow without relying on corporate trackers or pipeline integrations.
+`antigravity-dev-toolkit` is a local Antigravity plugin focused on controlled delivery:
+- gate-first execution
+- strict guardrails
+- SDD and Spec Kit workflows
+- Git-only engineering operations
 
-## Architecture and Layout
-- **`plugin/`**: Contains the core plugin manifest (`plugin.json`) and the individual skills used by the Antigravity IDE. It is deployed to `~/.gemini/antigravity-ide/plugins/<id>/`.
-  - **`plugin/skills/`**: The bounded contexts of the toolkit, containing specific skills like `dev_persona`, `sdd_spec`, `sdd_plan`, `sdd_develop`, `speckit_setup`, `speckit_init`, `speckit_spec`, `speckit_plan`, `speckit_develop`, `code_review`, `commit`, `push`, `developer`, `fix_build`, `test_coverage`, `document_plan`, `document_implement`, `refactor`, `api_integrate`, `performance_profile`, `containerize`, and `i18n_manager`.
-  - **`plugin/skills/_shared/`**: Contains shared guidelines (`dotnet_guidelines`, `code_guidelines`, `python_guidelines`, `javascript_guidelines`, `react_guidelines`, `angular_guidelines`, `sdd_artifacts`, `caveman`) utilized across different skills.
-- **`scripts/`**: Contains deployment scripts, primarily `sync-antigravity.ps1`, which is an idempotent script used to deploy the toolkit to the local Antigravity IDE plugins directory.
-- **`docs/`**: Documentation folder containing installation guides, skills catalog, and further technical documentation.
+## Core architecture
 
-## Core Features
-- **Software-Driven Development (SDD)**: Classic and Spec Kit workflows using markdown artifacts (`spec.md`, `plan.md`, `tasks.md`).
-- **Caveman Response Compression**: An optional mode controlled by a global `preferences.json` to compress verbose conversational prose while keeping technical details and confirmation gates intact.
+- `plugin/plugin.json`: plugin metadata
+- `plugin/GUARDRAILS.md`: hard non-negotiable rules
+- `plugin/skills/`: skill contracts
+- `plugin/skills/_shared/`: shared references and runtime policies
+- `scripts/`: sync and validation automation
 
+## Enforcement stack
 
-## Integrations
-- **Antigravity IDE**: Integrates as a native plugin.
-- **Git**: Enforces a Git-only flow for branching and commits.
+The toolkit relies on layered enforcement because Antigravity does not currently expose local hook interception:
 
-## Technical Stack
-- **Documentation**: Markdown
-- **Scripts**: PowerShell
-- **Configuration**: JSON
+1. `GUARDRAILS.md`
+2. `global_guardrails` KI
+3. `custom_skills` KI
+4. session-state gates (`SESSION.md`)
+5. Step -1 gate checks in every skill
+
+## Storage model
+
+Manifest v2 (`~/.gemini/antigravity-ide/sdd/manifest.json`) resolves:
+- classic workflow storage
+- speckit workflow storage
+
+Both can be `repository` or `global`.
+
+## Language model
+
+- Chat: `pt-BR`
+- Code/tests/identifiers: English
+- Skill documentation: English
+- SDD artifacts: default `pt-BR` (English by explicit request)
+
+## Skills
+
+See [SKILLS.md](SKILLS.md) for the full 26-entry catalog (24 installed folders + 2 migration aliases).
