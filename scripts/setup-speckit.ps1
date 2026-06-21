@@ -91,8 +91,14 @@ if (-not (Test-Path $sddPath)) {
 
 $manifestPath = Join-Path $sddPath "manifest.json"
 if (-not (Test-Path $manifestPath)) {
-    Write-Host "Inicializando manifest.json..."
-    '{"repositories": {}}' | Out-File -FilePath $manifestPath -Encoding utf8
+    Write-Host "Initializing manifest.json (schema v2)..."
+    '{"schema_version": 2, "repositories": {}}' | Out-File -FilePath $manifestPath -Encoding utf8
+}
+
+$sessionsPath = Join-Path $sddPath "sessions"
+if (-not (Test-Path $sessionsPath)) {
+    New-Item -ItemType Directory -Force -Path $sessionsPath | Out-Null
+    Write-Host "Created sessions directory: $sessionsPath"
 }
 
 Write-Host "`n✅ Setup do Spec Kit concluído. Todos os pré-requisitos estão instalados e o diretório global de SDD foi inicializado." -ForegroundColor Green
