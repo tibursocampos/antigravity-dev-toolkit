@@ -1,90 +1,74 @@
 ---
 name: document_implement
 description: >
-  Execute the next pending step from docs/documentation-plan/plan.md in the open workspace.
-  Updates plan progress and writes domain docs for RAG. Use when the user says
-  "use skill document_implement", "document repo", or "/document_implement". Requires a plan;
-  handoff to document_plan if missing.
+  Execute the next pending step from docs/documentation-plan/plan.md in the target workspace.
+  Update plan progress and write domain docs. If no plan exists, hand off to document_plan.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
 ---
 
 # Skill: document_implement
 
 ## Trigger
 
-Invoke when the user asks for: `use skill document_implement`, `document repository`, `/document_implement`, or `execute documentation plan`.
-
-Requires `docs/documentation-plan/plan.md` in the **target workspace**. If missing, hand off to `use skill document_plan` (do not invent steps).
+Use for `use skill document_implement`, `document repo`, or `/document_implement`.
 
 ## Outcome
 
-One **documentation plan step** completed in the target repo: new/updated markdown under `docs/`, plan progress advanced, next step identified for a future session.
-
-## Lazy-load
-
-| When | Path |
-|------|------|
-| SDD vs RAG plan boundary | `_shared/sdd_artifacts/STORAGE.md` |
-| Contexto | `dev_persona` § Gestão de Contexto |
+One documentation plan step completed with updated docs and updated progress.
 
 ## Process
 
-### 0. Workspace, plan, and stack
+### -1. Re-check guardrails and session
 
-1. Confirm **target repository**.
-2. Read `docs/documentation-plan/plan.md`. If absent → stop and suggest `use skill document_plan`.
-3. Read **Doc language** from plan header. If missing, ask: **pt-BR** or **English** before writing `docs/`.
-4. Re-detect stack briefly if plan is stale (Glob: `*.sln`, `*.csproj`, `package.json`, etc.).
+If missing, ask user (pt-BR):
 
-**Not SDD:** only `docs/documentation-plan/plan.md` applies here — not workspace `PLAN/PLAN_*.md`. For feature delivery PRD/PLAN, use `sdd_spec` / `sdd_plan` / `sdd_develop` and `STORAGE.md`.
+```text
+Antes de executar o plano de documentacao, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
 
-### 1. Select step
+Posso seguir? (sim / ajustar / cancelar)
+```
 
-Pick the first step with **Status:** Pending (or **Pendente**) whose dependencies are completed. If user names a step id, use that step after validating deps.
+### 0. Load plan and language
 
-Summarize objective and deliverables; ask to proceed if scope is large.
+Require `docs/documentation-plan/plan.md`. If missing, stop and hand off to `use skill document_plan`.
+Use doc language from plan header; if missing, ask user in pt-BR.
 
-### 2. Execute step
+### 1. Execute one pending step
 
-Follow the step's **Tasks** in the plan:
+Pick first valid pending step (or user-selected step with dependency validation), write deliverables, and avoid secrets.
 
-- Glob/Grep/Read source; document facts evidenced in code/config
-- Write paths listed in **Deliverables** (e.g. `docs/domains/<slug>.md`)
-- Use **doc language** from plan; keep file paths and type names in English
-- No secrets, tokens, or internal-only URLs in markdown
+### 2. Update plan state
 
-### 3. Update plan
+Mark step completed, update date and progress, and identify next pending step.
 
-Edit `docs/documentation-plan/plan.md` in place:
+### 3. Report and handoff
 
-| Field | Value |
-|-------|-------|
-| Step status | Completed / Concluído |
-| **Completed:** | `YYYY-MM-DD` |
-| Deliverables / acceptance | `[x]` when met |
-| Progress | `N/M` |
-| **Next step** | following pending step |
-
-### 4. Context checkpoint
-
-After the step, follow `dev_persona` § Gestão de Contexto. At **≥ 40%**, save plan + docs and pause — do not start the next plan step in the same session.
-
-### 5. Report
-
-Files written, step completed, progress `N/M`, suggested handoff.
+Return changed doc paths + progress and suggest next action.
 
 ## Must not
 
-- Run without `docs/documentation-plan/plan.md` (unless user gives an explicit alternate plan path)
-- Assume fixed stack versions without detection
-- Write product `docs/` before doc language is known
-- Complete multiple plan steps in one session when context is high
-- Require Azure DevOps or external wiki APIs
-
-## Handoff
-
-| Situação | Próximo |
-|----------|---------|
-| No plan | `use skill document_plan` |
-| Next doc step (new chat) | `use skill document_implement` |
-| All steps done | `use skill code_review` (opcional) or `use skill commit` |
-| Feature code change | `use skill sdd_spec` → `sdd_plan` → `sdd_develop` |
+- Run without a documentation plan
+- Write docs before language is defined
+- Complete many plan steps in one high-context session

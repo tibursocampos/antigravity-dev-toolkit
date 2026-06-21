@@ -6,6 +6,27 @@ description: >
   "use skill refactor", "refactor code", or "/refactor".
 ---
 
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
+---
+
 # Skill: refactor
 
 ## Trigger
@@ -32,13 +53,25 @@ Safely refactored code with lower cognitive complexity, improved testability, an
 | JavaScript / TypeScript | `_shared/javascript_guidelines/clean-code-js.md`, `_shared/javascript_guidelines/clean-code-ts.md`, `_shared/javascript_guidelines/google-ts-style.md` |
 | React components | `_shared/react_guidelines/clean-react.md`, `_shared/react_guidelines/philosophies.md` |
 | Angular directives / templates | `_shared/angular_guidelines/angular-skills.md`, `_shared/angular_guidelines/styleguide.md`, `_shared/angular_guidelines/best-practices.md` |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` Ã¢â‚¬â€ Full mode |
 
 ## Process
 
-### -1. Caveman Mode Check
-* Check `~/.gemini/antigravity-ide/sdd/preferences.json`.
-* If `caveman_mode: true`, load `_shared/caveman/CAVEMAN.md` rules and keep replies compressed.
+### -1. Re-check guardrails and session
+Confirm `GUARDRAILS.md` and `SESSION.md` are loaded before continuing.
+If missing, ask user (pt-BR):
+
+```text
+Antes do refactor, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
+
+Posso seguir? (sim / ajustar / cancelar)
+```
+
+### -2. Caveman Mode Check
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`.
+If `caveman_mode: true`, load `_shared/caveman/CAVEMAN.md` rules and keep replies compressed.
 
 ### 0. Detect Tech Stack and Load Guidelines
 * Check the current workspace files (look for `.csproj`, `package.json`, `requirements.txt`, etc.).

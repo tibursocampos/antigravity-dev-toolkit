@@ -3,128 +3,131 @@ name: developer
 description: >
   Implement or fix small-to-medium .NET features without full SDD. Uses Clean Architecture,
   xUnit/NUnit, Moq/NSubstitute, Shouldly, and Git-only developer flow. Use when the user says
-  "use skill developer", "dotnet fix", or for isolated C# work. For large cross-cutting
-  features, prefer sdd_spec → sdd_plan → sdd_develop.
+  "use skill developer", "dotnet fix", or for isolated C# work. For larger cross-cutting
+  features, route to sdd_spec -> sdd_plan -> sdd_develop.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
 ---
 
 # Skill: developer
 
 ## Trigger
 
-Invoke when the user asks for: `use skill developer`, `dotnet fix`, `implement .NET feature`, or for **small** backend work that does not need a full PRD/PLAN cycle.
+Use when user asks for `use skill developer`, `dotnet fix`, or a small isolated .NET implementation.
 
 ## Outcome
 
-Working **.NET** code and tests in the open workspace: build and tests green, on a valid feature branch, with optional commit handoff. Does not replace SDD for multi-step or cross-repo features.
+Working .NET code and tests in the target workspace, validated with build/tests, with optional handoff to `use skill commit`.
 
-## When to prefer SDD instead
+## When to escalate to SDD
 
-Recommend `use skill sdd_spec` → `sdd_plan` → `sdd_develop` if **two or more** apply:
+Recommend `sdd_spec -> sdd_plan -> sdd_develop` if two or more apply:
+- 3+ layers touched
+- Schema/migration changes
+- Cross-repo or cross-service impact
+- New external integration
+- 10+ files or 4h+ estimate
+- Existing approved PLAN
 
-| Signal | Indicator |
-|--------|-----------|
-| Layers | 3+ layers (Domain, Application, Infrastructure, API) |
-| Database | New or altered schema / migrations |
-| Repos | Backend and another repo or service |
-| Integrations | New messaging, external APIs, or consumers |
-| Size | 10+ files or estimated 4+ hours |
-| PLAN exists | User already has an approved PLAN — use `sdd_develop` |
+## Lazy-load references
 
-## Lazy-load (only when needed)
+- Branch and commit rules: `dev_persona`
+- .NET architecture: `_shared/dotnet_guidelines/clean-architecture.md`
+- C# and testing style: `_shared/dotnet_guidelines/csharp-patterns.md`
+- Final checklist: `_shared/dotnet_guidelines/checklist.md`
+- Context policy: `dev_persona` context management
+- Caveman rules (if active): `_shared/caveman/CAVEMAN.md`
 
-| When | Path (after sync) |
-|------|-------------------|
-| Branching | `dev_persona` § Branch validation |
-| Commit / PR | `dev_persona` § Conventional Commits; `use skill commit` |
-| Architecture | `_shared/dotnet_guidelines/clean-architecture.md` |
-| C# / tests | `_shared/dotnet_guidelines/csharp-patterns.md` |
-| Final checklist | `_shared/dotnet_guidelines/checklist.md` |
-| Contexto | `dev_persona` § Gestão de Contexto |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
-
-Do **not** preload `code_guidelines/languages/**`.
+Do not preload unrelated guideline trees.
 
 ## Process
 
-### -1. Caveman Mode
+### -1. Re-check guardrails and session
 
-Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
-- If file missing → create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
-  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
-- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
+Confirm `GUARDRAILS.md` and `SESSION.md` were read and session-state is loaded.
+If missing, ask user (pt-BR):
+
+```text
+Antes de continuar, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
+
+Posso seguir? (sim / ajustar / cancelar)
+```
+
+### -2. Caveman mode
+
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`.
+If Caveman is active, load `_shared/caveman/CAVEMAN.md` and notify user (pt-BR):
+
+```text
+Modo Caveman ativo (respostas compactas). Digite `caveman off` para desativar.
+```
 
 ### 0. Workspace
 
-Confirm target repo (`*.sln` / `*.csproj`). Read `README.md`. Summarize the user request and acceptance (from issue text, PRD snippet, or user description).
+Confirm target repo (`*.sln`/`*.csproj`), read `README.md`, summarize requested acceptance.
 
 ### 1. Guidelines
 
-Load `_shared/dotnet_guidelines/` files needed for this task only. Confirm test stack: **xUnit/NUnit**, **Moq/NSubstitute**, **Shouldly**, `Should_<Result>_When_<Condition>`.
+Load only required `.NET` guidelines and confirm stack: xUnit/NUnit + Moq/NSubstitute + Shouldly.
 
 ### 2. Branch
 
-Create/checkout `feature/<slug>` or `feat/<id>` — never commit on `main` / `master` / `develop`.
+Use valid branch pattern (`feature/<slug>` or `feat/<id>`). Never commit on `main`/`master`/`develop`.
 
-### 3. Plan micro-steps
+### 3. Micro-plan
 
-List 3–7 concrete tasks (files to touch, tests to add). Stay within one session when possible; checkpoint per `dev_persona` § Gestão de Contexto (≥ 40% → pause, offer `use skill commit`).
+Define 3-7 concrete tasks and checkpoint context usage after each major change.
 
 ### 4. Implement
 
-Match existing project patterns (Glob/Read similar types first).
-
-| Layer | Typical work |
-|-------|--------------|
-| Domain | Entities, value objects, domain services |
-| Application | Commands/queries, handlers, validators |
-| Infrastructure | EF, repositories, external clients |
-| API | Endpoints, DTOs, auth filters |
-
-Apply `clean-architecture.md` and `csharp-patterns.md` while writing — do not paste full bodies into chat.
+Follow existing code patterns and clean architecture boundaries.
 
 ### 5. Tests
 
-Add or update tests for changed behavior. Prefer integration tests for real flows when the project already uses them; unit tests for isolated logic.
+Add/update meaningful tests. Prefer integration tests when repository patterns support them.
 
-### 6. Build and test
+### 6. Validate
 
 ```bash
 dotnet build
 dotnet test --no-build
 ```
 
-Fix failures within scope. Ask before running full-solution tests if the repo is very large.
+### 7. Handoff
 
-### 7. Pre-commit and handoff
-
-Run `_shared/dotnet_guidelines/checklist.md` when appropriate. Offer `use skill commit` — do not commit automatically.
-
-### 8. SDD escalation
-
-If scope grows during work, stop and recommend:
-
-```
-use skill sdd_spec — [feature description]
-# then
-use skill sdd_plan — PRD/...
-# then
-use skill sdd_develop — PLAN/... — Step 1
-```
+Offer `use skill commit`. Do not commit automatically.
 
 ## Must not
 
-- Trabalho com work-items corporativos ou APIs de terceiros
-- Stacks de teste obsoletos (usar apenas xUnit/NUnit, Moq/NSubstitute, Shouldly, `Should_When_`)
-- Branches `feature/base/...` aninhados; commit em branches de integração padrão
-- Features especulativas fora do acceptance declarado (YAGNI)
-- Auto-commit ou auto-PR sem solicitação do usuário
+- Use corporate tracker APIs
+- Use obsolete test stacks
+- Work outside allowed branch patterns
+- Add speculative scope outside acceptance
+- Auto-commit or auto-PR
 
 ## Handoff
 
-| Situação | Próximo |
-|----------|---------|
-| Commit | `use skill commit` |
-| Review | `use skill code_review` |
-| Escopo grande | `use skill sdd_spec` → `sdd_plan` → `sdd_develop` |
-| Próximo passo do PLAN | Nova conversa → `use skill sdd_develop — PLAN/... — Step N` |
+- Commit: `use skill commit`
+- Review: `use skill code_review`
+- Scope grew: `sdd_spec -> sdd_plan -> sdd_develop`

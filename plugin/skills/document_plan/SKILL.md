@@ -1,98 +1,78 @@
 ---
 name: document_plan
 description: >
-  Create a baby-step documentation plan for the open workspace (overview + domain deep dives for RAG).
-  Detects stack via Glob. Asks doc language before writing product docs. Use when the user says
-  "use skill document_plan", "plan repo docs", or "/document_plan". Optional path to a reviewed overview file.
+  Create a baby-step documentation plan for the target workspace (overview + domain deep dives).
+  Detect stack via repo inspection and ask doc language before writing product docs.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
 ---
 
 # Skill: document_plan
 
 ## Trigger
 
-Invoke when the user asks for: `use skill document_plan`, `plan repo documentation`, `/document_plan`, or `doc plan`.
-
-Optional argument: path to an existing **reviewed** `docs/overview.md` (or equivalent) to seed the plan.
+Use for `use skill document_plan`, `plan repo docs`, or `/document_plan`.
 
 ## Outcome
 
-In the **target workspace** (not `antigravity-dev-toolkit` unless that is the repo to document):
-
-- `docs/documentation-plan/plan.md` — baby-step documentation plan with progress tracking
-- `docs/overview.md` — high-level repo summary (created or refreshed unless user supplied overview)
-
-Product documentation prose follows the **language the user chooses** (pt-BR or English). File paths stay in English.
-
-## Lazy-load
-
-| When | Path |
-|------|------|
-| SDD vs RAG plan boundary | `_shared/sdd_artifacts/STORAGE.md` (read § Skill responsibilities — do not conflate paths) |
-| Contexto | `dev_persona` § Gestão de Contexto |
+- `docs/documentation-plan/plan.md`
+- `docs/overview.md` (unless user provides a reviewed equivalent)
 
 ## Process
 
-### 0. Workspace and stack
+### -1. Re-check guardrails and session
 
-1. Confirm **target repository** (consumer app/service — not the toolkit unless explicit).
-2. Detect stack with Glob. Summarize: languages, frameworks, layout — **do not** assume a fixed stack.
-3. Read `README.md` if present.
+If missing, ask user (pt-BR):
 
-**Not SDD:** this skill writes `docs/documentation-plan/plan.md` only — not `PLAN/PLAN_*.md`. Feature PRD/PLAN use `sdd_spec` / `sdd_plan` / `sdd_develop` per `STORAGE.md`.
+```text
+Antes de planejar a documentacao, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
 
-### 1. Documentation language (blocker)
-
-Before creating or updating any file under `docs/` in the target repo, ask once:
-
-> Documentation language for product `docs/` — **pt-BR** or **English**?
-
-Record the choice in the session and in `docs/documentation-plan/plan.md` header.
-
-### 2. Existing artifacts
-
-| Path | Action |
-|------|--------|
-| `docs/documentation-plan/plan.md` | If exists: read completed steps; resume or ask to overwrite |
-| `docs/overview.md` | Use user-provided path, existing file, or generate from exploration |
-| Neither | Create both |
-
-### 3. Explore and draft overview
-
-Glob/Grep/Read: solution layout, main entry points, bounded contexts, external integrations, test layout. Write or update `docs/overview.md` in the chosen language — concise, RAG-friendly, no invented business domain names.
-
-### 4. Write documentation plan
-
-Create or update `docs/documentation-plan/plan.md`:
-
-- Baby steps per business/technical domain
-- Steps for integrations, architecture patterns, and folder conventions
-- Progress `0/N`, status per step (**Pending** / **Completed**)
-- Each step sized for one `document_implement` session where possible
-
-### 5. Context checkpoint
-
-After finishing overview + plan (or after each major planning chunk if the repo is large), follow `dev_persona` § Gestão de Contexto: at **≥ 40%** context, save `plan.md` and pause; ask whether to continue in a new chat.
-
-### 6. Summarize handoff
-
-Report: paths written, language, step count, first pending step id.
-
+Posso seguir? (sim / ajustar / cancelar)
 ```
-use skill document_implement
+
+### 0. Confirm target and language
+
+Detect stack and ask once before writing `docs/` (pt-BR prompt):
+
+```text
+Qual idioma da documentacao de produto em `docs/`? (pt-BR / English)
 ```
+
+### 1. Discover existing artifacts
+
+Check existing plan and overview files and decide resume/overwrite with user confirmation.
+
+### 2. Write overview and plan
+
+Create/update concise overview and a step-by-step documentation plan with status and progress.
+
+### 3. Handoff
+
+Recommend `use skill document_implement` for next pending step.
 
 ## Must not
 
-- Embed organization-specific product context without discovery
-- Require Azure DevOps, corporate wikis, or fixed stack versions without detection
-- Create `docs/documentation-plan/` inside **antigravity-dev-toolkit** during porting (only in consumer repos at runtime)
-- Write `docs/` before the language question is answered
-- Default product doc language without asking
-
-## Handoff
-
-| Situação | Próximo |
-|----------|---------|
-| Execute next doc step | `use skill document_implement` |
-| Code change needed | `use skill developer` or SDD `sdd_develop` |
-| Commit docs | `use skill commit` |
+- Write product docs before language confirmation
+- Assume fixed stack without discovery
+- Mix this flow with SDD `PLAN/PLAN_*.md`

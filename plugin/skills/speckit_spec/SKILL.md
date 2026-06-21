@@ -1,15 +1,36 @@
 ---
 name: speckit-spec
 description: >
-  Cria uma nova especificação técnica (spec.md) sob a estrutura do Spec Kit.
-  Use para criar especificação do speckit, nova spec, ou /speckit_spec.
+  Create a new technical specification (spec.md) inside the Spec Kit structure.
+  Use when asked to create a speckit spec, new spec, or /speckit_spec.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+- If any unchecked: STOP
+```
+
 ---
 
 # Skill: speckit_spec
 
 ## Trigger
 
-Invoke when the user asks for: `use skill speckit_spec`, `criar spec speckit`, `nova spec`, or `/speckit_spec`.
+Invoke when the user asks for: `use skill speckit_spec`, `create speckit spec`, `new spec`, or `/speckit_spec`.
 
 ## Outcome
 
@@ -23,110 +44,116 @@ The spec answers **what** and **why**, not **how**. No implementation code. Iden
 
 | When | Path |
 |------|------|
-| Storage resolution and manifest | `_shared/sdd_artifacts/STORAGE.md` § Global Manifest and Dynamic Storage Resolution |
+| Storage schema v2 and manifest | `_shared/sdd_artifacts/STORAGE.md` § Global Manifest and Dynamic Storage Resolution |
 | Path validation and confirm gate | `_shared/sdd_artifacts/PIPELINE.md` § Spec Kit path validation |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — **Lite mode** (only framing and introductions) |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` - **Lite mode** (only framing and introductions) |
 
 ## Process
 
-### -1. Pipeline and storage
+### -1. Validate speckit initialization
 
-Load `STORAGE.md` § Resolution algorithm and `PIPELINE.md` § Spec Kit path validation. No `Write` without explicit **sim** from the user.
+Run `scripts/validate-speckit-init.ps1` before any spec workflow action.
+- If validation fails: **STOP** and handoff to `use skill speckit_init`.
+- If validation passes: continue.
+
+### 0. Pipeline and storage
+
+Load `STORAGE.md` and `PIPELINE.md`. Use `STORAGE.md` schema v2 and run the dynamic storage resolution algorithm with parameter `$Workflow = speckit`. No `Write` without explicit **sim** from the user.
 
 Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
-- If file missing → create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
-  > 🪨 Modo Caveman ativo (respostas compactas — Lite). Digite `caveman off` a qualquer momento para desativar.
-- In Lite mode: compress only framing and introductions. Spec drafts, confirmation gates `(sim / ajustar / cancelar)`, and clarifying questions are **never** compressed.
+- If file missing -> create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` -> load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > 🪨 Caveman mode is active (compact responses - Lite). Type `caveman off` any time to disable it.
+- In Lite mode: compress only framing and introductions. Spec drafts, confirmation gates (`sim / ajustar / cancelar`), and clarifying questions are **never** compressed.
 - Honor `caveman on` / `caveman off` at any point during the session.
 
-### 0. Workspace
+### 1. Workspace
 
-Confirm the target repository. Read `.specify/memory/constitution.md` if it exists (project rules and preferences).
+Confirm target repository. Read `.specify/memory/constitution.md` when present (project rules and preferences).
 
-### 1. Determine next NNN
+### 2. Determine next NNN
 
 ```
 List: {destination}/.specify/specs/*/
 Count existing folders.
-NNN = (highest existing index) + 1, zero-padded to 3 digits (e.g., 001, 007, 042).
+NNN = (highest existing index) + 1, zero-padded to 3 digits (001, 007, 042).
 If no folder exists: NNN = 001.
 ```
 
-### 2. Collect requirements
+### 3. Collect requirements
 
-**Prior context** in chat (requirements, code, review): produce a structured summary + at most **3** gap questions — skip the full questionnaire.
+**Prior context** (requirements, code, review): provide a structured summary plus at most **3** gap questions - skip full questionnaire.
 
-**Otherwise**, ask the user (pt-BR):
+**Otherwise**, Ask user (pt-BR):
 
 ```
 Vou criar a spec. Informe:
-1) Feature — o que construir ou alterar?
+1) Feature - o que construir ou alterar?
 2) Comportamento atual
 3) Comportamento esperado
 4) Contexto adicional (opcional)
 ```
 
-Wait for answers before proceeding.
+Wait for answers.
 
-### 3. Generate slug and path
+### 4. Generate slug and path
 
 ```
 slug = <title in ASCII kebab-case, max 40 characters>
 path = {destination}/.specify/specs/NNN-{slug}/spec.md
 ```
 
-### 4. Draft the spec
+### 5. Draft the spec
 
 Produce `spec.md` in pt-BR following the official Spec Kit template:
 
 ```markdown
-# NNN — <Título da Feature>
+# NNN - <Titulo da Feature>
 
-## Contexto e Motivação
-<Por que esta feature é necessária?>
+## Contexto e Motivacao
+<Por que esta feature e necessaria?>
 
 ## Comportamento Atual
 <O que acontece hoje?>
 
 ## Comportamento Esperado
-<O que deve acontecer após a implementação?>
+<O que deve acontecer apos a implementacao?>
 
-## Critérios de Aceitação
-- [ ] <critério 1>
-- [ ] <critério 2>
+## Criterios de Aceitacao
+- [ ] <criterio 1>
+- [ ] <criterio 2>
 
 ## Fora do Escopo
-<O que explicitamente não será feito>
+<O que explicitamente nao sera feito>
 
-## Riscos e Considerações
-<Riscos técnicos ou de negócio>
+## Riscos e Consideracoes
+<Riscos tecnicos ou de negocio>
 
 ## Status
 Pronto para planejamento
 ```
 
-### 5. Confirm before write
+### 6. Confirm before write
 
-Show: title, `NNN`, **absolute path**, storage mode, content bullets.
-Ask the user (pt-BR): **"Posso gravar em `{path}`? (sim / ajustar / cancelar)"**
+Show title, `NNN`, **absolute path**, storage mode, and content bullets.
+Ask user (pt-BR): **"Posso gravar em `{path}`? (sim / ajustar / cancelar)"**
 
-### 6. Write (after sim)
+### 7. Write (after sim)
 
-1. Validate path per `PIPELINE.md` § Spec Kit path validation regex — abort if invalid.
-2. Create folder `{destination}/.specify/specs/NNN-{slug}/` if it does not exist.
-3. `Write` to `spec.md`.
-4. Report: written path, NNN, storage mode.
+1. Validate path per `PIPELINE.md` § Spec Kit path validation regex - abort if invalid.
+2. Create folder `{destination}/.specify/specs/NNN-{slug}/` if missing.
+3. `Write` `spec.md`.
+4. Report written path, `NNN`, and storage mode.
 
 ## Must not
 
 - Write without explicit user confirmation (**sim**)
-- Use a path outside the `.specify/specs/NNN-<slug>/` structure
+- Use a path outside `.specify/specs/NNN-<slug>/`
 - Include implementation code in the spec
 - Create `plan.md` or `tasks.md` in this session
 
 ## Handoff
 
 ```
-use skill speckit_plan — {written path}
+use skill speckit_plan - {written path}
 ```
