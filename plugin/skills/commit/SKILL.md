@@ -2,43 +2,60 @@
 name: commit
 description: >
   Review staged and unstaged changes, draft a Conventional Commits message, and commit on a valid
-  feature branch. Use when the user says "use skill commit",
-  "commit changes", or "/commit". Git-only — no work-item tracker APIs.
+  feature branch. Use when the user says "use skill commit", "commit changes", or "/commit".
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
 ---
 
 # Skill: commit
 
 ## Trigger
 
-Invoke when the user asks for: `use skill commit`, `commit changes`, or `/commit`.
+Use for `use skill commit`, `commit changes`, or `/commit`.
 
 ## Outcome
 
-One or more **Conventional Commits** on `feature/<slug>` or `feat/<id>`. No automatic commit without user approval of the message. After committing, ask the user if they want to call `use skill push`.
-
-## Lazy-load (only when needed)
-
-| When | Path |
-|------|------|
-| Branch rules | `dev_persona` § Branch validation |
-| Commit format | `dev_persona` § Conventional Commits |
+Approved Conventional Commit(s) on a valid feature branch, then optional handoff to `use skill push`.
 
 ## Process
 
-### 0. Workspace
+### -1. Re-check guardrails and session
 
-Confirm the **target repository** (not `antigravity-dev-toolkit` unless that is the project). Read `README.md` if present.
+If missing, ask user (pt-BR):
 
-### 1. Validate branch (blocker)
+```text
+Antes do commit, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
 
-Before any `git add`, `git commit`, or `git push`, enforce branch validation:
+Posso seguir? (sim / ajustar / cancelar)
+```
 
-- Allowed: `feature/<slug>`, `feat/<id>` (single segment after prefix)
-- Blocked: `main`, `master`, `develop`, nested `feature/a/b`, or any other pattern
+### 0. Validate branch
 
-If blocked, stop and show how to create a valid branch. Do not stage or commit.
+Allowed: `feature/<slug>`, `feat/<id>`.  
+Blocked: `main`, `master`, `develop`, invalid patterns.
 
-### 2. Inspect changes
+### 1. Inspect changes
 
 ```bash
 git status
@@ -47,67 +64,23 @@ git diff
 git log --oneline -10
 ```
 
-If the working tree is clean and there is nothing to commit, report and stop.
+### 2. Draft message
 
-Summarize: files changed, nature (feat/fix/refactor/test/docs), scope, breaking changes.
+Use Conventional Commits, present message, and wait for explicit approval.
 
-### 3. Pre-commit validation
+### 3. Commit
 
-Before non-trivial commits: check for hardcoded secrets, run `dotnet build` / `dotnet test` when applicable (or equivalent per stack). User may skip with explicit acknowledgment.
+Stage explicit paths and commit with approved message only.
 
-### 4. Draft commit message
+### 4. Ask for push (pt-BR)
 
-Apply Conventional Commits per `dev_persona` § Conventional Commits:
-
+```text
+Commit realizado com sucesso. Deseja enviar para o remoto? (sim / nao)
 ```
-<type>[optional scope][!]: <description>
-
-[optional body — why, not what]
-
-Refs: #<issue>    # optional footer
-```
-
-Present the proposed message and **wait for user confirmation** before committing. Apply edits if requested.
-
-Prefer **atomic commits**: stage explicit paths — avoid `git add -A` unless the user explicitly requests it.
-
-### 5. Commit
-
-After approval:
-
-```bash
-git add <explicit paths>
-git commit -m "<message>"
-```
-
-Use **only** `-m`. Do **not** add `--trailer`, `--author` overrides, or extra `-m` blocks for attribution. Do not use `git commit --amend` on shared or pushed history unless the user explicitly requests it.
-
-### 6. Trigger push (optional)
-
-After a successful commit, ask the user if they want to push the changes:
-
-> Commit realizado com sucesso. Deseja enviar as alterações para o repositório remoto? (Responda com "sim" para invocar `use skill push` ou "não" para manter apenas local).
-
-### 7. Report
-
-- Branch name
-- Short commit hash (`git rev-parse --short HEAD`)
-- Files included
-- SDD handoff: se no meio do PLAN, lembre de atualizar o PLAN via `sdd_develop` antes do próximo passo em um novo chat
 
 ## Must not
 
-- Commit on `main`, `master`, `develop`, or invalid branch names
-- Work-item APIs, mandatory PR creation, or corporate PR templates
-- `git add -A` / `git add .` without review (unless user explicitly requests)
+- Commit on blocked branches
 - Auto-commit without message approval
-- **AI co-author trailers** — forbidden in any form. Under NO circumstances should you include `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity`, or any other AI agent attribution. The commit message must contain JUST the commit message.
-
-## Handoff
-
-| Situação | Próximo |
-|----------|---------|
-| Enviar remoto | `use skill push` |
-| Continue SDD step | Nova sessão → `use skill sdd_develop — <full-plan-path> — Step N` |
-| Review antes de PR | `use skill code_review` |
-| Criar PR (usuário pede) | `gh pr create` |
+- Add AI co-author trailers
+- Use tracker APIs or forced workflow templates

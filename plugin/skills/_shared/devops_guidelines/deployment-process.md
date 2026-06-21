@@ -2,7 +2,7 @@
 
 This page describes how to deploy an application using our central GitOps `argo-apps` repository.
 
-Every deployment is a **pull request** — ArgoCD syncs automatically after the PR is merged into the `main` branch.
+Every deployment is a **pull request** - ArgoCD syncs automatically after the PR is merged into the `main` branch.
 
 ## Folder Structure
 
@@ -49,7 +49,7 @@ To deploy a new image version of an existing application:
    ```
 3. Open a Pull Request targeting the `main` branch.
 4. Get your PR reviewed and approved.
-5. Merge — ArgoCD will sync automatically.
+5. Merge - ArgoCD will sync automatically.
 
 ## Adding a New Application
 

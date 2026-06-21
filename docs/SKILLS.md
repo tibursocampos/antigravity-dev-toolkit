@@ -1,44 +1,51 @@
 # Skills Catalog
 
-This toolkit adds the following skills to the Antigravity IDE:
+This document lists the full toolkit catalog using underscore skill names for invocation.
 
-## Core SDD (Software-Driven Development)
-- **`dev_persona`**: Main router and developer persona. Applies global language rules (pt-BR in artifacts) and workflow. Always active as a root directive.
-- **`sdd_spec`**: Phase 1. Transforms ideas and requirements into a PRD (Product Requirements Document).
-- **`sdd_plan`**: Phase 2. Transforms a PRD into a step-by-step implementation PLAN.
-- **`sdd_develop`**: Phase 3. Executes atomic steps from a PLAN, writing code and ensuring tests and compliance.
+## Installed skills (24)
 
-## Development Skills
-- **`code_review`**: Analyzes a diff or branch against requirements and best practices (SOLID, DRY, KISS, Guidelines).
-- **`commit`**: Generates commit messages in the Conventional Commits standard and applies strict branch validations. Has an option to call `push` afterwards.
-- **`push`**: Executes `git push` on the current branch.
-- **`developer`**: Rapid C#/.NET development without the full SDD cycle. Follows Clean Architecture and tests based on xUnit/NUnit, Moq/NSubstitute, and Shouldly.
+1. `dev_persona` — Router, language policy, workflow policy, and global guidance.
+2. `sdd_spec` — Build PRD artifact for classic SDD.
+3. `sdd_plan` — Build PLAN from canonical PRD.
+4. `sdd_develop` — Execute exactly one PLAN step.
+5. `speckit_setup` — Install Spec Kit prerequisites.
+6. `speckit_init` — Initialize `.specify/` and validate constitution.
+7. `speckit_spec` — Create `spec.md` under `.specify/specs/`.
+8. `speckit_plan` — Generate `plan.md` and `tasks.md`.
+9. `speckit_develop` — Execute one Spec Kit task.
+10. `developer` — Focused coding task without full SDD.
+11. `code_review` — Diff/branch review with severity and decision.
+12. `fix_build` — Diagnose and repair local build/test failures.
+13. `test_coverage` — .NET coverage report and threshold check.
+14. `commit` — Conventional commit flow with confirmation gates.
+15. `push` — Safe push flow.
+16. `document_plan` — Create docs plan for repository context.
+17. `document_implement` — Execute one docs-plan step.
+18. `refine_backlog_item` — Refine backlog intake into structured markdown.
+19. `breakdown_tasks` — Split refined backlog into grouped implementation checklist.
+20. `refactor` — Safe, incremental refactoring.
+21. `api_integrate` — Generate API client integration artifacts.
+22. `performance_profile` — Profile and optimize hot paths.
+23. `containerize` — Generate Docker/Docker Compose scaffolding.
+24. `i18n_manager` — Extract and refactor localization literals.
 
-## Setup and Operational Skills
-- **`fix_build`**: Resolves breaking build/test issues in the current workspace.
-- **`test_coverage`**: Executes test coverage in .NET using Coverlet and ReportGenerator, returning metrics based on the target threshold.
-- **`document_plan`**: Creates an iterative (RAG-oriented) documentation plan in a consuming repository.
-- **`document_implement`**: Executes a pending step from the documentation plan, creating technical Markdown files.
+## Compatibility aliases (2)
 
----
+25. `plan_repo_docs` — Migration alias to `document_plan`.
+26. `document_repo` — Migration alias to `document_implement`.
 
-## Spec Kit (GitHub Spec Kit Integration)
+These aliases are documented for migration/handoff continuity; the installed folders remain `document_plan` and `document_implement`.
 
-Alternative workflow to classic SDD, based on the `.specify/` structure of the official [GitHub Spec Kit](https://github.com/github/spec-kit) CLI. Both workflows (classic and Spec Kit) support local storage (in the repository) or global storage (via manifest `~/.gemini/antigravity-ide/sdd/manifest.json`).
+## Global rules across all skills
 
-**Chained flow:** `speckit_setup` → `speckit_init` → `speckit_spec` → `speckit_plan` → `speckit_develop`
+- Read `GUARDRAILS.md` and `SESSION.md` before mutating operations.
+- Enforce gate-first behavior on every skill.
+- Use manifest schema v2 for classic/speckit storage resolution.
+- Keep chat in `pt-BR`; keep code and skill source in English.
+- Never skip confirmation gates under Caveman mode.
 
-- **`speckit_setup`**: Verifies and installs prerequisites (Python 3.10+, `uv`, `specify-cli`) and configures the global SDD directory. Triggers: `setup speckit`, `/speckit_setup`.
-- **`speckit_init`**: Initializes the `.specify/` structure in the active repository (local or global), generating `constitution.md` via the CLI. Triggers: `initialize speckit`, `/speckit_init`.
-- **`speckit_spec`**: Creates `spec.md` in the `.specify/specs/NNN-<slug>/spec.md` structure, with automatic numbering and the official template. Triggers: `new spec`, `create spec speckit`, `/speckit_spec`.
-- **`speckit_plan`**: Generates `plan.md` (technical design) and `tasks.md` (atomic checklist of 20–45 min per task) from a `spec.md`. Loads `constitution.md` to respect project constraints. Triggers: `plan speckit`, `/speckit_plan`.
-- **`speckit_develop`**: Executes the next pending task in `tasks.md`, implements code in English, runs tests, and updates the checklist. Suggests a conventional commit at the end. Triggers: `execute task speckit`, `/speckit_develop`.
+## Related guides
 
----
-
-## Caveman Mode Support
-
-Most skills in this toolkit support **Caveman Mode**, which automatically compresses agent responses to save tokens and speed up interactions without omitting code or critical gates.
-
-- **Toggle**: Use chat commands `caveman on` and `caveman off`.
-- **Reference**: Detailed behavior rules can be found in [docs/guides/05-caveman-mode.md](guides/05-caveman-mode.md).
+- [sdd-workflow.md](sdd-workflow.md)
+- [operational-developer-skills.md](operational-developer-skills.md)
+- [guides/06-developer-skills.md](guides/06-developer-skills.md)

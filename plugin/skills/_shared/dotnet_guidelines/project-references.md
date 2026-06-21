@@ -29,7 +29,7 @@ dnt switch-to-projects
 ```
 
 This command updates all `.csproj` files, replacing:
-- `PackageReference` → `ProjectReference`
+- `PackageReference` -> `ProjectReference`
 
 Now you can easily test local changes from the shared library inside the main project.
 
@@ -40,7 +40,7 @@ dnt switch-to-packages
 ```
 
 This restores the original references:
-- `ProjectReference` → `PackageReference`
+- `ProjectReference` -> `PackageReference`
 
 ## About `switcher.json`
 

@@ -1,6 +1,6 @@
 # SDD pipeline guards (spec / plan / implement)
 
-Execution order, canonical paths, confirmation gates, and missing-artifact dialogs. Load at **step -1** of `spec`, `plan`, and `implement` — do not paste into PRD/PLAN bodies.
+Execution order, canonical paths, confirmation gates, and missing-artifact dialogs. Load at **step -1** of `spec`, `plan`, and `implement` - do not paste into PRD/PLAN bodies.
 
 Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/skills/_shared/sdd_artifacts/PIPELINE.md`
 
@@ -24,13 +24,13 @@ To prevent the agent from bypassing steps, running unauthorized actions, or modi
 
 ## Skill order
 
-Fixed sequence: **`spec` → `plan` → `implement`**. Never skip a stage unless the user explicitly chooses a documented shortcut (see § Missing artifacts).
+Fixed sequence: **`sdd_spec` -> `sdd_plan` -> `sdd_develop`**. Never skip a stage unless the user explicitly chooses a documented shortcut (see § Missing artifacts).
 
 | Skill | Writes | Must not in same session |
 |-------|--------|---------------------------|
-| `spec` | PRD | PLAN; production/test code (`*.cs`, migrations, etc.) |
-| `plan` | PLAN | PRD body; production/test code |
-| `implement` | Code (English) + PLAN progress | New PRD/PLAN files |
+| `sdd_spec` | PRD | PLAN; production/test code (`*.cs`, migrations, etc.) |
+| `sdd_plan` | PLAN | PRD body; production/test code |
+| `sdd_develop` | Code (English) + PLAN progress | New PRD/PLAN files |
 
 ## Canonical paths
 
@@ -65,10 +65,10 @@ Do **not** treat these as SDD PRD/PLAN:
 
 Always before the first `Write` of a **new** PRD or PLAN (and when replacing an empty draft file):
 
-1. Show: title, `NNN`, **full resolved path**, storage mode, 3–5 content bullets, planned status.
+1. Show: title, `NNN`, **full resolved path**, storage mode, 3-5 content bullets, planned status.
 2. Ask (pt-BR): **"Posso gravar em `{path}`? (sim / ajustar / cancelar)"**
 3. `Write` only after explicit **sim**.
-4. **ajustar** → revise draft in chat, ask again. **cancelar** → do not write.
+4. **ajustar** -> revise draft in chat, ask again. **cancelar** -> do not write.
 
 `implement` updates the existing PLAN file after completing a step without re-asking.
 
@@ -80,7 +80,7 @@ When the thread already has requirements, review findings, or refined backlog:
 - Provide a structured summary + **at most 3** gap questions.
 - Map code-review items to PRD sections (acceptance criteria, risks, out of scope).
 
-## Missing canonical artifact — ask before handoff
+## Missing canonical artifact - ask before handoff
 
 Use **one** structured question (pt-BR). Do not invent PRD/PLAN or write code in this step.
 
@@ -92,31 +92,31 @@ Não encontrei um PRD em PRD/NNN_*.md (nem em docs/PRD/).
 Como prefere continuar?
 
 1) Criar o PRD primeiro (recomendado para SDD completo)
-2) Montar o PLAN direto — você envia as especificações na próxima mensagem
+2) Montar o PLAN direto - você envia as especificações na próxima mensagem
 ```
 
 | Choice | Next step |
 |--------|-----------|
-| **1** | Ask: *"Envie as orientações do PRD (texto) ou o caminho de um arquivo .md para analisar."* → run **`spec`**. Handoff quando PRD existir: `use skill plan — <full-prd-path>` |
-| **2** | Ask: *"Envie as especificações (texto) ou o caminho de um arquivo para análise."* → analisar → rascunho do PLAN em chat; notar que SDD ideal tem um PRD; persistir PLAN somente com path canônico + § Confirm. Sugerir opção **1** se o escopo for grande |
+| **1** | Ask: *"Envie as orientações do PRD (texto) ou o caminho de um arquivo .md para analisar."* -> run **`sdd_spec`**. Handoff when PRD exists: `use skill sdd_plan - <full-prd-path>` |
+| **2** | Ask: *"Envie as especificações (texto) ou o caminho de um arquivo para análise."* -> analisar -> rascunho do PLAN em chat; notar que SDD ideal tem um PRD; persistir PLAN somente com path canônico + § Confirm. Sugerir opção **1** se o escopo for grande |
 
-Explicit "criar PRD" while invoking `plan` → treat as choice **1**; do not write PLAN until a canonical PRD exists unless user chose **2**.
+Explicit "criar PRD" while invoking `plan` -> treat as choice **1**; do not write PLAN until a canonical PRD exists unless user chose **2**.
 
 ### `implement` without PLAN on disk
 
 ```text
 Não encontrei um PLAN em PLAN/PLAN_NNN_*.md.
 
-1) Criar PRD + PLAN antes (spec → plan)
-2) Só criar o PLAN — você envia PRD ou especificações na próxima mensagem
-3) Você já tem um arquivo de plano — informe o caminho (será validado/promovido se necessário)
+1) Criar PRD + PLAN antes (sdd_spec -> sdd_plan)
+2) Só criar o PLAN - você envia PRD ou especificações na próxima mensagem
+3) Você já tem um arquivo de plano - informe o caminho (será validado/promovido se necessário)
 ```
 
 | Choice | Action |
 |--------|--------|
-| **1** | Guide to `spec` (use § plan without PRD, choice **1**) then `plan` |
-| **2** | If canonical PRD exists → `plan`; else ask for specs or file |
-| **3** | `Read` path; if invalid → promote per § Promote |
+| **1** | Guide to `sdd_spec` (use § plan without PRD, choice **1**) then `sdd_plan` |
+| **2** | If canonical PRD exists -> `sdd_plan`; else ask for specs or file |
+| **3** | `Read` path; if invalid -> promote per § Promote |
 
 ### Path validation helper
 
@@ -129,7 +129,7 @@ Before `Write`, confirm the target matches:
   - PRD: `.*[/\\]PRD[/\\]\d{3}_.+\.md$` or `.*[/\\]docs[/\\]PRD[/\\]\d{3}_.+\.md$`
   - PLAN: `.*[/\\]PLAN[/\\]PLAN_\d{3}_.+\.md$`
 
-If validation fails, do not write — fix path or promote.
+If validation fails, do not write - fix path or promote.
 
 ## Integration
 
@@ -165,7 +165,7 @@ Before any `Write` to Spec Kit artifacts, validate that the path resolves to the
 
 If the write path does **not** match the expected artifact regex:
 
-1. **Do not write** — abort immediately.
+1. **Do not write** - abort immediately.
 2. Show in chat (pt-BR): *"Caminho inválido para artefato Spec Kit. O arquivo deve estar em `.specify/specs/NNN-<slug>/` com o nome correto. Operação cancelada."*
 3. Log the attempted path for debugging.
 
@@ -173,6 +173,6 @@ If the write path does **not** match the expected artifact regex:
 
 Same semantics as the classic § Confirm before write, adapted for Spec Kit:
 
-1. Show: spec title, `NNN`, **resolved absolute path**, storage mode, 3–5 content bullets.
+1. Show: spec title, `NNN`, **resolved absolute path**, storage mode, 3-5 content bullets.
 2. Ask the user (pt-BR): **"Posso gravar em `{path}`? (sim / ajustar / cancelar)"**
 3. `Write` only after explicit **sim**.

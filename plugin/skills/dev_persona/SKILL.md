@@ -1,344 +1,268 @@
 ---
 name: dev-persona
 description: >
-  Router central do toolkit pessoal de desenvolvimento. Ativa automaticamente para
-  estabelecer idioma, convenções de Git, workflow SDD e catálogo de skills disponíveis.
-  Substitui AGENTS.md e todas as rules do cursor-dev-toolkit. Invoque explicitamente
-  com "use skill dev-persona" para ver o catálogo completo ou reforçar as convenções.
+  Central router for the personal development toolkit. Defines language policy,
+  git conventions, SDD workflow, context governance, and available skills.
+  Use "use skill dev-persona" to load the full catalog and operating rules.
 ---
 
-# dev-persona — Router Central
+## STOP - Read before ANY tool call
 
-Router pessoal do `antigravity-dev-toolkit`. Este documento define **idioma**, **workflow**, **convenções Git**, **gestão de contexto** e o **catálogo de skills**. Aplica-se a toda interação enquanto o plugin estiver instalado.
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
 
----
-
-## Idioma
-
-| Contexto | Regra |
-|----------|-------|
-| Respostas ao usuário no chat | **Português brasileiro (pt-BR)** sempre |
-| Artefatos SDD (`PRD/*.md`, `PLAN/PLAN_*.md`) | **pt-BR** por padrão; inglês somente se o usuário solicitar na mesma invocação |
-| Código-fonte, testes, identificadores, XML docs | **English** sempre |
-| Commits, títulos e corpo de PR | **English** sempre |
-| `docs/`, README do projeto | Perguntar (pt-BR ou English) antes de gravar |
-| Nomes de skills, paths, exemplos de comando | **English** |
-
-**Termo técnico em pt-BR:** termos como `branch`, `PR`, `hook`, `skill`, `commit` permanecem em inglês quando comuns na prática de dev — não traduzir.
-
----
-
-## Workflows
-
-### SDD — Spec Driven Development
-
-Use para complexidade média/alta: migrações, múltiplos componentes, design transversal ou escopo indefinido.
+### Step -1 - Gate check (report in chat before continuing)
 
 ```
-spec → plan → implement  (um passo do PLAN por sessão)
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+-> If any unchecked: STOP
 ```
-
-| Skill | Como invocar | Saída típica |
-|-------|-------------|--------------|
-| `sdd_spec` | "use skill sdd_spec" | `PRD/NNN_*.md` ou `docs/PRD/NNN_*.md` |
-| `sdd_plan` | "use skill sdd_plan" | `PLAN/PLAN_NNN_*.md` |
-| `sdd_develop` | "use skill sdd_develop" | Código + checkbox do passo do PLAN |
-
-**Checkpoint:** uma sessão de `implement` = um passo do PLAN. Inicie nova conversa para o próximo passo.
-
-**Guards do pipeline:** ordem canônica, confirmação antes de gravar, diálogos de PRD/PLAN ausentes — detalhes em `_shared/sdd_artifacts/PIPELINE.md`.
-
-### Shortcut — trabalho .NET isolado
-
-Para fixes pequenos, refactors simples ou baixa complexidade (área única, sem necessidade de PRD):
-
-```
-developer
-```
-
-Invoke: "use skill developer". Carrega `_shared/dotnet_guidelines/` sob demanda; dispensa SDD completo quando desnecessário.
-
-### Fluxos opcionais (Git-only, sem work-item tracker)
-
-| Fluxo | Passos |
-|-------|--------|
-| Documentação do repositório (RAG) | `document_plan` → `document_implement` (um passo por sessão) |
-| Falha de build / testes | `fix_build` → `commit` opcional |
-| Cobertura de testes .NET | `test_coverage` |
-| Code review | `code_review` → handoff com `sdd_spec` se necessário |
-| Commit convencional | `commit` → `push` (opcional) |
 
 ---
 
-## Pipeline SDD — Guards
+# dev-persona - Central Router
 
-### Ordem
+Central router for `antigravity-dev-toolkit`. This document defines language policy, workflow routing, Git rules, context handling, Caveman behavior, and the skill catalog.
 
-`sdd_spec` → `sdd_plan` → `sdd_develop`. Não crie PLAN sem PRD canônico (exceto "PLAN direto" explícito do usuário). Não implemente sem PLAN canônico em disco.
+---
 
-### Paths canônicos
+## Step -1 Requirements (always first)
 
-- **PRD:** `PRD/NNN_*.md`, `docs/PRD/NNN_*.md`
-- **PLAN:** `PLAN/PLAN_NNN_*.md` (NNN coincide com o PRD)
+Before any workflow:
 
-Nunca salve artefatos SDD em `docs/backlog/` ou `docs/*.md` ad-hoc.
+1. Read `GUARDRAILS.md`.
+2. Read `_shared/sdd_artifacts/SESSION.md` and load the current session state for `$Cwd`.
+3. If KI is enabled for the current run, also apply KI `global_guardrails`.
 
-### Artefato ausente
+Important:
+- Do **not** assume KI `global_guardrails` are always active.
+- KI `global_guardrails` apply **only** when KI is explicitly available/approved in the current execution context.
 
-Se PRD ou PLAN não existir, pergunte em **pt-BR** antes de handoff seco:
+If any requirement is missing, stop and ask user (pt-BR):
 
+```text
+Antes de continuar, preciso confirmar os pre-requisitos:
+- GUARDRAILS.md lido
+- SESSION.md carregado
+- (se aplicavel) KI global_guardrails ativo
+
+Posso continuar? (sim / ajustar / cancelar)
 ```
-Não encontrei o PRD/PLAN canônico para esta feature.
 
-Opções:
+---
+
+## Language Policy
+
+| Context | Rule |
+|---|---|
+| Chat responses to user | pt-BR |
+| SDD artifacts (`PRD/*.md`, `PLAN/PLAN_*.md`) | pt-BR by default; English only if user asks in the same invocation |
+| Source code, tests, identifiers, XML docs | English |
+| Commit messages and PR title/body | English |
+| Product docs (`docs/`, README, ADRs) | Ask user first (pt-BR or English) |
+| Skill names, paths, command examples | English |
+
+Keep standard dev terms in English (`branch`, `PR`, `commit`, `hook`, `skill`).
+
+---
+
+## Workflow Router
+
+### Primary SDD flow
+
+Use for medium/high complexity:
+
+```text
+sdd_spec -> sdd_plan -> sdd_develop
+```
+
+One `sdd_develop` session = one PLAN step. Then stop and hand off.
+
+### Direct delivery shortcut
+
+Use `developer` for small isolated work that does not need full SDD artifacts.
+
+### Optional supporting flows
+
+| Flow | Route |
+|---|---|
+| Build/test failure | `fix_build` -> `commit` (optional) |
+| Coverage report | `test_coverage` |
+| Review branch/diff | `code_review` |
+| Commit and push | `commit` -> `push` |
+| Repository documentation | `document_plan` -> `document_implement` |
+| Backlog refinement | `refine_backlog_item` |
+| Task breakdown | `breakdown_tasks` |
+
+---
+
+## SDD Guardrails
+
+Canonical order:
+
+```text
+sdd_spec -> sdd_plan -> sdd_develop
+```
+
+Canonical paths:
+- PRD: `PRD/NNN_*.md` or `docs/PRD/NNN_*.md`
+- PLAN: `PLAN/PLAN_NNN_*.md`
+
+Never place SDD artifacts in ad-hoc docs paths.
+
+If PRD/PLAN is missing, ask user (pt-BR):
+
+```text
+Nao encontrei o PRD/PLAN canonico desta feature.
+Opcoes:
 1) Criar PRD agora com "use skill sdd_spec"
-2) Você fornece o spec/arquivo na próxima mensagem
+2) Voce informa o arquivo na proxima mensagem
 3) Cancelar
 ```
 
-### Confirmar antes de gravar
+Before creating new PRD/PLAN files, ask user (pt-BR):
 
-Para PRD ou PLAN **novos**: mostre o path completo + sumário e pergunte:
-
-```
+```text
 Posso gravar em `{path}`? (sim / ajustar / cancelar)
 ```
 
-Grave apenas após **sim**.
-
-### Limites de escopo
-
-- `sdd_spec` / `sdd_plan`: sem alterações em código de produção ou testes.
-- `code_review`: não grava PRD/PLAN; handoff de achados com `use skill sdd_spec`.
-
 ---
 
-## Gestão de Contexto
-
-> **Sem hooks no Antigravity IDE.** O monitoramento de contexto é feito manualmente: o agente avisa o usuário quando percebe respostas longas ou múltiplos passos consecutivos.
-
-### Tabela de ação por uso de contexto
-
-| Uso estimado | Status | Ação |
-|-------------|--------|------|
-| **< 40%** | OK | Continuar normalmente |
-| **≥ 40%** | Aviso | Pausar skills multi-passo; salvar artefato de controle |
-| **≥ 80%** | Crítico | Parar imediatamente; não aceitar "force continue" |
-
-### Fluxo obrigatório ao final de cada passo multi-etapa
-
-1. **Persistir progresso** — atualizar o arquivo de controle (checkbox, status, notas).
-2. **Avaliar contexto** — estimar pelo comprimento da conversa ou perguntar ao usuário.
-3. **Decidir** pela tabela acima.
-4. Se **≥ 40%**, pausar e exibir:
-
-```
-EXECUÇÃO PAUSADA — Contexto estimado alto.
-
-Isso é uma parada de segurança. A execução não continua automaticamente.
-
-Salvo: [path do artefato de controle]
-Último passo concluído: [id — descrição curta]
-Próximo pendente: [id — descrição curta]
-
-Recomendado: iniciar nova conversa e retomar pelo arquivo de controle.
-Para continuar nesta sessão, responda: force continue
-```
-
-5. **Override do usuário:**
-   - `force continue` → continuar; repetir checkpoint após próximo passo
-   - Qualquer outra resposta → encerrar a skill; recomendar nova sessão
-   - Se **≥ 80%**: não aceitar `force continue` — parar definitivamente
-
-### O que não fazer
-
-- Não continuar SDD multi-passo silenciosamente após 40% sem salvar e notificar
-- Não encerrar uma skill abruptamente sem persistir o artefato de controle
-
----
-
-## Convenções Git
+## Git Rules
 
 ### Conventional Commits
 
-Todo `git commit` deve seguir [Conventional Commits](https://www.conventionalcommits.org/).
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
-**Formato:**
-
-```
-<type>[escopo opcional][!]: <descrição>
-
-[corpo opcional]
-
-[footer(s) opcional(is)]
+```text
+<type>[optional scope][!]: <description>
 ```
 
-**Tipos válidos:**
+Allowed types:
+`feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
 
-| Tipo | Uso |
-|------|-----|
-| `feat` | Nova feature |
-| `fix` | Correção de bug |
-| `docs` | Documentação apenas |
-| `style` | Formatação, sem mudança de lógica |
-| `refactor` | Refactor sem fix ou feat |
-| `perf` | Melhoria de performance |
-| `test` | Adicionar ou corrigir testes |
-| `build` | Build system ou dependências |
-| `ci` | Configuração de CI/CD |
-| `chore` | Manutenção sem impacto em código de produção |
-| `revert` | Reverter commit anterior |
+Never add AI co-author trailers.
 
-**Regras:**
-- Subject line: descrição em lowercase, sem ponto final
-- Use `!` após tipo/escopo para **BREAKING CHANGE**
-- Separar corpo e footers do subject com linha em branco
+### Mutating Git actions
 
-**Nunca** atribuir o agente de IA como co-autor:
-- Em hipótese alguma inclua `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity …` (ou variantes), ou qualquer coisa de agente de IA nas mensagens de commit. Apenas a mensagem de commit deve ser enviada.
-- Sem `--trailer` para atribuição de co-autoria
+Do not run mutating git commands automatically. Require explicit user confirmation (`sim`) before `git add`, `git commit`, `git push`, branch creation, merge, or rebase.
 
-Footers permitidos: `Refs: #…`, `BREAKING CHANGE:`, `Fixes: #…` — por convenção do projeto apenas.
+### Branch validation
 
-### Git Mutating Commands Blocked
+Allowed:
+- `feature/<slug>`
+- `feat/<id>`
 
-- **Never** execute any commands that modify the git history or remote states (`git commit`, `git push`, `git merge`, `git rebase`, `git checkout -b` or branching commands) automatically or in the background.
-- You **must only** run viewing/read-only commands (like `git status`, `git diff`, `git log`) automatically to inspect status.
-- Any mutating git action must be explicitly requested or confirmed by the user in the chat with a "sim" before being proposed/executed.
+Blocked:
+- `main`, `master`, `develop`
+- Any branch outside the allowed patterns
 
-### Validação de Branch
-
-Antes de qualquer `git add`, `git commit` ou `git push`, verificar o branch atual.
-
-**Padrões permitidos:**
-
-| Padrão | Exemplo |
-|--------|---------|
-| `feature/<slug>` | `feature/add-oauth-login` |
-| `feat/<id>` | `feat/123`, `feat/issue-42` |
-
-**Branches bloqueados:** `main`, `master`, `develop` e qualquer branch que não corresponda aos padrões acima.
-
-Se bloqueado:
-1. Escolher slug ou id para o trabalho
-2. Criar e mudar para branch válido: `git checkout -b feature/<slug>`
-3. Retomar o fluxo de commit
+If blocked, stop and ask user (pt-BR) before creating a valid feature branch.
 
 ---
 
-## Idioma dos Artefatos SDD (detalhe)
+## Context Management
 
-### Escopo
+Manual monitoring policy:
 
-| Em escopo | Fora do escopo |
-|-----------|----------------|
-| `PRD/*.md`, `docs/PRD/*.md` | Código-fonte, testes, configs |
-| `PLAN/PLAN_*.md` | Commit messages |
-| Notas de progresso e checkboxes dentro dos PLANs | `docs/` do projeto, README, ADRs (perguntar) |
-
-### Regras de escrita
-
-- **Títulos de seção, labels de metadados, prosa, critérios de aceitação** (Dado/Quando/Então/E): **pt-BR**
-- **Identificadores no texto** (nomes de tipo, método, rota de API, path de arquivo, nome de teste): **English**
-- **Sem código de implementação** em PRDs/PLANs; se snippet ilustrativo for inevitável, sintaxe e identificadores em **English**
-
-### Override para artefato em inglês
-
-Aplicar apenas quando o usuário solicita explicitamente na **mesma** invocação:
-- `em inglês`, `in english`, `english only`, `PRD em inglês`, `PLAN em inglês`
-
-### Comportamento por skill
-
-| Skill | Comportamento |
-|-------|--------------|
-| `sdd_spec` | Novo PRD → pt-BR (exceto override) |
-| `sdd_plan` | Novo PLAN → pt-BR (exceto override); lê PRD existente em qualquer idioma |
-| `sdd_develop` | Código → English; atualiza PLAN no **idioma do arquivo existente** |
-
----
-
-## Catálogo de Skills
-
-Instalado em `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/skills/` após sync.
-
-| Skill | Como invocar | Usar para |
-|-------|-------------|-----------|
-| `sdd_spec` | "use skill sdd_spec" | PRD a partir de um pedido de feature |
-| `sdd_plan` | "use skill sdd_plan" | PLAN baby-step a partir do PRD |
-| `sdd_develop` | "use skill sdd_develop" | Executar um passo do PLAN |
-| `code_review` | "use skill code_review" | Revisar diff ou branch vs PRD/PLAN |
-| `commit` | "use skill commit" | Commit convencional e trigger de push |
-| `push` | "use skill push" | Enviar os commits do branch atual ao repositório remoto |
-| `developer` | "use skill developer" | Trabalho pequeno sem SDD completo |
-| `fix_build` | "use skill fix_build" | Diagnosticar/corrigir falhas de build ou teste |
-| `test_coverage` | "use skill test_coverage" | Relatório de cobertura .NET (Coverlet) |
-| `document_plan` | "use skill document_plan" | Plano de documentação para repositório alvo |
-| `document_implement` | "use skill document_implement" | Um passo de `docs/documentation-plan/plan.md` |
-
-### Guidelines compartilhados (carregar sob demanda)
-
-**Não** ler preventivamente. Cada skill carrega o mínimo necessário quando invocada.
-
-| Quando | Path (relativo ao plugin instalado) |
-|--------|-------------------------------------|
-| Implementação .NET / Clean Architecture | `_shared/dotnet_guidelines/clean-architecture.md` |
-| Estilo C# e testes (xUnit/NUnit, Moq/NSubstitute, Shouldly) | `_shared/dotnet_guidelines/csharp-patterns.md` |
-| Checklist pré-PR / pré-push | `_shared/dotnet_guidelines/checklist.md` |
-| SOLID, DRY, KISS, YAGNI, encapsulamento | `_shared/code_guidelines/principles/` (arquivo por princípio) |
-| Pipeline SDD (ordem, paths, confirmação) | `_shared/sdd_artifacts/PIPELINE.md` |
-| Caveman Mode (compressão de respostas) | `_shared/caveman/CAVEMAN.md` — carregar no passo -1 das skills participantes |
-
-### Exclusões explícitas (budget de tokens)
-
-- **Nunca pré-carregar** `_shared/code_guidelines/languages/**` ou fazer glob de toda a árvore `code-guidelines/`
-- **Nunca pré-carregar** `dotnet_guidelines/` sem estar prestes a escrever ou revisar código .NET
-- **Fora deste toolkit:** pipeline corporativo, Azure DevOps / work-item tracker APIs (PAT, PATCH, MCP), `setup`, `fix-pr-comments`, `fix-sonar-issues`, fluxos de análise estática
-
----
-
-## Caveman Mode — Compressão de Respostas
-
-Modo opcional de compressão do texto narrativo das respostas do agente para economizar tokens e aumentar a velocidade.
-Guideline completo: `_shared/caveman/CAVEMAN.md` (carregar sob demanda).
-
-### Comportamento e Inicialização Global
-
-Como persona central do agente, você deve obedecer ao estado do Caveman Mode de forma contínua em **toda e qualquer conversa** no chat (mesmo fora de uma skill ativa).
-
-1. **Checagem de Inicialização (Boot Check)**:
-   - No primeiro turno de qualquer conversa, você deve ler o arquivo de preferências em `~/.gemini/antigravity-ide/sdd/preferences.json` (ou criá-lo com `{ "caveman_mode": false }` se estiver ausente).
-   - Se `"caveman_mode"` for `true`, carregue a diretriz compartilhada `_shared/caveman/CAVEMAN.md` e exiba no chat (pt-BR):
-     > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
-   - Aplique as regras de compressão correspondentes (FULL para chat comum, LITE para planejamento).
-
-2. **Controle de Comandos In-Session**:
-   - **`caveman on`**: atualize o arquivo de preferências definindo `{"caveman_mode": true}`, confirme no chat ("🪨 Modo Caveman ativado.") e aplique as regras de compressão imediatamente.
-   - **`caveman off`**: atualize o arquivo definindo `{"caveman_mode": false}`, confirme no chat ("🪨 Modo Caveman desativado.") e retorne ao estilo de comunicação comum.
-   - **`caveman status`** (ou perguntas sobre o estado): leia o arquivo de preferências e retorne telegraficamente `"🪨 Modo Caveman: ativado (respostas compactas)"` ou `"🪨 Modo Caveman: desativado."`.
-
-### Níveis de Participação
-
-| Level | Contexto / Skills |
+| Estimated context usage | Action |
 |---|---|
-| **NEVER** | `commit`, `push`; blocos de confirmação `(sim / ajustar / cancelar)` em qualquer skill; rascunhos de artefatos apresentados no chat |
-| **LITE** (só preâmbulos e introduções) | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` |
-| **FULL** (toda prosa conversacional e explicativa) | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, conversas gerais / chat normal |
+| `< 40%` | Continue |
+| `>= 40%` | Save progress artifact and pause |
+| `>= 80%` | Hard stop; do not accept `force continue` |
+
+At the end of each multi-step checkpoint:
+1. Persist progress.
+2. Estimate context usage.
+3. Apply the table above.
+
+When pausing at `>= 40%`, ask user (pt-BR):
+
+```text
+EXECUCAO PAUSADA - contexto estimado alto.
+Salvo: [path]
+Ultimo passo: [id]
+Proximo passo: [id]
+
+Recomendado: iniciar nova conversa para continuar.
+Para continuar nesta sessao, responda: force continue
+```
 
 ---
 
-## Princípios de Carregamento
+## Caveman Mode
 
-1. **Lazy-load apenas** — cada skill lê o que precisa quando invocada.
-2. **Guidelines vencem conflitos** — se uma skill conflitar com `dotnet_guidelines`, seguir o arquivo de guideline.
-3. **Um passo do PLAN por sessão** — persistir estado do PLAN; continuar em novo chat para o próximo passo.
-4. **Disciplina de tokens** — não pré-carregar guidelines desnecessários.
+Caveman mode is optional response compression. Load `_shared/caveman/CAVEMAN.md` only when needed.
+
+Boot behavior:
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (or create `{ "caveman_mode": false }`).
+2. If enabled, apply Caveman rules and announce in pt-BR:
+
+```text
+Modo Caveman ativo (respostas compactas). Digite `caveman off` para desativar.
+```
+
+Commands:
+- `caveman on`
+- `caveman off`
+- `caveman status`
+
+Participation:
+- NEVER: `commit`, `push`, explicit confirmation blocks.
+- LITE: planning-heavy skills.
+- FULL: implementation/review/build/coverage/general chat.
 
 ---
 
-## Editando este toolkit
+## Skill Catalog
 
-Não commitar paths específicos do usuário (`C:\Users\...`, `/home/<user>/...`), tokens ou API keys. Usar `$HOME`, `~/.gemini/`, e placeholders como `<TOKEN>`.
+| Skill | Purpose |
+|---|---|
+| `sdd_spec` | Create PRD |
+| `sdd_plan` | Create PLAN from PRD |
+| `sdd_develop` | Execute one PLAN step |
+| `developer` | Small/medium implementation without full SDD |
+| `fix_build` | Diagnose and fix build/test failures |
+| `code_review` | Review branch/diff with severity report |
+| `commit` | Prepare and create conventional commit |
+| `push` | Push current branch |
+| `test_coverage` | Generate .NET coverage report |
+| `document_plan` | Build docs plan for repo |
+| `document_implement` | Execute one docs plan step |
+| `refine_backlog_item` | Refine backlog item with acceptance criteria |
+| `breakdown_tasks` | Break a refined scope into grouped implementation tasks |
+| `refactor` | Refactor safely with validation |
+| `api_integrate` | Integrate API clients/contracts from schema |
+| `performance_profile` | Profile bottlenecks and optimize |
+| `containerize` | Create Docker/container setup |
+| `i18n_manager` | Extract strings and apply localization flow |
 
 ---
 
-Maintainer guide: `docs/MAINTAINER_GUIDE.md` · Install: `docs/INSTALL.md`
+## Shared Guidelines (lazy-load only)
+
+- `_shared/dotnet_guidelines/clean-architecture.md`
+- `_shared/dotnet_guidelines/csharp-patterns.md`
+- `_shared/dotnet_guidelines/checklist.md`
+- `_shared/code_guidelines/principles/`
+- `_shared/sdd_artifacts/PIPELINE.md`
+- `_shared/caveman/CAVEMAN.md`
+
+Never preload full language trees or unrelated guideline folders.
+
+---
+
+## Toolkit Editing Note
+
+Never commit user-specific absolute paths, secrets, tokens, or API keys.
+Use placeholders and portable paths (`$HOME`, `~/.gemini/`, `<TOKEN>`).
+
+Maintainer guide: `docs/MAINTAINER_GUIDE.md`  
+Install: `docs/INSTALL.md`

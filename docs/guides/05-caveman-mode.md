@@ -1,74 +1,28 @@
-# Caveman Response Compression Guide
+# Guide 05: Caveman Mode
 
-This guide details the **Caveman Response Compression Mode**, an optional feature designed to reduce output token consumption by stripping away polite filler text and verbose progress narration, while fully protecting technical facts, code blocks, and confirmation gates.
+Caveman mode compresses conversational prose while preserving execution safety.
 
----
+## State
 
-## 1. What is Caveman Mode?
+- File: `~/.gemini/antigravity-ide/sdd/preferences.json`
+- Key: `caveman_mode`
+- Commands: `caveman on`, `caveman off`, `caveman status`
 
-Caveman Mode directs the agent to communicate in telegraphic, extremely concise fragments rather than complete polite paragraphs. 
+## Participation levels
 
-* **Goal**: Reduce token usage (expected savings of **22–87%** of conversational prose tokens).
-* **Rule**: Go straight to the technical facts and actions.
-* **Exceptions**: Never compress code blocks, file paths, security/git warnings, or confirmation options.
+- **NEVER**: `commit`, `push`
+- **LITE**: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan`
+- **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, general chat
 
----
+## Never-compress content
 
-## 2. Configuration & State
+- confirmation gates (`sim / ajustar / cancelar`)
+- artifact drafts
+- paths, commands, code blocks, and safety alerts
 
-Caveman Mode's state is persisted globally on the user's machine:
+## Interaction with guardrails
 
-* **File Location**: `~/.gemini/antigravity-ide/sdd/preferences.json`
-* **JSON Structure**:
-  ```json
-  {
-    "caveman_mode": false
-  }
-  ```
-
-### Lifecycle & Resolution Algorithm (Boot & Step -1)
-Every chat session and participating skill validates and loads the state:
-1. **Boot Check**: In the first turn of any conversation, the central agent persona checks if `preferences.json` exists (creates it with `false` if missing).
-2. **Execution**: If `"caveman_mode": true`, the agent loads `_shared/caveman/CAVEMAN.md` rules and displays this activation notice in the chat:
-   > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
-3. **Lazy-load**: Participating skills perform an additional confirmation at Step -1.
-
-### In-Session Control Commands
-The user can toggle and verify the state at any point in the chat session:
-* **`caveman on`**: Modifies the file to set `caveman_mode: true` and confirms in chat: `"🪨 Modo Caveman ativado."`
-* **`caveman off`**: Modifies the file to set `caveman_mode: false` and confirms in chat: `"🪨 Modo Caveman desativado."`
-* **`caveman status`**: Checks preferences file and reports status: `"🪨 Modo Caveman: ativado (respostas compactas)"` or `"🪨 Modo Caveman: desativado."`
-
----
-
-## 3. Participation Levels
-
-Different skills and contexts implement compression to varying degrees to preserve clarity where it matters most:
-
-| Participation Level | Skills / Context | Behavior |
-|---|---|---|
-| **NEVER** | `commit`, `push` | Standard communication. Excluded to ensure critical git operations and commit messages remain completely natural. |
-| **LITE** | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | Compresses preambles and greeting text, but preserves clarifying questions and artifact drafts (like `spec.md`/`plan.md` previews) 100% intact. |
-| **FULL** | `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, general chat / normal conversations | Compresses all prose. Strips introductory and concluding pleasantries entirely. Uses direct bullet points and action statements instead of sentences. |
-
----
-
-## 4. Universal Protections
-
-Under **no circumstances** (even in **FULL** mode) are the following elements compressed, modified, or omitted:
-1. **Confirmation Gates**: Prompt messages requiring user feedback, such as `(sim / ajustar / cancelar)`.
-2. **Technical Artifacts**: Fenced code blocks, file paths, type/function identifiers, CLI command suggestions, and stack traces.
-3. **Safety Guardrails**: Security warnings, structural limit warnings, and git-blocker alerts.
-
----
-
-## 5. Phrase Reference Examples
-
-### Full Mode Prose Style
-
-| Instead of (Verbose) | Use (Telegraphic) |
-|---|---|
-| *"Sure, I can help you with that! Here is the plan of action I'm going to take:"* | *(Omite entirely — go straight to action or checklist)* |
-| *"After analyzing the requested files, I noticed that..."* | *"Identified:"* |
-| *"Once this task is completed, we will proceed to the next step, which is..."* | *"Next: Task N+1"* |
-| *"I hope this resolves your compilation error! Let me know if you need anything else."* | *(Omit entirely)* |
+Caveman mode does not bypass:
+- `GUARDRAILS.md`
+- session-state gates
+- one-step-per-session limits

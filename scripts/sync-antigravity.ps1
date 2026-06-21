@@ -4,18 +4,15 @@
   Deploys antigravity-dev-toolkit to the Antigravity IDE plugins directory.
 
 .DESCRIPTION
-  Copies plugin.json and skills/ to:
-    %LOCALAPPDATA%\Google\antigravity-ide\plugins\Local.raphadev.antigravity-dev-toolkit\
-  Uses SHA-256 comparison — idempotent, non-destructive (does not delete other plugins).
+  Copies plugin.json, GUARDRAILS.md, and skills/ to the Antigravity plugins folder.
+  Syncs custom_skills and global_guardrails Knowledge Items.
+  Creates ~/.gemini/antigravity-ide/sdd/sessions/ for session-state gates.
 
 .PARAMETER DryRun
   Report planned changes without writing files.
 
 .EXAMPLE
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts/sync-antigravity.ps1
-
-.EXAMPLE
-  powershell -NoProfile -ExecutionPolicy Bypass -File scripts/sync-antigravity.ps1 -DryRun
 #>
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
@@ -108,11 +105,6 @@ function Sync-DirectoryTree {
     return $changed
 }
 
-# ── Resolve Antigravity IDE plugins root ─────────────────────────────────────
-#
-# Primary location: %APPDATA%\antigravity-ide\plugins\  (confirmed on this machine)
-# Fallback:        %LOCALAPPDATA%\Google\antigravity-ide\plugins\
-#
 function Get-AntigravityPluginsRoot {
     $candidates = @(
         (Join-Path $env:APPDATA 'antigravity-ide\plugins'),
@@ -125,15 +117,52 @@ function Get-AntigravityPluginsRoot {
             return $c
         }
     }
-    # Default to the primary candidate even if it doesn't exist yet
     return $candidates[0]
 }
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+function Write-KnowledgeItem {
+    param(
+        [string] $KnowledgeRoot,
+        [string] $SubFolder,
+        [string] $SummaryJson
+    )
+    $targetDir = Join-Path $KnowledgeRoot $SubFolder
+    if (-not $DryRun) {
+        if (-not (Test-Path -LiteralPath $targetDir)) {
+            New-Item -ItemType Directory -Path $targetDir -Force | Out-Null
+        }
+    }
+
+    $metadataPath = Join-Path $targetDir 'metadata.json'
+    $metadataJson = @"
+{
+  "summary": $SummaryJson,
+  "createdAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
+  "updatedAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
+  "references": []
+}
+"@
+
+    if ($DryRun) {
+        Write-ToolkitMessage "Would sync KI: $metadataPath" ([ConsoleColor]::Cyan)
+        return 1
+    }
+
+    try {
+        [System.IO.File]::WriteAllText($metadataPath, $metadataJson, [System.Text.Encoding]::UTF8)
+        Write-ToolkitMessage "Synced KI: $metadataPath" ([ConsoleColor]::Green)
+        return 1
+    }
+    catch {
+        Write-ToolkitMessage "Warning: Could not sync KI to $metadataPath. $($_.Exception.Message)" ([ConsoleColor]::Yellow)
+        return 0
+    }
+}
 
 $repoRoot = Get-RepoRoot
 $pluginsRoot = Get-AntigravityPluginsRoot
 $pluginDest = Join-Path $pluginsRoot $script:PluginId
+$escapedPluginDest = $pluginDest.Replace('\', '\\')
 
 Write-ToolkitMessage "Repo  : $repoRoot"
 Write-ToolkitMessage "Target: $pluginDest"
@@ -145,11 +174,16 @@ if (-not $DryRun) {
     if (-not (Test-Path -LiteralPath $pluginDest)) {
         New-Item -ItemType Directory -Path $pluginDest -Force | Out-Null
     }
+
+    $sessionsDir = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\sdd\sessions'
+    if (-not (Test-Path -LiteralPath $sessionsDir)) {
+        New-Item -ItemType Directory -Path $sessionsDir -Force | Out-Null
+        Write-ToolkitMessage "Created sessions dir: $sessionsDir" ([ConsoleColor]::Green)
+    }
 }
 
 $totalChanges = 0
 
-# Deploy plugin.json
 $pluginJsonSrc = Join-Path $repoRoot 'plugin\plugin.json'
 $pluginJsonDest = Join-Path $pluginDest 'plugin.json'
 if (Test-Path -LiteralPath $pluginJsonSrc) {
@@ -157,52 +191,41 @@ if (Test-Path -LiteralPath $pluginJsonSrc) {
         $totalChanges++
     }
 }
-else {
-    Write-ToolkitMessage 'plugin/plugin.json not found in repo; skipped.' ([ConsoleColor]::Yellow)
+
+$guardrailsSrc = Join-Path $repoRoot 'plugin\GUARDRAILS.md'
+$guardrailsDest = Join-Path $pluginDest 'GUARDRAILS.md'
+if (Test-Path -LiteralPath $guardrailsSrc) {
+    if (Copy-FileIfChanged -SourcePath $guardrailsSrc -DestPath $guardrailsDest) {
+        $totalChanges++
+    }
 }
 
-# Deploy skills/
 $totalChanges += Sync-DirectoryTree `
     -SourceRoot (Join-Path $repoRoot 'plugin\skills') `
     -DestRoot   (Join-Path $pluginDest 'skills')
 
-# Deploy Knowledge Item (KI)
 $kiTargets = @(
-    (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\custom_skills'),
-    (Join-Path $env:USERPROFILE '.gemini\antigravity\knowledge\custom_skills')
+    (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge'),
+    (Join-Path $env:USERPROFILE '.gemini\antigravity\knowledge')
 )
 
+$customSkillsSummary = @"
+\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, speckit_init, refine_backlog_item). This directory is the source of truth for execution rules.\"
+"@
+
+$globalGuardrailsSummary = @"
+\"MANDATORY — EVERY conversation, turn 1, BEFORE any tool call: Read $($escapedPluginDest)\\\\GUARDRAILS.md and $($escapedPluginDest)\\\\skills\\\\dev_persona\\\\SKILL.md (Git Mutating Commands + Language sections). Read $($escapedPluginDest)\\\\skills\\\\_shared\\\\sdd_artifacts\\\\SESSION.md and load session-state for the active workspace. If the user has NOT said sim to the current action, do NOT run mutating git commands or Write/Delete. STOP after one SDD develop step or one Spec Kit task per session. Chat replies: pt-BR. Code: English.\"
+"@
+
 foreach ($knowledgeRoot in $kiTargets) {
-    if (-not $DryRun) {
-        if (-not (Test-Path -LiteralPath $knowledgeRoot)) {
+    if (-not (Test-Path -LiteralPath $knowledgeRoot)) {
+        if (-not $DryRun) {
             New-Item -ItemType Directory -Path $knowledgeRoot -Force | Out-Null
         }
     }
 
-    $metadataPath = Join-Path $knowledgeRoot 'metadata.json'
-    $escapedPluginDest = $pluginDest.Replace('\', '\\')
-    $metadataJson = @"
-{
-  "summary": "Custom Skills Toolkit: The user has a custom skills toolkit. Whenever the user mentions 'use skill [name]', 'use a skill [name]', or uses the '/[name]' command, you MUST read the corresponding SKILL.md file at: $($escapedPluginDest)\\skills\\[name]\\SKILL.md BEFORE executing any action. Consider this directory as the source of truth for user execution rules.",
-  "createdAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
-  "updatedAt": "$([datetime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))",
-  "references": []
-}
-"@
-
-    if ($DryRun) {
-        Write-ToolkitMessage "Would sync Knowledge Item: $metadataPath" ([ConsoleColor]::Cyan)
-    }
-    else {
-        try {
-            [System.IO.File]::WriteAllText($metadataPath, $metadataJson, [System.Text.Encoding]::UTF8)
-            Write-ToolkitMessage "Synced KI: $metadataPath" ([ConsoleColor]::Green)
-            $totalChanges++
-        }
-        catch {
-            Write-ToolkitMessage "Warning: Could not sync KI to $metadataPath. It may be locked: $($_.Exception.Message)" ([ConsoleColor]::Yellow)
-        }
-    }
+    $totalChanges += Write-KnowledgeItem -KnowledgeRoot $knowledgeRoot -SubFolder 'custom_skills' -SummaryJson $customSkillsSummary
+    $totalChanges += Write-KnowledgeItem -KnowledgeRoot $knowledgeRoot -SubFolder 'global_guardrails' -SummaryJson $globalGuardrailsSummary
 }
 
 Write-Host ''
@@ -215,7 +238,8 @@ else {
     }
     else {
         Write-ToolkitMessage "Deploy complete - $totalChanges item(s) updated." ([ConsoleColor]::Green)
-        Write-ToolkitMessage 'Restart Antigravity IDE to pick up new/updated skills.' ([ConsoleColor]::DarkGray)
+        Write-ToolkitMessage 'Restart Antigravity IDE to pick up new/updated skills and KIs.' ([ConsoleColor]::DarkGray)
+        Write-ToolkitMessage 'Run: .\scripts\validate-all.ps1' ([ConsoleColor]::DarkGray)
     }
 }
 

@@ -1,60 +1,32 @@
-# Spec Kit Workflow (setup → init → spec → plan → develop)
+# Guide 04: Spec Kit Workflow
 
-The Spec Kit workflow is an alternative to classic SDD, based on the official [GitHub Spec Kit](https://github.com/github/spec-kit) CLI and the `.specify/` folder structure.
+Flow:
 
----
+`speckit_setup` → `speckit_init` → `speckit_spec` → `speckit_plan` → `speckit_develop`
 
-## Initial Step: `use skill speckit_setup`
-Verifies prerequisites on Windows and installs the CLI.
-**Example:** `use skill speckit_setup`
+## Step details
 
-The agent will:
-- Verify Python 3.10+.
-- Ask to install the `uv` package manager if it does not exist.
-- Install the `specify-cli` tool via `uv tool install`.
-- Configure the global SDD manifest directory.
+1. `use skill speckit_setup`
+   - verifies/install Python, `uv`, `specify-cli`
+   - ensures global SDD root and manifest exist
 
----
+2. `use skill speckit_init`
+   - resolves storage through manifest v2 (`speckit` section)
+   - initializes `.specify/` and `constitution.md`
+   - must pass `validate-speckit-init.ps1`
 
-## Step 2: `use skill speckit_init`
-Initializes the Spec Kit structure in the active repository.
-**Example:** `use skill speckit_init`
+3. `use skill speckit_spec`
+   - creates `.specify/specs/NNN-<slug>/spec.md`
 
-The agent will:
-- **Storage Resolution:** On the first execution, asks whether you prefer to store plans locally (in the repository) or globally (in `~/.gemini/antigravity-ide/sdd/`) to avoid cluttering the project's git. This choice is saved in `manifest.json`.
-- Create the `.specify/` folder in the chosen destination and generate the project principles file (`.specify/memory/constitution.md`).
+4. `use skill speckit_plan`
+   - creates `.specify/specs/NNN-<slug>/plan.md` and `tasks.md`
 
----
+5. `use skill speckit_develop`
+   - executes exactly one task per session
+   - runs tests before completion
 
-## Step 3: `use skill speckit_spec`
-Creates a new technical specification for a feature.
-**Example:** `use skill speckit_spec`
+## Guardrails
 
-The agent will:
-- Collect the feature description, current behavior, and expected behavior.
-- Generate the sequential identifier `NNN` (e.g., `001`) and the feature slug.
-- Create and save the `spec.md` file under the path `.specify/specs/NNN-<slug>/spec.md` (at the location defined by the active storage).
-
----
-
-## Step 4: `use skill speckit_plan`
-Generates the detailed plan and checklist from the specification.
-**Example:** `use skill speckit_plan — <path-to-spec.md>`
-
-The agent will:
-- Analyze the `spec.md` and the `constitution.md` of the project.
-- Create two files in the same feature subfolder:
-  - `plan.md`: Technical architecture design and list of affected files.
-  - `tasks.md`: List of atomic tasks of 20-45 minutes with checkboxes (`- [ ]`).
-
----
-
-## Step 5: `use skill speckit_develop`
-Executes tasks iteratively step by step.
-**Example:** `use skill speckit_develop — <path-to-tasks.md>`
-
-The agent will:
-- Read the first pending task from the `tasks.md` file.
-- Implement the code and tests (in English).
-- Update the task in the `tasks.md` file as completed (`[x]`).
-- Offer a conventional commit to save progress.
+- Do not skip init validation.
+- Do not write outside canonical `.specify/` paths.
+- Preserve gate-first confirmations for all writes.

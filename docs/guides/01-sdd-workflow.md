@@ -1,33 +1,44 @@
-# SDD Workflow (Spec → Plan → Implement)
+# Guide 01: Classic SDD
 
-The main workflow for features and epics ensures predictability, quality, and documented context (important for LLM reasoning in long executions).
+Use this flow for medium/high-complexity work.
 
-## Step 1: `use skill spec`
-Start by asking the agent to specify a feature.  
-**Example:** `use skill spec — add PDF export for orders`
+## Step 1: `use skill sdd_spec`
 
-The agent will:
-- Ask you questions if there are ambiguities in the requirements or scope.
-- Request approval for the artifact before saving.
-- Create a PRD (Product Requirements Document) file, typically in `PRD/NNN_feature_slug.md`.
+Example:
 
-## Step 2: `use skill plan`
-Once the PRD is ready and reviewed, ask to plan the development.  
-**Example:** `use skill plan — PRD/001_pdf_export.md`
+`use skill sdd_spec — add PDF export for orders`
 
-The agent will:
-- Read the PRD and design the architecture and exact file-by-file modifications.
-- Break down the implementation into atomic iterative steps (e.g., Domain, Infrastructure, Application, API, Tests).
-- Create a `PLAN/PLAN_001_pdf_export.md` file with checkboxes (`[ ]`).
+Expected outcome:
+- canonical PRD artifact
+- explicit write confirmation gate
+- storage resolved from manifest v2 (`classic`)
 
-## Step 3: `use skill implement`
-Work on each step of the plan individually to mitigate context loss.  
-**Example:** `use skill implement — PLAN/PLAN_001_pdf_export.md — Step 1`
+## Step 2: `use skill sdd_plan`
 
-The agent will:
-- Focus strictly on the requested step.
-- Modify the code accordingly.
-- Update the PLAN file, marking the step as completed (`[x]`).
-- Suggest running a commit as soon as the step is finished.
+Example:
 
-> **Important:** After committing, do not accumulate context. In a new message (or a new chat session), repeat the `implement` skill for `Step 2`, and so on.
+`use skill sdd_plan — PRD/001_pdf_export.md`
+
+Expected outcome:
+- canonical PLAN at `PLAN/PLAN_001_pdf_export.md`
+- 20-45 minute incremental execution steps
+- explicit write confirmation gate
+
+## Step 3: `use skill sdd_develop`
+
+Example:
+
+`use skill sdd_develop — PLAN/PLAN_001_pdf_export.md — Step 1`
+
+Expected outcome:
+- exactly one step executed
+- tests run before completion
+- PLAN progress updated
+- stop and handoff to next session for Step 2
+
+## Mandatory guardrails
+
+- Read `GUARDRAILS.md` and `SESSION.md` before mutating actions.
+- Do not skip `sim` confirmations.
+- Do not execute Step N+1 in the same session.
+- Keep chat in `pt-BR`; keep code in English.

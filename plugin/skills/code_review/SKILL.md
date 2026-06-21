@@ -3,144 +3,90 @@ name: code-review
 description: >
   Review a branch or diff against PRD/PLAN acceptance, project standards, and shared guidelines.
   Produces a structured report (critical, important, nice-to-have). Use when the user says
-  "use skill code-review", "review this PR", or "/code-review". Git-only — optional GitHub PR via gh CLI.
+  "use skill code-review", "review this PR", or "/code-review". Git-only with optional gh usage.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+â†’ If any unchecked: STOP
+```
+
 ---
 
 # Skill: code-review
 
 ## Trigger
 
-Invoke when the user asks for: `use skill code-review`, `review this PR`, `code review`, or `/code-review`.
+Use for `use skill code-review`, `/code-review`, PR review, or branch/diff quality validation.
 
 ## Outcome
 
-A structured **review report** with severity tiers (critical / important / nice-to-have) and a clear decision: **Aprovado**, **Aprovado com ressalvas**, ou **Mudanças necessárias**. Write the report in **pt-BR** (technical terms may stay in English). Does not modify code unless the user asks for fixes in a follow-up.
-
-## Required input
-
-| Input | Regra |
-|-------|-------|
-| Base branch | `main`, `develop` — ask once if missing |
-| Feature branch | Current branch or named branch |
-| PRD / PLAN (SDD) | Optional in invocation; **resolve in step 0.5** if omitted |
-
-Ask the user **only after** step 0.5 if zero or multiple PRD/PLAN pairs remain ambiguous.
-
-## Lazy-load (only when needed)
-
-| When | Path (after sync) |
-|------|-------------------|
-| SDD artifact discovery (step 0.5) | `_shared/sdd_artifacts/STORAGE.md` |
-| Before code analysis (.NET) | `_shared/dotnet_guidelines/clean-architecture.md`, `csharp-patterns.md` |
-| Pre-PR gate (.NET) | `_shared/dotnet_guidelines/checklist.md` |
-| .NET coverage report | `test-coverage` skill (quando PRD/usuário/PLAN requer cobertura) |
-| Principles | `_shared/code_guidelines/principles/principles-cheatsheet.md` |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — Full mode |
-
-Prefer project `docs/standards/` or repo `README.md` over generic guidelines when both exist.
-
-Do **not** preload `code_guidelines/languages/**`.
+A structured review report in pt-BR with severity levels and final decision:
+- Approved
+- Approved with reservations
+- Changes required
 
 ## Process
 
-### -1. Caveman Mode
+### -1. Re-check guardrails and session
 
-Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
-- If file missing → create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
-  > 🪨 Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
-- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
+If missing, ask user (pt-BR):
 
-### 0. Workspace
+```text
+Antes da review, confirme:
+- GUARDRAILS.md lido
+- SESSION.md carregado
 
-Confirm target repo (not `antigravity-dev-toolkit` unless that is the subject). Detect stack (`*.sln` → .NET). Read `README.md`. Load dotnet-guidelines only for .NET reviews.
+Posso seguir? (sim / ajustar / cancelar)
+```
 
-### 0.5 Resolve SDD artifacts
+### -2. Resolve scope and artifacts
 
-Load `STORAGE.md`. Glob workspace for `PRD/*.md`, `docs/PRD/*.md`, `PLAN/PLAN_*.md`. Pair by `NNN`. If one PRD/PLAN pair → read both before the diff review. If none → note **SDD limitation** in the report (technical review only). If ambiguous → ask once in pt-BR with numbered options.
+Identify base/head, then discover PRD/PLAN (`PRD/*.md`, `docs/PRD/*.md`, `PLAN/PLAN_*.md`) and map by id.
 
-### 1. Scope the diff
+### 0. Analyze diff
 
 ```bash
-git fetch origin  # quando comparação remota for necessária
 git diff <base>...<head> --stat
 git diff <base>...<head>
 git log <base>..<head> --oneline
 ```
 
-Default `<head>` to current branch. List files; confirm with user before deep review if the set is large.
+### 1. Review dimensions
 
-### 2. SDD traceability (when artifacts found or user provided)
+Evaluate:
+- Correctness
+- Architecture boundaries
+- Test quality and regression risk
+- Security
+- Performance
+- Maintainability
 
-- Progress bar do PLAN e status dos passos correspondem ao trabalho concluído
-- Cada passo **Concluído** tem entregáveis marcados
-- Critérios de aceitação do PRD mapeados para implementação e testes
+### 2. Verify execution
 
-Flag PLAN/PRD drift as **important** (not necessarily blocking if scope is otherwise correct).
+Run build/tests when feasible. Use coverage evidence when required by PRD/PLAN/user.
 
-### 3. Standards and guidelines
+### 3. Deliver report
 
-1. Project `docs/standards/` or equivalent
-2. `_shared/dotnet_guidelines/` para .NET (camadas, testes: xUnit/NUnit, Moq/NSubstitute, Shouldly, `Should_<Result>_When_<Condition>`)
-3. Principles cheatsheet quando instalado
-
-### 4. Code analysis
-
-| Área | Foco |
-|------|------|
-| Corretude | Lógica, edge cases, tratamento de erros |
-| Arquitetura | Fronteiras de camadas, DI, sem vazamentos Domain → Infrastructure |
-| Testes | Comportamento coberto; assertions significativas; sem testes triviais |
-| Segurança | Secrets, injection, authz, logs sensíveis |
-| Performance | N+1, trabalho não delimitado, async ausente onde I/O |
-| Manutenibilidade | Naming, tamanho de método, duplicação; valores mágicos |
-
-### 5. Run verification (when feasible)
-
-| Stack | Commands |
-|-------|----------|
-| .NET | `dotnet build`, `dotnet test` (scoped if large) |
-| .NET coverage | `use skill test-coverage` quando PRD, PLAN, ou usuário define alvo de cobertura (padrão **80%** em arquivos de produção alterados) |
-| Node | `npm run build`, `npm test` per project scripts |
-
-Record pass/fail in the report. Missing local run → note as limitation.
-
-### 6. Decision
-
-| Decisão | Quando |
-|---------|--------|
-| **Aprovado** | PRD/PLAN atendidos; sem issues críticos; testes/build green; cobertura ≥ threshold quando aplicável |
-| **Aprovado com ressalvas** | Lacunas menores; sem bloqueadores de segurança/corretude; cobertura no threshold com gaps documentados |
-| **Mudanças necessárias** | Bugs críticos/segurança; gaps de PRD; falhas de build/teste; cobertura < threshold quando aplicável |
-
-### 7. Write report
-
-Be specific: `path:line`, explain **why**, suggest **how** to fix. Include positives.
-
-### 8. Optional PR (user-driven)
-
-Create a PR only when the user asks and review is not **Mudanças necessárias**:
-
-```bash
-gh pr create --base <base> --head "$(git rev-parse --abbrev-ref HEAD)" \
-  --title "feat: summary" --body "## Summary\n...\n\n## Test plan\n- [ ] ..."
-```
+Reference `path:line`, explain why, suggest fixes, and include clear final decision.
 
 ## Must not
 
-- Write or update PRD/PLAN files (hand off to `use skill spec` / `use skill plan`)
-- Auto-merge, auto-approve, or rewrite code without user request
-- Work-item tracker APIs, external PR platform APIs, or corporate templates
-- Block on coverage only when no target applies
-- Paste entire guideline files into the review output
-- **AI co-author trailers** — in any form. Under NO circumstances should you include `Co-authored-by: Cursor <cursoragent@cursor.com>`, `Co-authored-by: Antigravity`, or any other AI agent attribution in commit messages or PR descriptions.
-
-## Handoff
-
-| Situação | Próximo |
-|----------|---------|
-| Nova feature / PRD de achados de review | `use skill spec` |
-| Cobertura abaixo do threshold | `use skill test-coverage` → `use skill dotnet-developer` ou `implement` |
-| Fixes necessários | `use skill implement` / `use skill dotnet-developer` |
-| Commit de fixes | `use skill commit` |
-| Todos os passos SDD concluídos + aprovado | Usuário cria PR ou merge per repo policy |
+- Edit PRD/PLAN in this skill
+- Auto-approve, auto-merge, or rewrite code without request
+- Depend on corporate tracker APIs
+- Include AI co-author text anywhere

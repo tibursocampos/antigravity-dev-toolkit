@@ -1,31 +1,33 @@
-# Operational and Quality Skills
+# Guide 03: Operational Skills
 
-Operational skills help with routine maintenance tasks, reviews, and secondary tasks to the main development.
+Operational skills keep branches healthy and merge-ready.
 
-## 1. Code Review (`code_review`)
-**Invocation:** `use skill code_review`
+## Quality and validation
 
-The agent evaluates the current branch or an explicit diff against the requirements of a PRD/PLAN or simply against global best practices (`_shared/code_guidelines` - SOLID, DRY, KISS, YAGNI, Encapsulation) and local stack guidelines. 
-Returns a hierarchical report dividing into *blockers* and suggestions, plus an approval badge (Pass/Fail). It can generate a PR via `gh` (GitHub CLI) if requested.
+- `use skill code_review`
+- `use skill fix_build`
+- `use skill test_coverage`
 
-## 2. Commit (`commit`)
-**Invocation:** `use skill commit`
+## Git execution
 
-Reads the changes from the *working tree* (staged and unstaged), formats a proper commit message following the *Conventional Commits* standard (e.g., `feat(orders): add recalculation limit`), and commits it.
-**Strict rule:** The agent will never perform an auto-commit without you first approving the message in the chat. It also enforces blocks against committing to forbidden branches (main, master).
+- `use skill commit`
+- `use skill push`
 
-## 3. Test Coverage (`test_coverage`)
-**Invocation:** `use skill test_coverage`
+Rules:
+- commit/push are never automatic
+- explicit user confirmation is required
+- protected branches remain blocked
 
-Executes .NET test coverage locally (Coverlet + ReportGenerator) reporting detailed line percentage metrics in the chat, indicating whether the *recent changes* exceed the acceptable threshold (default 80%).
+## Documentation flow
 
-## 4. Fix Build (`fix_build`)
-**Invocation:** `use skill fix_build`
+- `use skill document_plan`
+- `use skill document_implement`
 
-If the build or any test breaks and you want a quick diagnosis. It will run `dotnet build/test` (or read logs pasted in the chat), diagnose the root cause (culture issue, assertion failure, introduced bug, package mismatch), suggest the fix, and apply the fix only if you approve, re-running the test to ensure stability.
+One docs-plan step per session applies to `document_implement`.
 
-## 5. RAG-based Documentation (`document_plan` and `document_implement`)
-Essential when the Antigravity IDE is about to work on a new, unknown repository and needs rich textual context for Retrieval-Augmented Generation (RAG).
+## Backlog shaping flow
 
-- `use skill document_plan`: Explores the repository, sets a target language for the product's technical documentation, writes a comprehensive `docs/overview.md`, and sets up an atomic documentation roadmap in `docs/documentation-plan/plan.md`.
-- `use skill document_implement`: Runs as a standalone step to execute the next pending task mapped by the documentation plan created above.
+- `use skill refine_backlog_item`
+- `use skill breakdown_tasks`
+
+This flow prepares work before SDD.

@@ -53,3 +53,21 @@ To catch formatting issues before commits, we set up a Git pre-commit hook using
    ```
 
 These steps ensure that any C# code committed to the repository is formatted by CSharpier beforehand.
+
+## Coding Formatting and Layout Rules (Microsoft Learn)
+
+To keep code highly readable across all platforms (including mobile screens, diff tools, and code-review viewers), enforce the following layout rules:
+
+* **Indentation:** Use four spaces for indentation. Do not use tab characters.
+* **Line Length Limit:** Limit lines to **65 characters** to enhance code readability. Break long statements into multiple lines when necessary, breaking before binary operators.
+* **Braces Style (Allman):** Use the "Allman" style for braces: both opening and closing braces must be placed on their own new lines, matching the current indentation level.
+* **One Statement Per Line:** Write only one statement per line and only one declaration per line.
+* **Blank Lines:** Add at least one blank line between method definitions and property definitions.
+* **Parentheses:** Use parentheses to make clauses in boolean and arithmetic expressions apparent:
+  ```csharp
+  if ((startX > endX) && (startX > previousX))
+  {
+      // Take appropriate action.
+  }
+  ```
+

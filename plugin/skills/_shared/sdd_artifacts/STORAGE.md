@@ -1,6 +1,6 @@
 # SDD artifact storage (spec / plan / implement)
 
-Single source of truth for where PRD and PLAN files are written. Load on demand from skills — do not paste this file into PRD/PLAN bodies.
+Single source of truth for where PRD and PLAN files are written. Load on demand from skills - do not paste this file into PRD/PLAN bodies.
 
 **Language:** This guideline file is **English**. Default **PRD/PLAN artifact** prose is **pt-BR**. **Chat** replies and the storage prompt below are **pt-BR** unless the user overrides in the skill invocation.
 
@@ -14,7 +14,7 @@ Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antig
 
 > **Nota:** O antigravity-dev-toolkit pode usar o modo `repository` (pastas locais) ou `global` (salvos externamente sob o caminho resolvido no `manifest.json`), dependendo da escolha registrada no `manifest.json`.
 
-## Repository mode — `.gitignore`
+## Repository mode - `.gitignore`
 
 Run **before** the first `Write` under any SDD folder in the workspace (`spec` or `plan`). Applies to **every** consumer repository.
 
@@ -33,7 +33,7 @@ Run **before** the first `Write` under any SDD folder in the workspace (`spec` o
 3. If **any** of the four is missing, append the **full** block:
 
    ```gitignore
-   # SDD artifacts (local agent workflow — antigravity-dev-toolkit)
+   # SDD artifacts (local agent workflow - antigravity-dev-toolkit)
    /PRD/
    /PLAN/
    /docs/PRD/
@@ -64,9 +64,9 @@ Use the highest `NNN` across all matches, then +1. PLAN `NNN` must match the sou
 Always pass the **full path** used on disk (relative to workspace):
 
 ```text
-use skill plan — PRD/003_feature.md
+use skill sdd_plan - PRD/003_feature.md
 
-use skill implement — PLAN/PLAN_003_feature.md — Step 1
+use skill sdd_develop - PLAN/PLAN_003_feature.md - Step 1
 ```
 
 ## Invalid paths and promotion
@@ -79,12 +79,12 @@ When the user cites a non-canonical `.md`: read it, build the artifact per skill
 
 | Skill | Storage question | `.gitignore` | Writes |
 |-------|------------------|--------------|--------|
-| spec | Sim (confirmar path) | Repository mode only | PRD |
-| plan | Sim (se PRD não indicar) | Repository mode only | PLAN |
-| implement | Não — usa path do PLAN do input | Não | Atualiza mesmo arquivo PLAN |
-| code-review | Não | Não | Somente leitura |
-| fix-build | Não | Não | Somente leitura — não inventar paths PRD/PLAN |
-| plan-repo-docs / document-repo | Não | Não | **Não** usar este arquivo para `docs/documentation-plan/plan.md` (plano de documentação RAG, não SDD) |
+| sdd_spec | Yes (confirm path) | Repository mode only | PRD |
+| sdd_plan | Yes (if PRD does not specify) | Repository mode only | PLAN |
+| sdd_develop | No - uses PLAN path from input | No | Updates same PLAN file |
+| code_review | No | No | Read-only |
+| fix_build | No | No | Read-only - do not invent PRD/PLAN paths |
+| document_plan / document_implement | No | No | **Do not** use this file for `docs/documentation-plan/plan.md` |
 
 ## Read-only discovery (other skills)
 
@@ -104,9 +104,9 @@ When a skill needs an **existing** SDD PRD or PLAN and the user did not pass a f
 
 ---
 
-## Global Manifest and Dynamic Storage Resolution
+## Global Manifest and Dynamic Storage Resolution (schema v2)
 
-> **Used by:** `speckit_setup`, `speckit_init`, `speckit_spec`, `speckit_plan`, `speckit_develop`, `sdd_spec`, `sdd_plan`, `sdd_develop`. All Spec Kit and classic SDD skills now use this resolution algorithm.
+> **Used by:** all `sdd_*`, `speckit_*`, `refine_backlog_item`, `breakdown_tasks` skills.
 
 ### Manifest location
 
@@ -114,58 +114,90 @@ When a skill needs an **existing** SDD PRD or PLAN and the user did not pass a f
 $env:USERPROFILE\.gemini\antigravity-ide\sdd\manifest.json
 ```
 
-### Manifest structure
+### Manifest structure (v2)
 
 ```json
 {
+  "schema_version": 2,
   "repositories": {
-    "D:/Source/Repos/Blip/GM.Flows": {
-      "storage_mode": "global",
-      "path": "C:/Users/rapha/.gemini/antigravity-ide/sdd/Blip_GM_Flows"
-    },
-    "D:/Source/Repos/antigravity-dev-toolkit": {
-      "storage_mode": "repository",
-      "path": "D:/Source/Repos/antigravity-dev-toolkit"
+    "D:/Source/Repos/MyApp": {
+      "classic": {
+        "storage_mode": "global",
+        "path": "C:/Users/me/.gemini/antigravity-ide/sdd/MyApp"
+      },
+      "speckit": {
+        "storage_mode": "global",
+        "path": "C:/Users/me/.gemini/antigravity-ide/sdd/MyApp",
+        "initialized": true,
+        "init_validated_at": "2026-06-21T12:00:00Z"
+      }
     }
   }
 }
 ```
 
-### Resolution algorithm (Spec Kit skills only)
+### Legacy migration (v1 -> v2)
 
-Execute at skill load time, before any read or write:
+If a repository entry has top-level `storage_mode` and `path` (no `classic`/`speckit`):
+
+```json
+{
+  "storage_mode": "repository",
+  "path": "D:/Source/Repos/MyApp"
+}
+```
+
+Migrate in memory to:
+
+```json
+{
+  "classic": { "storage_mode": "repository", "path": "D:/Source/Repos/MyApp" },
+  "speckit": { "storage_mode": "repository", "path": "D:/Source/Repos/MyApp", "initialized": false }
+}
+```
+
+Write back to manifest on first skill run after migration.
+
+### Resolution algorithm
+
+Execute at skill load time, before any read or write. Parameter: `$Workflow` = `classic` | `speckit`.
 
 ```
-1. Read $Cwd (active workspace working directory).
-2. Check whether $env:USERPROFILE\.gemini\antigravity-ide\sdd\manifest.json exists.
-   - If it does not exist: create the sdd/ folder and manifest.json with {"repositories": {}}.
-3. Look up the key matching $Cwd in the "repositories" object.
-
-4. If the key is NOT found (first run on this repository):
-   a. Pause and ask the user (pt-BR):
-      "Identifiquei que este é o primeiro uso das skills de SDD neste repositório.
-       Onde você prefere salvar as especificações e planos (.md)?
-       1) No repositório local (pastas /PRD e /PLAN ou /.specify)
-       2) No diretório global compartilhado (salvo externamente em
-          ~/.gemini/antigravity-ide/sdd/ para não poluir o repositório)"
-   b. If "1" or "local":
-      - storage_mode: "repository"
-      - path: $Cwd
-   c. If "2" or "global":
-      - storage_mode: "global"
-      - path: $env:USERPROFILE\.gemini\antigravity-ide\sdd\<RepositoryName>
-   d. Write the entry to manifest.json.
-   e. If global mode: create the folder at the defined path if it does not exist.
-
-5. If the key IS found: read storage_mode and path directly.
+1. Normalize $Cwd (replace \ with /, trim trailing /).
+2. Read manifest.json; ensure schema_version = 2 (migrate v1 if needed).
+3. Look up repositories[$Cwd].
+4. If NOT found (first run):
+   a. Ask user (pt-BR) storage for classic SDD (local vs global).
+   b. Ask user (pt-BR) storage for Spec Kit (local vs global - may match classic path).
+   c. Write classic + speckit sections; set speckit.initialized = false.
+   d. Set session gate storage_confirmed = true after user sim.
+5. If found: read repositories[$Cwd][$Workflow].storage_mode and .path.
+6. For speckit skills (except setup/init): if speckit.initialized != true, run validate-speckit-init.ps1;
+   if fail -> STOP - handoff to speckit_init.
 ```
 
 ### Physical path mapping
 
-| storage_mode | Spec Kit target | Classic SDD PRD | Classic SDD PLAN |
+| storage_mode | Spec Kit | Classic PRD | Classic PLAN |
 |---|---|---|---|
-| `repository` | `$Cwd/.specify/` | `$Cwd/PRD/` | `$Cwd/PLAN/` |
+| `repository` | `$Cwd/.specify/` | `$Cwd/PRD/` or `$Cwd/docs/PRD/` | `$Cwd/PLAN/` |
 | `global` | `<path>/.specify/` | `<path>/PRD/` | `<path>/PLAN/` |
 
-`<path>` = resolved value of the `path` field in the manifest for the active repository.
-`<RepositoryName>` = last segment of `$Cwd` with path separators replaced by `_`.
+`<path>` = `repositories[$Cwd][$Workflow].path`  
+`<RepositoryName>` = last segment of `$Cwd` with `\` and `/` replaced by `_`.
+
+### Handoff paths (v2)
+
+```text
+use skill sdd_plan - PRD/003_feature.md
+use skill sdd_develop - PLAN/PLAN_003_feature.md - Step 1
+use skill speckit_plan - .specify/specs/003-feature/spec.md
+use skill speckit_develop - .specify/specs/003-feature/tasks.md
+```
+
+## Integration
+
+- Pipeline guards: `_shared/sdd_artifacts/PIPELINE.md`
+- Session gates: `_shared/sdd_artifacts/SESSION.md`
+- Context management: `dev_persona` § Context Management
+

@@ -1,9 +1,30 @@
 ---
 name: sdd_plan
 description: >
-  Create a baby-step PLAN from an existing PRD. Writes agent PLAN .md in pt-BR by default
+  Create a baby-step PLAN from an existing PRD. Writes an agent PLAN .md in pt-BR by default
   (in PLAN/ or docs/PLAN/ of the target repo). Use when the user says "use skill sdd_plan",
   "create plan", "/sdd_plan". Requires a PRD; output feeds sdd_develop.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
+4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] User confirmed current action (sim)
+- If any unchecked: STOP
+```
+
 ---
 
 # Skill: sdd_plan
@@ -21,77 +42,77 @@ A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NN
 | When | Path |
 |------|------|
 | Pipeline guards, missing PRD dialog | `_shared/sdd_artifacts/PIPELINE.md` |
-| Storage, manifest, `.gitignore` | `_shared/sdd_artifacts/STORAGE.md` |
-| SDD language, context, .NET | `dev_persona` § Idioma, `_shared/dotnet_guidelines/*.md` |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` — **Lite mode** (only framing and introductions) |
+| Storage schema v2, manifest, `.gitignore` | `_shared/sdd_artifacts/STORAGE.md` |
+| SDD language, context, .NET | `dev_persona` § Language, `_shared/dotnet_guidelines/*.md` |
+| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` - **Lite mode** (only framing and introductions) |
 
 ## Process
 
-### -1. Pipeline e modo
+### -1. Pipeline and mode
 
-Carregar `STORAGE.md` e `PIPELINE.md`. Executar o algoritmo de resolução de armazenamento dinâmico (`STORAGE.md` § Resolution algorithm). Identificar `storage_mode` e `path` para o repositório ativo. Se for a primeira execução no repositório, executar o fluxo de seleção do modo de armazenamento e gravar no `manifest.json`.
-Sem autoria de PRD; sem código de produção/testes.
+Load `STORAGE.md` and `PIPELINE.md`. Use `STORAGE.md` schema v2 and run the dynamic storage resolution algorithm with parameter `$Workflow = classic`. Resolve `storage_mode` and `path` for the active repository. If this is the first run for the repository, execute storage mode selection and persist it in `manifest.json`.
+Do not author PRD and do not write production code/tests in this skill.
 
 Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
-- If file missing → create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` → load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
-  > 🪨 Modo Caveman ativo (respostas compactas — Lite). Digite `caveman off` a qualquer momento para desativar.
+- If file missing -> create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` -> load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > 🪨 Caveman mode is active (compact responses - Lite). Type `caveman off` any time to disable it.
 - In Lite mode: compress only framing and introductions. Plan drafts, confirmation gates, and clarifying questions are **never** compressed.
 - Honor `caveman on` / `caveman off` at any point during the session.
 
 ### 0. Workspace
 
-Repositório alvo. Ler `README.md` se presente.
+Target repository. Read `README.md` if present.
 
-### 1. Resolver PRD
+### 1. Resolve PRD
 
-Fazer glob de PRDs canônicos sob o diretório de destino resolvido (local ou global).
+Glob canonical PRDs under the resolved destination directory (local or global).
 
-| Situação | Ação |
+| Situation | Action |
 |----------|------|
-| Usuário forneceu path canônico do PRD | `Read`; validar status **Pronto para planejamento** |
-| Nenhum PRD canônico | Opções per `PIPELINE.md` § `sdd_plan` without PRD — criar PRD primeiro ou coletar texto/arquivo |
-| "Criar PRD" | Handoff para `sdd_spec`; não gravar PLAN até PRD existir (exceto usuário escolher opção 2 explicitamente) |
-| `.md` não canônico | Promover per `PIPELINE.md` ou pedir arquivo |
+| User provided canonical PRD path | `Read`; validate status **Pronto para planejamento** |
+| No canonical PRD | Use options from `PIPELINE.md` § `sdd_plan` without PRD - create PRD first or collect text/file |
+| User chooses "create PRD" | Handoff to `sdd_spec`; do not write PLAN until PRD exists (unless user explicitly chooses option 2) |
+| Non-canonical `.md` | Promote per `PIPELINE.md` or ask for the correct file |
 
-Resumir PRD; pedir para prosseguir.
+Summarize PRD and ask to proceed.
 
-### 2–4. Explorar, perguntas técnicas (≤10), baby steps
+### 2-4. Explore, technical questions (<=10), baby steps
 
-Glob/Grep/Read. Passos ~20–45 min cada. Passos de doc: **sdd_develop** pergunta idioma de documentação.
+Use Glob/Grep/Read. Keep each step around 20-45 minutes. For documentation steps, `sdd_develop` must ask documentation language first.
 
-### 5. Checkpoint de contexto
+### 5. Context checkpoint
 
-Ver `dev_persona` § Gestão de Contexto; rascunho do PLAN em chat se ≥40%.
+See `dev_persona` § Context Management; provide an in-chat PLAN draft if context usage reaches >=40%.
 
-### 5.75. Confirmar antes de gravar
+### 5.75. Confirm before write
 
-`PLAN_NNN_*`, path completo (resolvido sob o diretório do storage mode ativo), link do PRD, contagem de passos. **sim** obrigatório antes de `Write`.
+Show `PLAN_NNN_*`, full path (resolved under the active storage-mode directory), PRD reference path, and step count. **sim** is required before `Write`.
 
-### 6. Gravar PLAN (após sim)
+### 6. Write PLAN (after sim)
 
-1. Validar path per `PIPELINE.md` § Path validation helper — abortar se inválido.
-2. Criar subpasta `PLAN/` no destino resolvido se não existir.
-3. Gravar `PLAN_NNN_*` com `NNN` **igual** ao do PRD. Cabeçalho do PRD = path completo do PRD; passos **Pendente**; `0/N`.
-4. Avisar se sobrescrevendo PLAN com passos concluídos.
-5. Se `storage_mode` for `repository`, garantir os padrões no `.gitignore` conforme `STORAGE.md` § Repository mode — .gitignore.
+1. Validate path per `PIPELINE.md` § Path validation helper - abort if invalid.
+2. Create `PLAN/` under the resolved destination if missing.
+3. Write `PLAN_NNN_*` with `NNN` matching the PRD. PRD header must include the full PRD path; all steps **Pendente**; progress `0/N`.
+4. Warn before overwriting an existing PLAN with completed steps.
+5. If `storage_mode` is `repository`, enforce `.gitignore` patterns per `STORAGE.md` § Repository mode - `.gitignore`.
 
-### 7. Validar com o usuário
+### 7. Validate with user
 
-Apresentar passos, dependências, riscos. Confirmar primeiro passo de sdd_develop.
+Present steps, dependencies, and risks. Confirm the first `sdd_develop` step.
 
 ## Must not
 
-- Gravar PLAN em inglês por padrão; embutir código de implementação
-- Criar ou sobrescrever PRD; implementar ou commitar aqui
-- Gravar PLAN sem PRD canônico (exceto escolha explícita do usuário — opção 2 com specs)
-- Pular confirmação antes de gravar; afirmar PLAN salvo sem `Write`
-- `NNN` diferente do PRD
+- Write PLAN in English by default; embed implementation code
+- Create or overwrite PRD; implement or commit in this skill
+- Write PLAN without canonical PRD (except explicit user choice with provided specs)
+- Skip confirmation before writing; claim PLAN saved without successful `Write`
+- Use an `NNN` different from PRD
 
 ## Handoff
 
 ```
-use skill sdd_develop — <full-plan-path> — Step 1
+use skill sdd_develop - <full-plan-path> - Step 1
 ```
 
-Uma sessão = um passo do PLAN.
+One session = one PLAN step.

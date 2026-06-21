@@ -1,69 +1,86 @@
-# Installation: antigravity-dev-toolkit
-
-This repository contains the personal development toolkit for the Antigravity IDE (Gemini).
+# Install and Validate
 
 ## Prerequisites
-- Windows (Powershell)
-- Antigravity IDE installed and running (so that the `~/.gemini` folder exists)
 
-## Installation Steps
+- Windows with PowerShell 5.1+
+- Antigravity IDE installed (to provision `~/.gemini`)
 
-1. Clone the repository to your machine (e.g., `D:\Source\Repos\antigravity-dev-toolkit`).
-2. Open a PowerShell terminal in the repository root.
-3. Run the synchronization script:
+## Deploy plugin
 
-   ```powershell
-   .\scripts\sync-antigravity.ps1
-   ```
+From repository root:
 
-4. The script will copy the `plugin/` directory to the Antigravity IDE plugins folder (`~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit`).
-5. The copy process is idempotent (based on SHA-256 hashes), copying only modified files and avoiding unnecessary overwrites.
-6. Optionally restart the chat sessions in the Antigravity IDE so that it loads/indexes the new skills effectively.
+```powershell
+.\scripts\sync-antigravity.ps1
+```
 
-## Updating
-Whenever you make local changes to the skills or rules (`_shared/`) in this base repository, run `.\scripts\sync-antigravity.ps1` again to apply the changes to the IDE.
+This deploy is idempotent and syncs:
+- `plugin.json`
+- `GUARDRAILS.md`
+- all skills under `plugin/skills/`
+- KI entries `custom_skills` and `global_guardrails`
+- sessions folder for session-state gates
 
----
+## Post-deploy validation
 
-## Spec Kit Setup (Optional)
+Run the unified smoke test from repository root:
 
-Spec Kit skills depend on the official CLI of the GitHub project.
+```powershell
+.\scripts\validate-all.ps1
+```
 
-### 1. Automatic Configuration via PowerShell Script
-You can configure all prerequisites (Python, `uv`, and `specify-cli`) and initialize global directories by running the utility script from the repository root:
+This orchestrates, in order:
+
+| Check | Script |
+|-------|--------|
+| Deploy + KIs | `validate-toolkit-deploy.ps1` |
+| Skills structure (STOP, frontmatter, artifacts) | `validate-skills-structure.ps1` |
+| Docs consistency | `validate-docs-consistency.ps1` |
+| Skills English | `validate-skills-english.ps1` |
+
+Optional flags:
+
+| Flag | When to use |
+|------|-------------|
+| `-IncludeSpeckit -RepoPath <path>` | Consumer repo has a valid `.specify/` tree |
+| `-IncludeSessionGate -RepoPath <path>` | Verify session gate after user confirmed an action |
+| `-RequiredGate <name>` | Gate name when using `-IncludeSessionGate` (default: `write_confirmed`) |
+| `-FailFast` | Stop on first failing check |
+| `-Quiet` | Summary table only |
+
+Restart Antigravity IDE after a successful smoke test.
+
+## Optional Spec Kit bootstrap
+
 ```powershell
 .\scripts\setup-speckit.ps1
 ```
 
-### 2. Automatic Configuration via Chat
-Alternatively, call the corresponding skill in the IDE chat:
-```
-/speckit_setup
-```
+Then configure one repository:
 
-### 3. Manual Configuration on Windows
-If you prefer to install prerequisites manually:
-1. Install Python 3.10+
-2. Install the `uv` package manager:
-   ```powershell
-   powershell -ExecutionPolicy Bypass -c "irm https://astral.sh/uv/install.ps1 | iex"
-   ```
-3. Install the Spec Kit CLI tool globally:
-   ```powershell
-   uv tool install specify-cli --from git+https://github.com/github/spec-kit.git --force
-   ```
-
----
-
-## Initializing the Repository
-
-### Via PowerShell Script
-You can initialize the `.specify/` structure and register the active repository in the `manifest.json` with the desired storage mode (`global` or `repository`):
 ```powershell
-.\scripts\configure-repo-sdd.ps1 -StorageMode global
+.\scripts\configure-repo-sdd.ps1 -StorageMode global -RepoPath "D:\Source\Repos\MyApp"
 ```
 
-### Via Chat
-Or call the corresponding skills in the chat:
-1. Initialize and select the storage mode: `/speckit_init`
-2. Create specifications: `/speckit_spec`
+This writes manifest schema v2 entries:
+- `classic` storage config
+- `speckit` storage config + init validation metadata
+
+## Runtime gate validation helpers
+
+- Session gates:
+
+```powershell
+.\scripts\validate-session-gates.ps1 -RepoPath "D:\Source\Repos\MyApp" -RequiredGate write_confirmed
+```
+
+- Spec Kit init:
+
+```powershell
+.\scripts\validate-speckit-init.ps1 -RepoPath "D:\Source\Repos\MyApp"
+```
+
+## Language and naming reminder
+
+- Chat policy: `pt-BR`
+- Code/tests/skills docs: English
+- Skill commands in docs: underscore naming (`breakdown_tasks`, not `breakdown-tasks`)

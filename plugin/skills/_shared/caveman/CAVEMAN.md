@@ -1,7 +1,7 @@
-# Caveman Mode — Response Compression Guideline
+# Caveman Mode - Response Compression Guideline
 
 Single source of truth for Caveman Mode behavior across all participating skills.
-Load on demand from skills at step -1 — do not pre-load.
+Load on demand from skills at step -1 - do not pre-load.
 
 Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/skills/_shared/caveman/CAVEMAN.md`
 
@@ -9,12 +9,12 @@ Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antig
 
 ## What Caveman Mode Does
 
-Forces the agent to respond in telegraphic, concise fragments — eliminating
-conversational filler, preambles, and polite wrapper text — while preserving
+Forces the agent to respond in telegraphic, concise fragments - eliminating
+conversational filler, preambles, and polite wrapper text - while preserving
 100% of technical content (code, paths, artifact drafts, confirmation gates).
 
 Inspired by: https://github.com/juliusbrussee/caveman  
-Expected savings: 22–87% of output prose tokens per session.
+Expected savings: 22-87% of output prose tokens per session.
 
 ---
 
@@ -35,12 +35,12 @@ Expected savings: 22–87% of output prose tokens per session.
 1. Check if preferences.json exists at the location above.
    - If NOT exists: create it with { "caveman_mode": false }. Mode = OFF.
 2. Read value of "caveman_mode".
-   - If true:  Mode = ON  → load this file, display activation notice.
-   - If false: Mode = OFF → skip rest of this file.
+   - If true:  Mode = ON  -> load this file, display activation notice.
+   - If false: Mode = OFF -> skip rest of this file.
 3. During session: watch for user commands:
-   - "caveman off"    → set caveman_mode: false in preferences.json. Confirm: "🪨 Modo Caveman desativado."
-   - "caveman on"     → set caveman_mode: true  in preferences.json. Confirm: "🪨 Modo Caveman ativado."
-   - "caveman status" → check preferences.json. Confirm: "🪨 Modo Caveman: ativado (respostas compactas)" or "🪨 Modo Caveman: desativado."
+   - "caveman off"    -> set caveman_mode: false in preferences.json. Confirm: "🪨 Modo Caveman desativado."
+   - "caveman on"     -> set caveman_mode: true  in preferences.json. Confirm: "🪨 Modo Caveman ativado."
+   - "caveman status" -> check preferences.json. Confirm: "🪨 Modo Caveman: ativado (respostas compactas)" or "🪨 Modo Caveman: desativado."
 ```
 
 **Activation notice (display in chat when mode is ON):**
@@ -52,7 +52,7 @@ Expected savings: 22–87% of output prose tokens per session.
 
 | Skill / Context | Level |
 |---|---|
-| `commit`, `push` | **NEVER** — excluded regardless of setting |
+| `commit`, `push` | **NEVER** - excluded regardless of setting |
 | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | **LITE** when mode ON |
 | `code_review`, `developer`, `fix_build`, `test_coverage` | **FULL** when mode ON |
 | `sdd_develop`, `speckit_develop`, conversas gerais / chat normal | **FULL** when mode ON |
@@ -112,7 +112,7 @@ Apply to: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan`.
 ### Blocked (Full Mode)
 | Instead of | Use |
 |---|---|
-| "Claro! Vou ajudar com isso. Aqui está o que farei:" | *(nothing — go straight to action)* |
+| "Claro! Vou ajudar com isso. Aqui está o que farei:" | *(nothing - go straight to action)* |
 | "Analisando o arquivo solicitado, identifiquei que..." | "Identificado:" |
 | "Após concluir esta etapa, o próximo passo será..." | "Próximo: Task N+1" |
 | "Espero que isso resolva o problema!" | *(omit)* |
@@ -139,4 +139,4 @@ Posso gravar em `{path}`? (sim / ajustar / cancelar)
 | `code_review`, `developer`, `fix_build`, `test_coverage` | Step -1, if caveman_mode check passes |
 | `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | Step -1, if caveman_mode check passes (Lite rules only) |
 | `dev_persona` | Global boot check (first message) and active in-session command listener |
-| `PIPELINE.md` | Reference only — documents confirmation gate protection |
+| `PIPELINE.md` | Reference only - documents confirmation gate protection |
