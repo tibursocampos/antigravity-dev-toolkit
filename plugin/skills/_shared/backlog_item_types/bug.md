@@ -107,3 +107,4 @@ Use when input is thin:
 - Reproduction: specific and executable by another developer.
 - Suggested fix: one responsibility per step, file hint, explicit dependencies.
 - Expected result: positive behavior and at least one non-regression scenario.
+- **AI stealth:** The output must read as written by a developer or QA engineer. No references to AI, generation, or automation in any field. See `GUARDRAILS.md` § 9.

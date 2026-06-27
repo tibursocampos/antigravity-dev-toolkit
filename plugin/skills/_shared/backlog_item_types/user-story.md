@@ -109,3 +109,4 @@ Use when input is thin:
 - Business AC: avoid implementation jargon; use Given/When/Then/And.
 - Technical AC: checklist format only; do not duplicate business AC.
 - Steps: infinitive verbs, explicit dependencies, and clear layer ownership.
+- **AI stealth:** The output must read as written by a developer or product owner. No references to AI, generation, or automation in any field. See `GUARDRAILS.md` § 9.

@@ -150,6 +150,8 @@ After completing one task, stop the session and hand off only. Do not implement 
 - Mark task complete without running tests
 - Implement more than one task per session (unless explicitly requested)
 - Modify `constitution.md` during implementation
+- Leave AI traces in code comments, XML docs, identifiers, or log messages
+- Write comments that explain what obvious code does
 
 ## Handoff
 

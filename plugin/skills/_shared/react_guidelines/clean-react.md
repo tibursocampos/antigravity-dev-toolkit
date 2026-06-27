@@ -50,3 +50,12 @@ src/
 │       └── index.ts (Public API of the feature)
 ```
 Keep CSS/styles co-located with their respective components.
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. No AI references in JSX or TypeScript comments.
+- **Identifiers:** No AI-derived names (`aiResult`, `llmData`, `generatedContent`, etc.).
+- **No AI traces** in any code, comments, or component logic. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

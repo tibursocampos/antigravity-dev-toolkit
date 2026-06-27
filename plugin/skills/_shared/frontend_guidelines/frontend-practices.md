@@ -28,3 +28,12 @@ Similar to our backend standards, we enforce strict formatting on the frontend:
 - Use **Prettier** for automatic formatting of JavaScript, TypeScript, CSS, and HTML files.
 - Use **ESLint** for static code analysis to catch potential bugs and enforce coding standards.
 - Integrate these tools with Git pre-commit hooks (e.g., Husky) to ensure code is clean before it reaches the remote repository.
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. No AI references in HTML, CSS, or JavaScript/TypeScript comments.
+- **Identifiers:** No AI-derived names (`aiResult`, `llmOutput`, `generatedContent`, etc.).
+- **No AI traces** in any code, markup, or comments. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

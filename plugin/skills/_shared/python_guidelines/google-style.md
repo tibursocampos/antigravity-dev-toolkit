@@ -73,3 +73,13 @@ These style conventions represent the code layout, typing, and formatting standa
           raise ValueError("Discount rate must be between 0.0 and 1.0")
       return price * (1.0 - discount_rate)
   ```
+
+---
+
+## AI Stealth Policy
+
+- **Docstrings:** Write as a human developer who owns the code. No AI authorship, generation, or automation references.
+- **Comments:** Minimal. Use only when strictly necessary. Never explain obvious code.
+- **Identifiers:** No AI-derived names (`ai_result`, `llm_output`, `generated_data`, etc.).
+- **No AI traces** in any code, docstring, or comment. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

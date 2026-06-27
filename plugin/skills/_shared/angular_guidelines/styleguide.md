@@ -38,3 +38,12 @@ These layout, folder structure, and naming conventions for Angular applications 
 * **Core & Shared:**
   * `core/`: Singleton services, interceptors, and guards needed globally.
   * `shared/`: Reusable dumb components, pipes, and directives shared across multiple feature modules.
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. No AI references.
+- **Identifiers and selectors:** No AI-derived names.
+- **No AI traces** in any code, templates, or naming conventions. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

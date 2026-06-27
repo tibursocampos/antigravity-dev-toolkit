@@ -107,6 +107,9 @@ function Sync-DirectoryTree {
 
 function Get-AntigravityPluginsRoot {
     $candidates = @(
+        # Primary: actual Antigravity IDE install location (must be first)
+        (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\plugins'),
+        # Fallbacks for alternate installs
         (Join-Path $env:APPDATA 'antigravity-ide\plugins'),
         (Join-Path $env:LOCALAPPDATA 'Google\antigravity-ide\plugins'),
         (Join-Path $env:APPDATA 'antigravity\plugins'),
@@ -117,6 +120,7 @@ function Get-AntigravityPluginsRoot {
             return $c
         }
     }
+    # Default to primary if none found (will be created on sync)
     return $candidates[0]
 }
 

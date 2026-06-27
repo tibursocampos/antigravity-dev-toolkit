@@ -30,6 +30,8 @@ Use before opening a pull request.
 - [ ] Guard clauses used (no deep nested `if`)
 - [ ] Single responsibility respected
 - [ ] Identifiers and comments in **English**
+- [ ] No AI traces in comments, XML docs, log messages, or identifiers
+- [ ] Comments present only when strictly necessary (not to explain obvious code)
 - [ ] Changes follow `dotnet-guidelines` (clean architecture + C# patterns)
 
 ---

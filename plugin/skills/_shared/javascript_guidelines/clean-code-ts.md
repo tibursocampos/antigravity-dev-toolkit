@@ -53,3 +53,13 @@ This document outlines core guidelines for writing type-safe, maintainable, and 
       return typeof error === "object" && error !== null && "statusCode" in error;
   }
   ```
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. Write self-explanatory code. No AI references (`// AI generated`, `// AI suggested`, etc.).
+- **JSDoc / TSDoc:** Written as a human developer. No AI authorship references.
+- **Identifiers:** No AI-derived names (`aiResult`, `llmOutput`, `generatedData`, etc.).
+- **No AI traces** in any code, comments, or documentation. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.
