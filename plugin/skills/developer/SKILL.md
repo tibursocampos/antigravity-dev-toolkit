@@ -125,6 +125,8 @@ Offer `use skill commit`. Do not commit automatically.
 - Work outside allowed branch patterns
 - Add speculative scope outside acceptance
 - Auto-commit or auto-PR
+- Leave AI traces in code comments, XML docs, identifiers, or log messages
+- Write comments that explain what obvious code does
 
 ## Handoff
 

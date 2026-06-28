@@ -171,7 +171,9 @@ if (!order.Lines.Any())
 
 - Keep methods small and focused.
 - Avoid duplication.
-- Code should be self-explanatory - do not comment around poorly written code.
+- Code should be self-explanatory — do not comment around poorly written code.
+- Comments are a last resort, not a default. Use only when strictly necessary (non-obvious constraint, regulatory rule, required workaround).
+- Never leave AI traces in comments, XML docs, identifiers, or log messages. Output must be indistinguishable from work produced without AI assistance. See `GUARDRAILS.md` § 9.
 
 ---
 

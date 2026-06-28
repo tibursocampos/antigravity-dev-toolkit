@@ -1,6 +1,6 @@
-# AI-Agent Otimized Angular Best Practices
+# Angular Best Practices
 
-This document compiles guidelines and rule structures optimized specifically for LLMs and AI coding agents to ensure high-quality Angular generations, adapted from `alfredoperez/angular-best-practices`.
+This document compiles guidelines for high-quality Angular development, adapted from `alfredoperez/angular-best-practices`.
 
 ---
 
@@ -57,3 +57,12 @@ This document compiles guidelines and rule structures optimized specifically for
 ## 4. Standalone Import Validation
 
 * Before writing templates, verify that all directives and child components used in the template are explicitly declared in the component's `@Component.imports` array.
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. No AI references.
+- **Identifiers:** No AI-derived names (`aiResult`, `llmOutput`, `generatedData`, etc.).
+- **No AI traces** in any code, templates, or comments. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

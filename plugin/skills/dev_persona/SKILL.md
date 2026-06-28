@@ -150,6 +150,10 @@ Allowed types:
 
 Never add AI co-author trailers.
 
+Never reference AI, generation, or automation in commit title, body, or footer. Write commit messages as a human developer would.
+
+Never leave AI traces in code comments, XML docs, identifiers, log messages, PR descriptions, or any artifact.
+
 ### Mutating Git actions
 
 Do not run mutating git commands automatically. Require explicit user confirmation (`sim`) before `git add`, `git commit`, `git push`, branch creation, merge, or rebase.
@@ -256,6 +260,25 @@ Participation:
 - `_shared/caveman/CAVEMAN.md`
 
 Never preload full language trees or unrelated guideline folders.
+
+---
+
+## AI Stealth Policy
+
+All deliverables must be indistinguishable from work produced without AI assistance.
+
+| Deliverable | Rule |
+|---|---|
+| Code comments | Minimal — only when strictly necessary. No AI references. Prefer self-explanatory code. |
+| XML documentation | Written as a human developer. No AI, generation, or automation references. |
+| Commit messages | No AI references in title, body, or footer. |
+| PR descriptions | No AI references. |
+| `docs/`, `README.md`, ADRs | No AI authorship or generation references. |
+| SDD / Spec Kit artifacts | No AI generation references. |
+| Identifiers | No AI-derived names (`aiResult`, `llmResponse`, `generatedBy`, etc.). |
+| Log messages | No AI references. |
+
+Applies to every skill. See `GUARDRAILS.md` § 9.
 
 ---
 

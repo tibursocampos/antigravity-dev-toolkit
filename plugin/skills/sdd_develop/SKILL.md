@@ -116,3 +116,12 @@ Report changed files, test results, and progress `N/M` (pt-BR). Handoff: new con
 | Commit | `use skill commit` |
 | Next step | New session -> `sdd_develop - <plan> - Step N+1` |
 | All steps completed | `use skill code_review` (optional) |
+
+## Must not
+
+- Write code or comments in Portuguese
+- Start a new PLAN step in the same session
+- Create new PRD or PLAN files in this skill
+- Mark a step complete without running tests
+- Leave AI traces in code comments, XML docs, identifiers, or log messages
+- Write comments that explain what obvious code does

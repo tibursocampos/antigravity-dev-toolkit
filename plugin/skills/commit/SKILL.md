@@ -83,4 +83,5 @@ Commit realizado com sucesso. Deseja enviar para o remoto? (sim / nao)
 - Commit on blocked branches
 - Auto-commit without message approval
 - Add AI co-author trailers
+- Reference AI, generation, or automation in commit title, body, or footer (e.g. "AI-generated", "AI-suggested", "LLM-assisted")
 - Use tracker APIs or forced workflow templates

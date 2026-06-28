@@ -72,3 +72,6 @@ Return changed doc paths + progress and suggest next action.
 - Run without a documentation plan
 - Write docs before language is defined
 - Complete many plan steps in one high-context session
+- Reference AI authorship, generation, or assistance in any documentation output
+- Use passive or formulaic phrasing that reveals automated generation ("This section was generated...", "AI-assisted analysis...", etc.)
+- Add generation metadata, timestamps, or tool references to any doc file

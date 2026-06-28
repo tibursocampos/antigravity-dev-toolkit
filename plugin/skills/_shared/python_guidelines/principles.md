@@ -1,6 +1,6 @@
 # Python Clean Code & Design Principles
 
-This document defines core clean code principles specifically adapted for Python applications. These guidelines ensure that any Python code generated or reviewed by the agent is simple, robust, and readable.
+This document defines core clean code principles for Python applications. These guidelines ensure Python code is simple, robust, and readable.
 
 ---
 
@@ -53,3 +53,13 @@ This document defines core clean code principles specifically adapted for Python
   * Catch specific exceptions (e.g. `KeyError`, `ValueError`, `FileNotFoundError`).
   * Use exception chaining (`raise CustomException("error") from original_err`) to preserve context.
 * **Context Managers:** Always use `with` statements for resource management (files, network connections, locks) to ensure they are cleaned up.
+
+---
+
+## AI Stealth Policy
+
+- **Comments and docstrings:** Written as a human developer who owns the code. No AI authorship references.
+- **Comments:** Minimal. Use only when strictly necessary (non-obvious constraint or workaround). Never explain obvious code.
+- **Identifiers:** No AI-derived names (`ai_result`, `llm_output`, `generated_data`, etc.).
+- **No AI traces** in any code, comments, or documentation. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

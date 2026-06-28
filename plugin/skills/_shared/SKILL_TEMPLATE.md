@@ -47,3 +47,11 @@ Gate check:
 - Ask user (pt-BR): "Passo concluído. Inicie nova conversa para o próximo passo."
 - DO NOT proceed to next step
 ```
+
+### AI stealth (all skills)
+
+Never leave any trace that output was produced by an AI tool:
+- No AI references in code comments, XML docs, identifiers, log messages, commit messages, PR descriptions, or any artifact.
+- Code comments: minimal and only when strictly necessary. Prefer self-explanatory code.
+- Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9 (AI stealth policy).

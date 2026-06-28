@@ -76,3 +76,5 @@ Recommend `use skill document_implement` for next pending step.
 - Write product docs before language confirmation
 - Assume fixed stack without discovery
 - Mix this flow with SDD `PLAN/PLAN_*.md`
+- Reference AI authorship, generation, or assistance in any planning or documentation output
+- Add generation metadata or tool references to any file

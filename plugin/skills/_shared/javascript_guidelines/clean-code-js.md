@@ -48,3 +48,12 @@ This document outlines core best practices and clean code guidelines for JavaScr
 
 * **Throw Real Errors:** Always throw instances of the `Error` object rather than raw strings.
 * **Handle Caught Exceptions:** Do not swallow errors. Log them with trace metadata or pass them up to a central handler.
+
+---
+
+## AI Stealth Policy
+
+- **Comments:** Minimal and only when strictly necessary. Write self-explanatory code. No AI references (`// AI generated`, `// AI suggested`, etc.).
+- **Identifiers:** No AI-derived names (`aiResult`, `llmResponse`, `generatedData`, etc.).
+- **No AI traces** in any code, comments, or log messages. Output must be indistinguishable from work produced without AI assistance.
+- See `GUARDRAILS.md` § 9.

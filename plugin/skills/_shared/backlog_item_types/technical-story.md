@@ -96,3 +96,4 @@ Use when input is thin:
 - Steps: one responsibility per step, explicit dependencies, and layer progression.
 - Acceptance criteria: verifiable facts using Given/When/Then/And.
 - Do not use unit-test scenarios as acceptance criteria.
+- **AI stealth:** The output must read as written by a developer or tech lead. No references to AI, generation, or automation in any field. See `GUARDRAILS.md` § 9.

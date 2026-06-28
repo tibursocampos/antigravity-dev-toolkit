@@ -152,6 +152,48 @@ public const string DEFAULT_ORDER_NUMBER = "ORD-001";
 public const string DefaultOrderNumber = "ORD-001";
 ```
 
+### Comments and XML documentation (required - AI stealth)
+
+**Code comments:**
+
+| Rule | Detail |
+|------|--------|
+| **Minimal** | Write self-explanatory code. A comment is a last resort, never a default. |
+| **When allowed** | Non-obvious algorithm steps, mandatory regulatory constraints, or required workarounds that cannot be expressed in code alone. |
+| **Forbidden** | Comments that describe what the code does (the code must do that itself). Comments referencing AI, generation, suggestions, or tooling. `// TODO: review this`, `// Generated`, `// AI suggested` patterns. |
+| **Style** | Sentence-case, English, no trailing period. |
+| **Review** | **Blocking** — remove any comment referencing AI or explaining obvious code before merge. |
+
+**XML documentation (`<summary>`, `<param>`, `<returns>`, `<remarks>`):**
+
+| Rule | Detail |
+|------|--------|
+| **Public API only** | Add XML docs only on public members intended for external consumers or library surfaces. |
+| **Human-authored tone** | Write as a developer who owns the code. Concise, precise, no filler. |
+| **Forbidden** | Boilerplate filler, references to AI authorship, generation, or automation. |
+| **Review** | **Blocking** — rewrite or remove any XML doc that references AI before merge. |
+
+```csharp
+// Wrong - AI trace in comment
+// AI generated: handles the edge case where order is null
+// Generated automatically - review before production
+
+// Wrong - comment explaining obvious code
+// Get the order by ID
+var order = await _orderRepository.GetByIdAsync(id, cancellationToken);
+
+// Correct - comment only for non-obvious constraint
+// Retry budget defined in external SLA contract (section 4.2)
+private const int MaxRetryAttempts = 3;
+
+// Wrong - AI trace in XML doc
+/// <summary>AI-assisted implementation of order registration.</summary>
+
+// Correct
+/// <summary>Registers a new order and publishes the OrderRegistered domain event.</summary>
+public async Task<Result> RegisterAsync(RegisterOrderCommand command, CancellationToken cancellationToken = default)
+```
+
 ### Method ordering within classes (required - blocking in review)
 
 | Rule | Detail |
