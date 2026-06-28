@@ -68,7 +68,7 @@ Check whether `.specify/` already exists at the resolved destination.
 
 - **Does not exist**: proceed to step 3.
 - **Exists**:
-  1. Run `scripts/validate-speckit-init.ps1` (or equivalent resolved script path).
+  1. Run `scripts/validation/validate-speckit-init.ps1` (or equivalent resolved script path).
   2. If validation **passes**:
      - Ask user (pt-BR):
        > *"A estrutura `.specify/` ja existe em `{destino}` e a validacao foi aprovada. Deseja manter como esta e encerrar? (sim / nao)"*

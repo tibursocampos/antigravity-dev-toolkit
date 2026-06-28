@@ -69,16 +69,20 @@ Required gate checks:
 
 Primary entry point:
 
-- `scripts/validate-all.ps1` — post-sync smoke test (deploy, structure, docs, English)
+- `scripts/toolkit.ps1` — central interactive orchestrator (sync, tests, maintainer suite)
+- `scripts/validation/validate-all.ps1` — post-sync smoke test (deploy, structure, docs, English)
 
 Individual checks (also invoked by `validate-all.ps1`):
 
-- `scripts/validate-toolkit-deploy.ps1`
-- `scripts/validate-skills-structure.ps1`
-- `scripts/validate-docs-consistency.ps1`
-- `scripts/validate-skills-english.ps1`
-- `scripts/validate-session-gates.ps1` (optional via `-IncludeSessionGate`)
-- `scripts/validate-speckit-init.ps1` (optional via `-IncludeSpeckit`)
+- `scripts/validation/validate-toolkit-deploy.ps1`
+- `scripts/validation/validate-skills-structure.ps1`
+- `scripts/validation/validate-docs-consistency.ps1`
+- `scripts/validation/validate-skills-english.ps1`
+- `scripts/validation/validate-session-gates.ps1` (optional via `-IncludeSessionGate`)
+- `scripts/validation/validate-speckit-init.ps1` (optional via `-IncludeSpeckit`)
+
+Maintainer suite (utility scripts not required for normal usage):
+- `scripts/maintainers/`
 
 ## Skill naming and invocation
 

@@ -6,7 +6,7 @@ if (-not $SkillsRoot) {
     if ([string]::IsNullOrWhiteSpace($scriptDir)) {
         $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
     }
-    $SkillsRoot = Join-Path (Split-Path -Parent $scriptDir) 'plugin\skills'
+    $SkillsRoot = Join-Path (Split-Path -Parent (Split-Path -Parent $scriptDir)) 'plugin\skills'
 }
 
 Get-ChildItem -LiteralPath $SkillsRoot -Recurse -Filter '*.md' | ForEach-Object {
