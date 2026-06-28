@@ -23,7 +23,7 @@ if (-not $RepoRoot) {
     if ([string]::IsNullOrWhiteSpace($scriptDir)) {
         $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
     }
-    $RepoRoot = Split-Path -Parent $scriptDir
+    $RepoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 }
 
 $failures = @()

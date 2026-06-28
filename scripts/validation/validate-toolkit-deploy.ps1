@@ -19,7 +19,7 @@ $scriptDir = $PSScriptRoot
 if ([string]::IsNullOrWhiteSpace($scriptDir)) {
     $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 }
-$repoRoot = Split-Path -Parent $scriptDir
+$repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 $pluginId = 'Local.raphadev.antigravity-dev-toolkit'
 $pluginsCandidates = @(
     (Join-Path $env:APPDATA "antigravity-ide\plugins\$pluginId"),

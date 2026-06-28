@@ -162,7 +162,7 @@ public const string DefaultOrderNumber = "ORD-001";
 | **When allowed** | Non-obvious algorithm steps, mandatory regulatory constraints, or required workarounds that cannot be expressed in code alone. |
 | **Forbidden** | Comments that describe what the code does (the code must do that itself). Comments referencing AI, generation, suggestions, or tooling. `// TODO: review this`, `// Generated`, `// AI suggested` patterns. |
 | **Style** | Sentence-case, English, no trailing period. |
-| **Review** | **Blocking** — remove any comment referencing AI or explaining obvious code before merge. |
+| **Review** | **Blocking** - remove any comment referencing AI or explaining obvious code before merge. |
 
 **XML documentation (`<summary>`, `<param>`, `<returns>`, `<remarks>`):**
 
@@ -171,7 +171,7 @@ public const string DefaultOrderNumber = "ORD-001";
 | **Public API only** | Add XML docs only on public members intended for external consumers or library surfaces. |
 | **Human-authored tone** | Write as a developer who owns the code. Concise, precise, no filler. |
 | **Forbidden** | Boilerplate filler, references to AI authorship, generation, or automation. |
-| **Review** | **Blocking** — rewrite or remove any XML doc that references AI before merge. |
+| **Review** | **Blocking** - rewrite or remove any XML doc that references AI before merge. |
 
 ```csharp
 // Wrong - AI trace in comment

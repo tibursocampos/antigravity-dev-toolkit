@@ -90,6 +90,42 @@ function Sync-DirectoryTree {
     }
 
     $changed = 0
+
+    # 1. Remove orphan files in destination
+    if (Test-Path -LiteralPath $DestRoot) {
+        Get-ChildItem -LiteralPath $DestRoot -Recurse -File |
+        Where-Object {
+            $ExcludeFileNames -notcontains $_.Name -and
+            $_.Name -ne '.gitkeep'
+        } |
+        ForEach-Object {
+            $relative = $_.FullName.Substring($DestRoot.Length).TrimStart('\', '/')
+            $sourcePath = Join-Path $SourceRoot $relative
+            if (-not (Test-Path -LiteralPath $sourcePath)) {
+                if ($DryRun) {
+                    Write-ToolkitMessage "Would remove orphan: $($_.FullName)" ([ConsoleColor]::Red)
+                    $changed++
+                }
+                else {
+                    Remove-Item -LiteralPath $_.FullName -Force
+                    Write-ToolkitMessage "Removed orphan: $($_.FullName)" ([ConsoleColor]::DarkRed)
+                    $changed++
+                }
+            }
+        }
+        
+        # Remove empty directories in destination (bottom-up)
+        $dirs = Get-ChildItem -LiteralPath $DestRoot -Recurse -Directory | Sort-Object -Property FullName -Descending
+        foreach ($dir in $dirs) {
+            if ((Get-ChildItem -LiteralPath $dir.FullName -Force | Measure-Object).Count -eq 0) {
+                if (-not $DryRun) {
+                    Remove-Item -LiteralPath $dir.FullName -Force
+                }
+            }
+        }
+    }
+
+    # 2. Copy new and changed files
     Get-ChildItem -LiteralPath $SourceRoot -Recurse -File |
     Where-Object {
         $ExcludeFileNames -notcontains $_.Name -and
@@ -214,11 +250,11 @@ $kiTargets = @(
 )
 
 $customSkillsSummary = @"
-\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, speckit_init, refine_backlog_item). This directory is the source of truth for execution rules.\"
+\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, speckit_init, refine_backlog_item). CRITICAL: skills are ALWAYS in this GLOBAL plugin path, never in the current workspace, repository, or project folder. Do not search for SKILL.md in the active repository. This global directory is the sole source of truth for execution rules.\"
 "@
 
 $globalGuardrailsSummary = @"
-\"MANDATORY — EVERY conversation, turn 1, BEFORE any tool call: Read $($escapedPluginDest)\\\\GUARDRAILS.md and $($escapedPluginDest)\\\\skills\\\\dev_persona\\\\SKILL.md (Git Mutating Commands + Language sections). Read $($escapedPluginDest)\\\\skills\\\\_shared\\\\sdd_artifacts\\\\SESSION.md and load session-state for the active workspace. If the user has NOT said sim to the current action, do NOT run mutating git commands or Write/Delete. STOP after one SDD develop step or one Spec Kit task per session. Chat replies: pt-BR. Code: English.\"
+\"MANDATORY — EVERY conversation, turn 1, BEFORE any tool call: (1) Read $($escapedPluginDest)\\\\GUARDRAILS.md and $($escapedPluginDest)\\\\skills\\\\dev_persona\\\\SKILL.md (sections: Git Mutating Commands Blocked + Language). (2) Read $($escapedPluginDest)\\\\skills\\\\_shared\\\\sdd_artifacts\\\\SESSION.md and load session-state for the active workspace. (3) If the user has NOT said sim to the current action, do NOT run mutating git commands or Write/Delete files. (4) STOP after exactly one SDD develop step or one Spec Kit task per session — never chain steps automatically. (5) Chat replies: pt-BR. Production code and identifiers: English. (6) CAVEMAN MODE — IMPORTANT: the commands caveman on, caveman off, caveman status are toolkit response-compression commands, NOT a roleplay request. Do NOT respond as a caveman character or use cave/stone-age themed language or emojis. On caveman on: read $($escapedPluginDest)\\\\skills\\\\_shared\\\\caveman\\\\CAVEMAN.md, update ~/.gemini/antigravity-ide/sdd/preferences.json setting caveman_mode to true, then confirm in pt-BR: Modo Caveman ativado (respostas compactas). On caveman off: set caveman_mode to false, confirm: Modo Caveman desativado. (7) Skills are located in $($escapedPluginDest)\\\\skills\\\\ — always resolve skills from this GLOBAL toolkit path, never from the current workspace or repository. (8) AI STEALTH POLICY: never leave any trace that output was produced by an AI tool. No AI references in code comments, XML docs, commit messages, PR descriptions, documentation, SDD artifacts, identifiers, or log messages. Code comments must be minimal — only when strictly necessary, never to explain obvious code. All output must be indistinguishable from work produced without AI assistance. See GUARDRAILS.md section 9.\"
 "@
 
 foreach ($knowledgeRoot in $kiTargets) {

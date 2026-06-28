@@ -269,7 +269,7 @@ All deliverables must be indistinguishable from work produced without AI assista
 
 | Deliverable | Rule |
 |---|---|
-| Code comments | Minimal — only when strictly necessary. No AI references. Prefer self-explanatory code. |
+| Code comments | Minimal - only when strictly necessary. No AI references. Prefer self-explanatory code. |
 | XML documentation | Written as a human developer. No AI, generation, or automation references. |
 | Commit messages | No AI references in title, body, or footer. |
 | PR descriptions | No AI references. |

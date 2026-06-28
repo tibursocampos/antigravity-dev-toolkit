@@ -21,6 +21,12 @@ Personal Antigravity IDE plugin toolkit for disciplined software execution: gate
 1. Clone this repository.
 1. Run:
 
+For an interactive menu to deploy, validate, or maintain the toolkit, run:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/toolkit.ps1
+```
+
+Or you can run the sync script directly:
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/sync-antigravity.ps1
 ```
@@ -48,7 +54,9 @@ Individual validators still work in isolation when debugging one check.
 - `plugin/skills/*/SKILL.md`: skill contracts.
 - `plugin/skills/_shared/`: shared guidelines and SDD artifacts.
 - `docs/`: operator and maintainer documentation.
-- `scripts/`: deployment and validation automation.
+- `scripts/`: interactive orchestrator (`toolkit.ps1`) and deployment automation.
+  - `validation/`: test suite.
+  - `maintainers/`: internal utils.
 
 ## Skills
 

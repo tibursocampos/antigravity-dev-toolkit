@@ -60,7 +60,7 @@ function Invoke-ValidationCheck {
     param(
         [string] $Name,
         [string] $ScriptPath,
-        [string[]] $Arguments = @()
+        [hashtable] $Arguments = @{}
     )
 
     Write-Banner "Running: $Name"
@@ -87,10 +87,10 @@ if (-not $Quiet) {
 $results = @()
 
 $coreChecks = @(
-    @{ Name = 'deploy'; Script = 'validate-toolkit-deploy.ps1'; Args = @() },
-    @{ Name = 'skills-structure'; Script = 'validate-skills-structure.ps1'; Args = @() },
-    @{ Name = 'docs-consistency'; Script = 'validate-docs-consistency.ps1'; Args = @() },
-    @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @() }
+    @{ Name = 'deploy'; Script = 'validate-toolkit-deploy.ps1'; Args = @{} },
+    @{ Name = 'skills-structure'; Script = 'validate-skills-structure.ps1'; Args = @{} },
+    @{ Name = 'docs-consistency'; Script = 'validate-docs-consistency.ps1'; Args = @{} },
+    @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @{} }
 )
 
 foreach ($check in $coreChecks) {
@@ -107,7 +107,7 @@ if (-not ($FailFast -and ($results | Where-Object { $_.Status -eq 'FAIL' }))) {
         $result = Invoke-ValidationCheck `
             -Name 'speckit-init' `
             -ScriptPath (Join-Path $scriptDir 'validate-speckit-init.ps1') `
-            -Arguments @('-RepoPath', $RepoPath)
+            -Arguments @{ RepoPath = $RepoPath }
         $results += $result
 
         if ($FailFast -and $result.Status -eq 'FAIL') {
@@ -124,7 +124,7 @@ if (-not ($FailFast -and ($results | Where-Object { $_.Status -eq 'FAIL' }))) {
         $result = Invoke-ValidationCheck `
             -Name 'session-gate' `
             -ScriptPath (Join-Path $scriptDir 'validate-session-gates.ps1') `
-            -Arguments @('-RepoPath', $RepoPath, '-RequiredGate', $RequiredGate)
+            -Arguments @{ RepoPath = $RepoPath; RequiredGate = $RequiredGate }
         $results += $result
     }
     else {
