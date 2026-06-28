@@ -41,4 +41,4 @@ Both can be `repository` or `global`.
 
 ## Skills
 
-See [SKILLS.md](SKILLS.md) for the full 26-entry catalog (24 installed folders + 2 migration aliases).
+See [SKILLS.md](SKILLS.md) for the full 31-entry catalog (29 installed folders + 2 migration aliases).
