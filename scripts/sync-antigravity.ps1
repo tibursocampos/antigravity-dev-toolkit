@@ -268,6 +268,49 @@ foreach ($knowledgeRoot in $kiTargets) {
     $totalChanges += Write-KnowledgeItem -KnowledgeRoot $knowledgeRoot -SubFolder 'global_guardrails' -SummaryJson $globalGuardrailsSummary
 }
 
+# Update skills.json for Global Customizations Root
+$globalConfigRoot = Join-Path $env:USERPROFILE '.gemini\config'
+$skillsJsonPath = Join-Path $globalConfigRoot 'skills.json'
+$skillsDest = Join-Path $pluginDest 'skills'
+
+if (-not $DryRun) {
+    if (-not (Test-Path -LiteralPath $globalConfigRoot)) {
+        New-Item -ItemType Directory -Path $globalConfigRoot -Force | Out-Null
+    }
+
+    $skillsJsonContent = $null
+    if (Test-Path -LiteralPath $skillsJsonPath) {
+        try {
+            $skillsJsonContent = Get-Content -LiteralPath $skillsJsonPath -Raw | ConvertFrom-Json
+        } catch {}
+    }
+
+    if ($null -eq $skillsJsonContent) {
+        $skillsJsonContent = @{ entries = @() }
+    } elseif ($null -eq $skillsJsonContent.entries) {
+        $skillsJsonContent | Add-Member -NotePropertyName entries -NotePropertyValue @()
+    }
+
+    $entryExists = $false
+    foreach ($entry in $skillsJsonContent.entries) {
+        if ($entry.path -eq $skillsDest) {
+            $entryExists = $true
+            break
+        }
+    }
+
+    if (-not $entryExists) {
+        $skillsJsonContent.entries += @{ path = $skillsDest }
+        $jsonString = $skillsJsonContent | ConvertTo-Json -Depth 5
+        [System.IO.File]::WriteAllText($skillsJsonPath, $jsonString, [System.Text.Encoding]::UTF8)
+        Write-ToolkitMessage "Added toolkit skills to: $skillsJsonPath" ([ConsoleColor]::Green)
+        $totalChanges++
+    }
+} else {
+    Write-ToolkitMessage "Would update skills registration in: $skillsJsonPath" ([ConsoleColor]::Cyan)
+    $totalChanges++
+}
+
 Write-Host ''
 if ($totalChanges -eq 0) {
     Write-ToolkitMessage 'Deploy complete - already up to date (idempotent).' ([ConsoleColor]::Green)
