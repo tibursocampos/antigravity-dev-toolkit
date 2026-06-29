@@ -8,3 +8,4 @@ Guides in this folder use current naming and guardrail behavior.
 4. [04-speckit-workflow.md](04-speckit-workflow.md) — Spec Kit flow with manifest v2.
 5. [05-caveman-mode.md](05-caveman-mode.md) — Response compression behavior and hard exclusions.
 6. [06-developer-skills.md](06-developer-skills.md) — Specialized engineering skills (`refactor`, `api_integrate`, `performance_profile`, `containerize`, `i18n_manager`).
+7. [07-scripts-and-toolkit.md](07-scripts-and-toolkit.md) — Orchestration, synchronization, and testing infrastructure (`toolkit.ps1`, `sync-antigravity.ps1`, `validation/`).

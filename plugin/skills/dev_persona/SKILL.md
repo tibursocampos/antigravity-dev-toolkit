@@ -232,7 +232,12 @@ Participation:
 | `sdd_spec` | Create PRD |
 | `sdd_plan` | Create PLAN from PRD |
 | `sdd_develop` | Execute one PLAN step |
-| `developer` | Small/medium implementation without full SDD |
+| `developer` | Router: invokes the correct specialized developer skill based on stack |
+| `dotnet_developer` | Small/medium C#/.NET implementation without full SDD |
+| `python_developer` | Small/medium Python implementation without full SDD |
+| `react_developer` | Small/medium React implementation without full SDD |
+| `angular_developer` | Small/medium Angular implementation without full SDD |
+| `javascript_developer` | Small/medium Node/JS/TS implementation without full SDD |
 | `fix_build` | Diagnose and fix build/test failures |
 | `code_review` | Review branch/diff with severity report |
 | `commit` | Prepare and create conventional commit |
