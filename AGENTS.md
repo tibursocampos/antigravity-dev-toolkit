@@ -4,7 +4,7 @@ This file is the human-readable guardrails reference for the toolkit repository.
 
 ## Scope
 
-Applies to all toolkit skills, including SDD, Spec Kit, developer, operational, and infrastructure skills.
+Applies to all toolkit skills, including SDD, Spec Kit, developer, operational, infrastructure, and frontend architecture skills (e.g., `blip_plugin_developer`).
 
 ## Enforcement model
 

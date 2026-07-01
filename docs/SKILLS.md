@@ -2,7 +2,7 @@
 
 This document lists the full toolkit catalog using underscore skill names for invocation.
 
-## Installed skills (29)
+## Installed skills (37)
 
 1. `dev_persona` — Router, language policy, workflow policy, and global guidance.
 2. `sdd_spec` — Build PRD artifact for classic SDD.
@@ -33,11 +33,19 @@ This document lists the full toolkit catalog using underscore skill names for in
 27. `performance_profile` — Profile and optimize hot paths.
 28. `containerize` — Generate Docker/Docker Compose scaffolding.
 29. `i18n_manager` — Extract and refactor localization literals.
+30. `add_migrations` — EF Core migration discovery and add.
+31. `create_message_consumer` — Message consumer scaffold (bus detected via Grep).
+32. `impeccable_developer` — Orchestrator for premium UI design.
+33. `impeccable_ui` — Visual and motion design specialist.
+34. `impeccable_components` — HTML semantic and components structure architect.
+35. `impeccable_state` — UX flow and visual state designer.
+36. `impeccable_a11y` — Accessibility auditor.
+37. `blip_plugin_developer` — Orchestrate and generate React Plugins for the Blip platform.
 
 ## Compatibility aliases (2)
 
-30. `plan_repo_docs` — Migration alias to `document_plan`.
-31. `document_repo` — Migration alias to `document_implement`.
+44. `plan_repo_docs` — Migration alias to `document_plan`.
+45. `document_repo` — Migration alias to `document_implement`.
 
 These aliases are documented for migration/handoff continuity; the installed folders remain `document_plan` and `document_implement`.
 

@@ -45,7 +45,7 @@ function Run-Script {
         $procArgs += $ArgsStr.Split(' ', [StringSplitOptions]::RemoveEmptyEntries)
     }
 
-    & $pwshExe @procArgs
+    & $pwshExe @procArgs | Out-Host
     
     if ($LASTEXITCODE -eq 0) {
         Write-Host ">>> Sucesso: $Path" -ForegroundColor Green
@@ -62,29 +62,29 @@ while ($true) {
 
     switch ($choice) {
         '1' {
-            Run-Script "sync-antigravity.ps1"
+            $null = Run-Script "sync-antigravity.ps1"
         }
         '2' {
-            Run-Script "validation\validate-all.ps1"
+            $null = Run-Script "validation\validate-all.ps1"
         }
         '3' {
             if (Run-Script "sync-antigravity.ps1") {
-                Run-Script "validation\validate-all.ps1"
+                $null = Run-Script "validation\validate-all.ps1"
             }
         }
         '4' {
-            Run-Script "validation\validate-all.ps1" "-IncludeSpeckit -IncludeSessionGate"
+            $null = Run-Script "validation\validate-all.ps1" "-IncludeSpeckit -IncludeSessionGate"
         }
         '5' {
             Write-Host "`nIniciando Suíte de Manutenção..." -ForegroundColor Cyan
-            Run-Script "maintainers\normalize-skill-encoding.ps1"
-            Run-Script "maintainers\fix-skill-gates.ps1"
-            Run-Script "maintainers\inject-skill-gates.ps1"
+            $null = Run-Script "maintainers\normalize-skill-encoding.ps1"
+            $null = Run-Script "maintainers\fix-skill-gates.ps1"
+            $null = Run-Script "maintainers\inject-skill-gates.ps1"
         }
         '6' {
             Write-Host "`nCertifique-se de que o npm está instalado." -ForegroundColor Yellow
             if (Run-Script "setup-speckit.ps1") {
-                Run-Script "configure-repo-sdd.ps1"
+                $null = Run-Script "configure-repo-sdd.ps1"
             }
         }
         '0' {

@@ -90,7 +90,8 @@ $coreChecks = @(
     @{ Name = 'deploy'; Script = 'validate-toolkit-deploy.ps1'; Args = @{} },
     @{ Name = 'skills-structure'; Script = 'validate-skills-structure.ps1'; Args = @{} },
     @{ Name = 'docs-consistency'; Script = 'validate-docs-consistency.ps1'; Args = @{} },
-    @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @{} }
+    @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @{} },
+    @{ Name = 'impeccable-skills'; Script = 'validate-impeccable-skills.ps1'; Args = @{} }
 )
 
 foreach ($check in $coreChecks) {

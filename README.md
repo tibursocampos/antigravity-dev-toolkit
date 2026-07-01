@@ -60,9 +60,9 @@ Individual validators still work in isolation when debugging one check.
 
 ## Skills
 
-The toolkit documents **26 skill entries**:
+The toolkit documents **27 skill entries**:
 
-- **24 installed skill folders** in `plugin/skills/`.
+- **25 installed skill folders** in `plugin/skills/`, including native support for creating Blip Plugins (`blip_plugin_developer`).
 - **2 migration aliases** kept in docs for compatibility handoffs.
 
 See full catalog in [docs/SKILLS.md](docs/SKILLS.md).

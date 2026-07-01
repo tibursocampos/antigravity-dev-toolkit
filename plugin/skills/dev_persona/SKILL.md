@@ -252,6 +252,7 @@ Participation:
 | `performance_profile` | Profile bottlenecks and optimize |
 | `containerize` | Create Docker/container setup |
 | `i18n_manager` | Extract strings and apply localization flow |
+| `blip_plugin_developer` | Orchestrate and generate React Plugins for the Blip platform |
 
 ---
 

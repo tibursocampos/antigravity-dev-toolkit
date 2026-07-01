@@ -78,6 +78,22 @@ foreach ($dir in $skillDirs) {
     if ($content -notmatch [regex]::Escape($stepMarker)) {
         $failures += "$relativeSkill : missing '$stepMarker'"
     }
+
+    $lineCount = @(Get-Content -LiteralPath $skillPath).Count
+    if ($lineCount -gt 500) {
+        $failures += "$relativeSkill : SKILL.md exceeds 500 lines ($lineCount)"
+    }
+    elseif ($lineCount -gt 350) {
+        Write-Warning "$relativeSkill : SKILL.md is $lineCount lines (consider progressive disclosure; warn threshold 350)"
+    }
+
+    $workflowSkills = @(
+        'speckit_plan', 'speckit_spec', 'speckit_develop', 'sdd_spec', 'sdd_plan', 'sdd_develop',
+        'code_review', 'test_coverage', 'developer', 'document_plan', 'document_implement'
+    )
+    if ($dir.Name -in $workflowSkills -and $lineCount -lt 100) {
+        Write-Warning "$relativeSkill : workflow skill is only $lineCount lines (soft minimum ~100)"
+    }
 }
 
 $manifestPath = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\sdd\manifest.json'
