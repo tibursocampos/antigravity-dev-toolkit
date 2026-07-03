@@ -1,8 +1,9 @@
----
-name: blip-plugin-developer
+﻿---
+name: blip_plugin_developer
 description: >
-  Orchestrate and generate React Plugins for the Blip platform. Independent skill to coordinate development
-  with repository fallback (ADO to GitHub), flexible SDD/SpecKit integration, and complete documentation setup.
+  Orchestrate new Blip React plugin projects using create-blip-extension (CRA scaffold), config:plugin setup,
+  SDD/Spec Kit documentation flow, and handoff to react_developer or impeccable. Use when the user says
+  "use skill blip_plugin_developer", "blip plugin", or wants to scaffold a Blip extension. Not for backend-only work.
 ---
 
 ## STOP - Read before ANY tool call
@@ -26,53 +27,133 @@ Gate check:
 
 ---
 
-# Skill: blip_plugin_developer
-
 ## Trigger
 
-Use when user asks for `use skill blip_plugin_developer` or wants to create a new Blip React Plugin.
+- User asks for `use skill blip_plugin_developer`, `blip plugin`, or a **new** Blip React extension
+- User wants scaffold + documentation setup before implementation
+
+For **existing** Blip plugin repos ( `blip-ds` in `package.json` ), use `use skill react_developer` instead.
 
 ## Outcome
 
-A new locally cloned template for a Blip Plugin with the correct name, integrated SDD/SpecKit workflow setup, and a clear handoff to execution specialists.
+A correctly scaffolded Blip plugin repo with `config:plugin` applied, profile documented, SDD/Spec Kit path chosen, and clear handoff to implementation skills.
 
 ## Lazy-load references
 
-- Branch and commit rules: `dev_persona`
-- React/Frontend guidelines: `_shared/react_guidelines/` and `_shared/frontend_guidelines/`
-- Blip specific guidelines: `_shared/blip_guidelines/`
-- Context and Git policy: `dev_persona` context management
-- Caveman rules (if active): `_shared/caveman/CAVEMAN.md`
+| When | Path (after `sync-antigravity.ps1`) |
+|------|--------------------------------|
+| Integration overview | `docs/blip-plugin-integration.md` (in target or toolkit repo) |
+| Architecture | `{pluginRoot}/skills/_shared/blip_guidelines/plugin-architecture.md` |
+| Design system | `{pluginRoot}/skills/_shared/blip_guidelines/design-system.md` |
+| Iframe messages | `{pluginRoot}/skills/_shared/blip_guidelines/blip-iframe-messages.md` |
+| Auth (Full profile) | `{pluginRoot}/skills/_shared/blip_guidelines/auth-and-permissions.md` |
+| External API | `{pluginRoot}/skills/_shared/blip_guidelines/external-api-integration.md` |
+| Deploy / CI | `{pluginRoot}/skills/_shared/blip_guidelines/deploy-and-ci.md` |
+| React guidelines | `{pluginRoot}/skills/_shared/react_guidelines/` |
+| Frontend practices | `{pluginRoot}/skills/_shared/frontend_guidelines/frontend-practices.md` |
+| Design brief template | `{pluginRoot}/skills/impeccable/reference/DESIGN-BRIEF-TEMPLATE.md` |
+| Branch / commit | `dev_persona` |
+
+Do not preload unrelated guideline trees.
+
+## Must not (defaults)
+
+- Use `cra-template-blip-plugin` (microbundle) as scaffold default
+- Clone ADO `package-plugin-template` silently without user confirmation
+- Skip `npm run config:plugin`
+- Skip `sdd_spec` / `speckit_spec` when starting SDD from scratch
+- Hand off to removed Antigravity persona skills (use `impeccable shape` or `react_developer` instead)
+- Mix backend API implementation into the plugin scaffold session
 
 ## Process
 
-### 1. Template Clone & Setup (Infrastructure First)
-Before cloning, ask the user (pt-BR):
-"Onde deseja criar o projeto do plugin? (No diretório atual `./` ou deseja informar um novo caminho e nome?)"
-Wait for the answer. Once confirmed, clone the template into the requested directory:
-- **First attempt (ADO)**: `git clone https://curupira@dev.azure.com/curupira/CS%20-%20Community/_git/package-plugin-template <plugin-name>`
-- **Fallback (GitHub)**: If ADO fails (permissions/network), silently fallback and inform user: `git clone https://github.com/takenet/cra-template-blip-plugin.git <plugin-name>` (or use `npx`).
+### Phase 1 - Scaffold (infrastructure first)
 
-**Setup and Cleanup:**
-- Navigate into `<plugin-name>`.
-- Remove the `.git` folder (`rm -rf .git`).
-- Replace any placeholder (`NEW_PACKAGE_NAME` or similar) with the actual plugin name in `package.json` and other configuration files.
-- Update the `.gitignore` file to ignore agent-generated artifacts and local documentation folders (e.g., `prd/`, `plan/`, `specify/`, `.gemini/`, `.agents/`).
+Ask the user **(pt-BR)**:
 
-### 2. SDD / Spec Kit Integration (Documentation Phase)
-Once the repository exists and you are inside the project folder, ask the user (pt-BR):
-"Qual fluxo de documentação você deseja usar? (SDD, Spec Kit, ou já possui um .md pronto?)"
-Wait for the answer. Because the repository now exists, `manifest.json` will correctly map the save/load paths for planning artifacts (like PRDs).
+1. "Onde deseja criar o projeto do plugin? (diretÃ³rio atual `./` ou informe caminho e nome `<plugin-name>`)"
+2. "Qual perfil? **Lite** (pÃ¡gina Ãºnica, sem auth) ou **Full** (multi-rota, AuthProvider, buckets)?"
+3. "O plugin consome API REST externa (ex.: .NET) ou apenas resources Blip?"
 
-### 3. Handoff (Implementation Phase)
-Once the documentation and scope are defined (Phase 2), the actual implementation must begin using the chosen pipeline.
-Ask the user (pt-BR):
-"Qual persona de desenvolvimento você deseja utilizar para escrever o código: `react_developer` (foco em lógica padrão) ou `impeccable_developer` (foco premium em UX/UI e design system)?"
+Wait for answers before running scaffold commands.
 
-Wait for the user's choice. Then do the following:
-1. **Persist the Choice:** Create or update the `.agents/AGENTS.md` file in the project root with the following rule:
-   `Para este projeto, a persona oficial de execução de código frontend é o <chosen_persona>. As skills de desenvolvimento (como sdd_develop) DEVEM atuar sob esta persona ao implementar os passos.`
-2. **Instruct the Next Step:** Provide the exact command the user must run to continue, based on the documentation flow chosen in Phase 2.
-   - **If SDD was chosen:** "Para seguir com o fluxo SDD, execute o comando: `use skill sdd_plan` (referenciando o PRD). Depois, execute os passos com `sdd_develop`."
-   - **If Spec Kit was chosen:** "Para seguir com o fluxo Spec Kit, execute o comando: `use skill speckit_plan` e depois desenvolva com `speckit_develop`."
-   - **If Manual/No Flow:** Instruct the user to invoke the chosen persona directly with the `.md` file provided.
+**Official scaffold:**
+
+```powershell
+npm create blip-extension@latest <plugin-name>
+cd <plugin-name>
+npm install
+npm run config:plugin
+```
+
+- `config:plugin` replaces `PLUGIN_NAME` in charts and `appsettings.json`
+- Remove template `.git` only if the user wants a fresh repo history (`Remove-Item -Recurse -Force .git` on Windows)
+- Update `.gitignore` for agent artifacts (`PRD/`, `PLAN/`, `.specify/` if desired locally)
+
+**Portal checklist (document for user):**
+
+- Blip portal -> advanced settings -> Plugins JSON
+- Register local URL `http://localhost:3000` for dev smoke
+- Never commit API keys or portal tokens
+
+**Validate before Phase 2:**
+
+```powershell
+npm run build
+```
+
+Document manual smoke: `npm start` -> open inside Blip portal -> verify iframe height and toast.
+
+**Optional internal template (not default):** ADO `package-plugin-template` only if user explicitly requests and confirms access. Do not fallback silently.
+
+### Phase 2 - Documentation flow
+
+Ask **(pt-BR)**: "Qual fluxo de documentacao? (SDD, Spec Kit, PRD/brief existente, ou escopo informal?)"
+
+| Choice | Next command (new session each step) |
+|--------|--------------------------------------|
+| **SDD** | `use skill sdd_spec` -> `use skill sdd_plan` -> `use skill sdd_develop` |
+| **Spec Kit** | `use skill speckit_spec` -> `use skill speckit_plan` -> `use skill speckit_develop` |
+| **Existing PRD/brief** | Skip spec; proceed to `sdd_plan` or `speckit_plan` with provided doc |
+| **Informal / small** | Document scope in `README.md`; handoff directly to implementation |
+
+**Do not** jump to `sdd_plan` without a PRD/spec when starting SDD from scratch.
+
+Record profile (Lite/Full) and API type (Blip resources vs external REST) in PRD or README.
+
+### Phase 3 - Handoff (implementation)
+
+Ask **(pt-BR)** what to implement next. Route by scope:
+
+| Scope | Next step |
+|-------|-----------|
+| Net-new UI / redesign | `use skill impeccable shape` -> `docs/DESIGN-BRIEF.md` with `target_stack: react` and Blip/BDS notes in section 9 |
+| Plugin implementation | `use skill react_developer` (auto-loads `blip_guidelines/` when `blip-ds` present) |
+| Backend API (.NET) | `use skill dotnet_developer` in **separate repo** - not in plugin scaffold session |
+
+**DESIGN-BRIEF:** use template at `{pluginRoot}/skills/impeccable/reference/DESIGN-BRIEF-TEMPLATE.md`. One session = design **or** implementation, not both.
+
+**External API:** if Phase 1 answer was REST backend, remind user to read `external-api-integration.md` during `react_developer` sessions.
+
+## Reference profiles
+
+| Profile | Reference repo | Notes |
+|---------|----------------|-------|
+| **Lite** | `blip-na-produtization` | Single route, BDS web components, no AuthProvider |
+| **Full** | `blip-stellantis-plugin` | Multi-route, AuthProvider, buckets, blip-ds-react |
+
+Load `auth-and-permissions.md` only for Full profile.
+
+## Handoff
+
+| Situation | Next |
+|-----------|------|
+| Implement UI/features | `use skill react_developer` |
+| Design new screens | `use skill impeccable shape` |
+| Backend API | `use skill dotnet_developer` (separate repo) |
+| Full SDD feature | `use skill sdd_spec` |
+| Commit (after implementation) | `use skill commit` |
+
+## Related docs
+
+Toolkit maintainer doc: `docs/blip-plugin-integration.md`

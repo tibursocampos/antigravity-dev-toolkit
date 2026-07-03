@@ -1,8 +1,0 @@
-﻿feat(skills): introduce impeccable ecosystem and blip plugin developer
-
-- Add new Impeccable ecosystem skills (impeccable_developer, impeccable_ui, impeccable_components, impeccable_state, impeccable_a11y)
-- Add blip_plugin_developer for React-based Blip Plugins
-- Add add_migrations and create_message_consumer skills
-- Update SKILLS.md and README.md to reflect the new total of 37 installed skills
-- Update AGENTS.md scope to include frontend architecture skills
-- Enhance validation scripts to include line count limits for skills and execute new checks

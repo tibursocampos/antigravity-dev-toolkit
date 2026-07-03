@@ -60,9 +60,9 @@ Individual validators still work in isolation when debugging one check.
 
 ## Skills
 
-The toolkit documents **27 skill entries**:
+The toolkit documents **38 skill entries**:
 
-- **25 installed skill folders** in `plugin/skills/`, including native support for creating Blip Plugins (`blip_plugin_developer`).
+- **36 installed skill folders** in `plugin/skills/`, including frontend design (`impeccable`), Blip plugin scaffold (`blip_plugin_developer`), and stack developers (`vue_developer`, `blazor_developer`, `electron_developer`).
 - **2 migration aliases** kept in docs for compatibility handoffs.
 
 See full catalog in [docs/SKILLS.md](docs/SKILLS.md).
@@ -83,3 +83,5 @@ Before any mutating operation, the agent must:
 - [docs/sdd-workflow.md](docs/sdd-workflow.md)
 - [docs/shared-guidelines.md](docs/shared-guidelines.md)
 - [docs/guides/README.md](docs/guides/README.md)
+- [docs/impeccable-integration.md](docs/impeccable-integration.md)
+- [docs/blip-plugin-integration.md](docs/blip-plugin-integration.md)

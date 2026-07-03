@@ -9,3 +9,4 @@ Guides in this folder use current naming and guardrail behavior.
 5. [05-caveman-mode.md](05-caveman-mode.md) — Response compression behavior and hard exclusions.
 6. [06-developer-skills.md](06-developer-skills.md) — Specialized engineering skills (`refactor`, `api_integrate`, `performance_profile`, `containerize`, `i18n_manager`).
 7. [07-scripts-and-toolkit.md](07-scripts-and-toolkit.md) — Orchestration, synchronization, and testing infrastructure (`toolkit.ps1`, `sync-antigravity.ps1`, `validation/`).
+8. [08-stack-developers.md](08-stack-developers.md) — Stack detection, DESIGN-BRIEF handoff, Blip and Impeccable flows.

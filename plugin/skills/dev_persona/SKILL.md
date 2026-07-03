@@ -232,12 +232,21 @@ Participation:
 | `sdd_spec` | Create PRD |
 | `sdd_plan` | Create PLAN from PRD |
 | `sdd_develop` | Execute one PLAN step |
+| `speckit_setup` | Install Spec Kit prerequisites |
+| `speckit_init` | Initialize `.specify/` and validate constitution |
+| `speckit_spec` | Create `spec.md` under `.specify/specs/` |
+| `speckit_plan` | Generate `plan.md` and `tasks.md` |
+| `speckit_develop` | Execute one Spec Kit task |
 | `developer` | Router: invokes the correct specialized developer skill based on stack |
+| `impeccable` | Frontend design router (shape, audit, polish) -> DESIGN-BRIEF handoff |
 | `dotnet_developer` | Small/medium C#/.NET implementation without full SDD |
 | `python_developer` | Small/medium Python implementation without full SDD |
 | `react_developer` | Small/medium React implementation without full SDD |
 | `angular_developer` | Small/medium Angular implementation without full SDD |
 | `javascript_developer` | Small/medium Node/JS/TS implementation without full SDD |
+| `vue_developer` | Small/medium Vue 3 implementation without full SDD |
+| `blazor_developer` | Small/medium Blazor UI implementation without full SDD |
+| `electron_developer` | Small/medium Electron desktop implementation without full SDD |
 | `fix_build` | Diagnose and fix build/test failures |
 | `code_review` | Review branch/diff with severity report |
 | `commit` | Prepare and create conventional commit |
@@ -252,7 +261,9 @@ Participation:
 | `performance_profile` | Profile bottlenecks and optimize |
 | `containerize` | Create Docker/container setup |
 | `i18n_manager` | Extract strings and apply localization flow |
-| `blip_plugin_developer` | Orchestrate and generate React Plugins for the Blip platform |
+| `add_migrations` | EF Core migration discovery and add |
+| `create_message_consumer` | Message consumer scaffold (bus detected via Grep) |
+| `blip_plugin_developer` | Orchestrate new Blip React plugin projects (create-blip-extension) |
 
 ---
 

@@ -91,7 +91,9 @@ $coreChecks = @(
     @{ Name = 'skills-structure'; Script = 'validate-skills-structure.ps1'; Args = @{} },
     @{ Name = 'docs-consistency'; Script = 'validate-docs-consistency.ps1'; Args = @{} },
     @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @{} },
-    @{ Name = 'impeccable-skills'; Script = 'validate-impeccable-skills.ps1'; Args = @{} }
+    @{ Name = 'impeccable-skill'; Script = 'validate-impeccable-skill.ps1'; Args = @{} },
+    @{ Name = 'blip-plugin-skill'; Script = 'validate-blip-plugin-skill.ps1'; Args = @{} },
+    @{ Name = 'frontend-ecosystem'; Script = 'validate-frontend-ecosystem.ps1'; Args = @{} }
 )
 
 foreach ($check in $coreChecks) {

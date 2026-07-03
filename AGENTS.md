@@ -78,6 +78,9 @@ Individual checks (also invoked by `validate-all.ps1`):
 - `scripts/validation/validate-skills-structure.ps1`
 - `scripts/validation/validate-docs-consistency.ps1`
 - `scripts/validation/validate-skills-english.ps1`
+- `scripts/validation/validate-impeccable-skill.ps1`
+- `scripts/validation/validate-blip-plugin-skill.ps1`
+- `scripts/validation/validate-frontend-ecosystem.ps1`
 - `scripts/validation/validate-session-gates.ps1` (optional via `-IncludeSessionGate`)
 - `scripts/validation/validate-speckit-init.ps1` (optional via `-IncludeSpeckit`)
 
@@ -99,3 +102,15 @@ Persisted in `~/.gemini/antigravity-ide/sdd/preferences.json` as `caveman_mode`.
 - `caveman status`: report current mode.
 
 Never compress confirmation gates, artifact drafts, or safety messages.
+
+## Optional frontend workflows
+
+| Flow | Steps |
+|------|--------|
+| Frontend design -> implement | `impeccable shape` -> `DESIGN-BRIEF.md` -> `*_developer` (one session per step) |
+| Blip plugin scaffold -> implement | `blip_plugin_developer` -> SDD/spec -> `react_developer` (one session per step) |
+| Net-new UI without brief | `use skill impeccable init` or `impeccable shape` before stack implementation |
+
+Integration docs: [docs/impeccable-integration.md](docs/impeccable-integration.md), [docs/blip-plugin-integration.md](docs/blip-plugin-integration.md).
+
+Stack developers: `react_developer`, `angular_developer`, `vue_developer`, `blazor_developer`, `electron_developer`, `javascript_developer`. See [docs/guides/08-stack-developers.md](docs/guides/08-stack-developers.md).

@@ -1,37 +1,127 @@
 # Blip Plugin Architecture
 
-This document describes the architectural standards for building Blip React plugins, based on the official templates and reference projects.
+Standards for Blip React plugins, based on `blip-stellantis-plugin` (Full) and `blip-na-produtization` (Lite).
 
-## 1. Iframe Message Proxy
-Blip plugins run inside an iframe within the Blip portal. All communication with the parent portal (like showing toast notifications, getting user tokens, or resizing the window) must be done via `iframe-message-proxy`.
+## Directory layout
 
-### Initialization
-The iframe must be initialized early (e.g., in `src/lib/setup/iframe.js`) to expand and take the remaining height of the portal:
+```
+src/
+  index.{js,jsx}              # bootstrap: imports lib/setup/* then renders root
+  App.jsx / Routes.jsx        # React Router v6
+  config/appsettings.json     # blip, language, segment.prefix, api
+  lib/setup/                  # blip-ds, fonts, i18n, iframe, root
+  lib/services/               # resource.js, command.js, domain services
+  lib/iframe-messages/        # showToast, showModal wrappers
+  lib/constants.js
+  assets/locales/{en,es,pt}/
+charts/{plugin-name}/         # Helm (production)
+azure-pipelines.yml
+Dockerfile
+tailwind.config.js            # tailwind-blip-ds plugin
+cypress/                      # component tests + nyc coverage
+```
+
+Do not create parallel trees (e.g. `src/component/` and `src/components/`). Follow the scaffold layout.
+
+## Global setup (`src/lib/setup/`)
+
+Keep `index.js` thin. Import setup modules in order:
+
+1. `blip-ds.js` - register web components
+2. `fonts.js` - Nunito Sans via `@fontsource/nunito-sans`
+3. `i18n.js` - sync language with portal
+4. `iframe.js` - listen + heightChange
+5. `root.js` - render React tree
+
 ```javascript
+// src/lib/setup/blip-ds.js
+import { applyPolyfills, defineCustomElements } from 'blip-ds/loader';
+
+void applyPolyfills().then(() => defineCustomElements(window));
+```
+
+## Iframe initialization
+
+Prefer `blip-iframe` facade when available; fallback to raw proxy:
+
+```javascript
+import iframe from 'blip-iframe';
 import { IframeMessageProxy } from 'iframe-message-proxy';
 
 IframeMessageProxy.listen();
-
-// The iframe's parent minimum height is 100%. By setting its height to 0px,
-// the extension will take 100% of the remaining height.
-void IframeMessageProxy.sendMessage({
-  action: 'heightChange',
-  content: 0,
-});
+void iframe.heightChange(0);
 ```
 
-## 2. Global Setup Structure
-Instead of bloating `index.js`, separate all setup scripts inside `src/lib/setup/` and import them in the entry point:
-- `src/lib/setup/blip-ds.js`
-- `src/lib/setup/fonts.js`
-- `src/lib/setup/i18n.js`
-- `src/lib/setup/iframe.js`
+Setting height to `0` makes the iframe expand to 100% of remaining portal height.
 
-## 3. Routing
-Use **React Router v6**. Implement routing using `createBrowserRouter` and `RouterProvider`. Ensure that a root `Layout` component wraps all children for consistent page structures, and an `ErrorPage` is mapped for fallbacks.
+See `blip-iframe-messages.md` for toast, modal, and command actions.
 
-## 4. Internationalization (i18n)
-Plugins must be built with i18n from day one, using `react-i18next`. Setup translations using `i18next` and ensure the language syncs with the Blip portal configuration (usually passed during the plugin load).
+## Routing
 
-## 5. Testing
-Use **Cypress** for component testing instead of standard Jest DOM testing where possible. Coverage reporting is configured via `nyc` and `@cypress/code-coverage`.
+Use **React Router v6** with `createBrowserRouter` and `RouterProvider`:
+
+- Root `Layout` wraps all routes
+- `ErrorPage` for fallbacks
+- **Full profile:** wrap routes with `AuthProvider` (see `auth-and-permissions.md`)
+- **Lite profile:** single route, no auth wrapper
+
+## Internationalization
+
+Use `react-i18next` + `i18next`. Locale files under `assets/locales/{en,es,pt}/`.
+
+Sync language with the Blip portal via iframe messages (`getCurrentLanguage` or portal config in `appsettings.json`).
+
+Default language in `config/appsettings.json`:
+
+```json
+{
+  "language": {
+    "default": "pt",
+    "debug": false
+  }
+}
+```
+
+## Blip resources vs external API
+
+| Pattern | When | Service |
+|---------|------|---------|
+| Blip Router resources | Config stored in Blip | `lib/services/resource.js` via `sendCommand` |
+| External REST API | Custom backend (.NET, etc.) | HTTP client + `external-api-integration.md` |
+
+Do not mix both patterns in the same service module.
+
+## Local development
+
+Use `lib/utils/isDev.js` to branch behavior:
+
+- **Dev:** mock resources in `localStorage`, stub token/user
+- **Prod:** iframe messages only
+
+Never ship dev mocks behind a loose env check in production builds.
+
+## Testing
+
+Use **Cypress component tests** (not Jest DOM) because:
+
+- JSDOM does not support BDS web components
+- Cypress renders real components with coverage via `@cypress/code-coverage` and `nyc`
+
+```bash
+npm run test:cypress
+npm run test:coverage
+npm run build
+```
+
+## appsettings.json
+
+Key sections:
+
+| Key | Purpose |
+|-----|---------|
+| `blip.domain`, `blip.url` | Portal identity |
+| `segment.prefix` | Analytics segment (must match plugin name after `config:plugin`) |
+| `api.url`, `api.key` | External API (leave empty in repo; inject at deploy) |
+| `language.default` | Default locale |
+
+Never commit real API keys or tokens.
