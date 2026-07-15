@@ -127,3 +127,7 @@ Canonical details: [docs/SKILLS.md](docs/SKILLS.md).
 3. Respect one-step-per-session in `sdd_develop`, Forma C O3, and `document_implement`.
 4. Never auto-run mutating git; confirm with `sim`.
 5. This repo does not accept community PRs — see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Raphael Campos. See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution policy (clone/fork OK; no community PRs).
