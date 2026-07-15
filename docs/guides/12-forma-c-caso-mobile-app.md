@@ -29,7 +29,7 @@ Forma A basta para **uma** fatia clara (ex.: só CRUD). Forma B se o pedido aind
 
 ## Pré-requisitos
 
-1. Toolkit sincronizado: `.\scripts\sync-cursor.ps1` ([Install](../INSTALL.md)).
+1. Toolkit sincronizado: `.\scripts\sync-antigravity.ps1` ([Install](../INSTALL.md)).
 2. Workspace do app (repo novo ou pasta vazia) aberto no Cursor, modo **Agent**.
 3. Branch de feature válida quando houver git.
 4. Confirmações **sim** nos gates high-cost.
@@ -233,7 +233,7 @@ Em greenfield isso atualiza inventário/tech-stack depois que a solution MAUI ex
 ### Build quebrado
 
 ```text
-use skill fix_build
+use skill repair_dotnet_build
 ```
 
 ---
@@ -296,7 +296,7 @@ Código MAUI (`.csproj`, pages, services) no workspace do app — não dentro de
 | Step N `refresh-light` | Pós-código O3 |
 | `use skill code_review` · `use skill test_coverage` · `use skill commit` | Entrega |
 | `use skill impeccable` (opcional) | Design UI |
-| `use skill fix_build` | Se build falhar |
+| `use skill repair_dotnet_build` | Se build falhar |
 
 ---
 
@@ -322,4 +322,4 @@ Código MAUI (`.csproj`, pages, services) no workspace do app — não dentro de
 | [02b-dotnet_developer.md](02b-dotnet_developer.md) | Atalho .NET |
 | [08-stack-developers.md](08-stack-developers.md) | Stack + impeccable |
 | [03-code_review.md](03-code_review.md) | Review |
-| [05-operational-skills.md](05-operational-skills.md) | commit / fix_build |
+| [05-operational-skills.md](05-operational-skills.md) | commit / repair_dotnet_build |

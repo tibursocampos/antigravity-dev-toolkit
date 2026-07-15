@@ -38,7 +38,7 @@ When in doubt, prefer SDD. You can always stop after `spec` if the PRD reveals t
 
 ## Prerequisites
 
-1. **Toolkit installed** - run `scripts/sync-cursor.ps1` from the toolkit repo so skills live under ``plugin/skills/``. See [Install](../INSTALL.md).
+1. **Toolkit installed** - run `scripts/sync-antigravity.ps1` from the toolkit repo so skills live under ``plugin/skills/``. See [Install](../INSTALL.md).
 2. **Target project open in Cursor** - the repo you are building (not necessarily `antigravity-dev-toolkit`).
 3. **Agent mode** - SDD writes files (PRD, PLAN, code). Plan or Ask mode drafts in chat only until you confirm **sim** (yes) for the write.
 4. **Feature branch** - before `sdd_develop`, work on `feature/<slug>` or `feat/<id>`, not `main`, `master`, or `develop`.

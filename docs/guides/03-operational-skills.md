@@ -5,7 +5,7 @@ Operational skills keep branches healthy and merge-ready.
 ## Quality and validation
 
 - `use skill code_review`
-- `use skill fix_build`
+- `use skill repair_dotnet_build`
 - `use skill test_coverage`
 
 ## Git execution
@@ -27,7 +27,7 @@ One docs-plan step per session applies to `document_implement`.
 
 ## Backlog shaping flow
 
-- `use skill refine_backlog_item`
-- `use skill breakdown_tasks`
+- `use skill refine_story`
+- `use skill split_story_checklist`
 
 This flow prepares work before SDD.

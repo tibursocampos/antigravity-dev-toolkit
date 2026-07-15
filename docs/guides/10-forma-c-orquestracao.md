@@ -24,7 +24,7 @@ Orquestradores **não escrevem código de aplicação**. O contrato de **1 step 
 | Forma | Quando usar | Pipeline |
 |-------|-------------|----------|
 | **A** Classic | Uma feature clara, caminho único | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
-| **B** Backlog | Item informal antes de SDD | `refine_backlog_item` -> `breakdown_tasks` -> A ou C |
+| **B** Backlog | Item informal antes de SDD | `refine_story` -> `split_story_checklist` -> A ou C |
 | **C** Orquestrada | Várias histórias, brownfield, precisa de especialistas | O1 -> O2 -> O3 **ou** `sdd_develop` |
 
 Nenhuma Forma deprecia a outra neste MVP (CA7 / RN02).
@@ -49,7 +49,7 @@ Nenhuma Forma deprecia a outra neste MVP (CA7 / RN02).
 
 ## Pré-requisitos
 
-1. Toolkit sincronizado: `.\scripts\sync-cursor.ps1` ([Install](../INSTALL.md)).
+1. Toolkit sincronizado: `.\scripts\sync-antigravity.ps1` ([Install](../INSTALL.md)).
 2. Repositório **alvo** aberto no Cursor (modo **Agent**).
 3. Gates de sessão (`SESSION.md`): confirmações **sim** nos pontos high-cost.
 4. Storage classic resolvido (`features/` no repo ou `~/.gemini/antigravity-ide/sdd/<repo-id>/features/`).
@@ -59,7 +59,7 @@ Nenhuma Forma deprecia a outra neste MVP (CA7 / RN02).
 No clone do **antigravity-dev-toolkit** (ou após atualizar skills O1/O2/O3):
 
 ```powershell
-.\scripts\sync-cursor.ps1
+.\scripts\sync-antigravity.ps1
 .\scripts\validation\validate-all.ps1
 ```
 
@@ -169,7 +169,7 @@ Leitura e gravação Classic SDD **somente** sob `features/NNN-slug/...` (repo o
 | Spec Kit (`speckit-*`) | Removido do toolkit (PRD 004) - use Formas A / B / C |
 | `memory-bank/` + Step 0 | Entregue (PRD 004) - gate só em `orchestrate_*`; Forma A isenta |
 | Git worktrees multi-US | Fora |
-| ADO / Celebration / Sonar corp. / Keycloak | Não portados |
+| Trackers / IdP / corp quality gates org-specific | Not in this toolkit |
 | Blind review ×3 automático no loop de develop | Não |
 
 Referência: PRD 003 § CA7, §14 Fora de escopo.

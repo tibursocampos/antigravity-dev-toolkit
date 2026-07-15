@@ -93,13 +93,13 @@ Use `developer` for small isolated work that does not need full SDD artifacts.
 
 | Flow | Route |
 |---|---|
-| Build/test failure | `fix_build` -> `commit` (optional) |
+| Build/test failure | `repair_dotnet_build` -> `commit` (optional) |
 | Coverage report | `test_coverage` |
 | Review branch/diff | `code_review` |
 | Commit and push | `commit` -> `push` |
 | Repository documentation | `document_plan` -> `document_implement` |
-| Backlog refinement | `refine_backlog_item` |
-| Task breakdown | `breakdown_tasks` |
+| Backlog refinement | `refine_story` |
+| Task breakdown | `split_story_checklist` |
 
 ---
 
@@ -219,8 +219,8 @@ Commands: `caveman on` | `caveman off` | `caveman status` | `caveman lite|full|u
 
 Participation (caps; see `CAVEMAN.md` for full table):
 - NEVER: `commit`, `push`, confirmation gates, artifact drafts.
-- LITE: `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`, `refine_backlog_item`, `memory_bank_init`.
-- FULL: develop/review/ops/stack developers/`orchestrate_develop`/`document_implement`/`breakdown_tasks`/general chat.
+- LITE: `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`, `refine_story`, `memory_bank_init`.
+- FULL: develop/review/ops/stack developers/`orchestrate_develop`/`document_implement`/`split_story_checklist`/general chat.
 - Prefer `ultra` only for long Forma C / review sessions. Net-negative on short Q&A — see `TOKEN_BUDGET.md`.
 
 ---
@@ -241,27 +241,28 @@ Participation (caps; see `CAVEMAN.md` for full table):
 | `dotnet_developer` | Small/medium C#/.NET implementation without full SDD |
 | `python_developer` | Small/medium Python implementation without full SDD |
 | `react_developer` | Small/medium React implementation without full SDD |
+| `react_native_developer` | Small/medium React Native / Expo implementation without full SDD |
 | `angular_developer` | Small/medium Angular implementation without full SDD |
 | `javascript_developer` | Small/medium Node/JS/TS implementation without full SDD |
 | `vue_developer` | Small/medium Vue 3 implementation without full SDD |
 | `blazor_developer` | Small/medium Blazor UI implementation without full SDD |
 | `electron_developer` | Small/medium Electron desktop implementation without full SDD |
-| `fix_build` | Diagnose and fix build/test failures |
+| `repair_dotnet_build` | Diagnose and fix build/test failures |
 | `code_review` | Review branch/diff with severity report |
 | `commit` | Prepare and create conventional commit |
 | `push` | Push current branch |
 | `test_coverage` | Generate .NET coverage report |
 | `document_plan` | Build docs plan for repo |
 | `document_implement` | Execute one docs plan step |
-| `refine_backlog_item` | Refine backlog item with acceptance criteria |
-| `breakdown_tasks` | Break a refined scope into grouped implementation tasks |
+| `refine_story` | Refine backlog item with acceptance criteria |
+| `split_story_checklist` | Break a refined scope into grouped implementation tasks |
 | `refactor` | Refactor safely with validation |
 | `api_integrate` | Integrate API clients/contracts from schema |
 | `performance_profile` | Profile bottlenecks and optimize |
 | `containerize` | Create Docker/container setup |
 | `i18n_manager` | Extract strings and apply localization flow |
-| `add_migrations` | EF Core migration discovery and add |
-| `create_message_consumer` | Message consumer scaffold (bus detected via Grep) |
+| `ef_add_migration` | EF Core migration discovery and add |
+| `scaffold_message_handler` | Message consumer scaffold (bus detected via Grep) |
 | `blip_plugin_developer` | Orchestrate new Blip React plugin projects (create-blip-extension) |
 
 ---

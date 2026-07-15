@@ -250,7 +250,7 @@ $kiTargets = @(
 )
 
 $customSkillsSummary = @"
-\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, orchestrate_analyze, memory_bank_init, refine_backlog_item). CRITICAL: skills are ALWAYS in this GLOBAL plugin path, never in the current workspace, repository, or project folder. Do not search for SKILL.md in the active repository. This global directory is the sole source of truth for execution rules.\"
+\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, orchestrate_analyze, memory_bank_init, refine_story). CRITICAL: skills are ALWAYS in this GLOBAL plugin path, never in the current workspace, repository, or project folder. Do not search for SKILL.md in the active repository. This global directory is the sole source of truth for execution rules.\"
 "@
 
 $globalGuardrailsSummary = @"

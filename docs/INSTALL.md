@@ -2,15 +2,34 @@
 
 ## Prerequisites
 
-- Windows with PowerShell 5.1+
-- Antigravity IDE installed (to provision `~/.gemini`)
+| Requirement | Notes |
+|-------------|--------|
+| **Antigravity IDE** | Provisions `~/.gemini` |
+| **PowerShell** | Windows: **5.1+** or **pwsh 7+**. macOS/Linux: **pwsh 7+** required |
 
 ## Deploy plugin
 
-From repository root:
+**Recommended:** interactive toolkit CLI:
+
+```powershell
+# Windows
+.\scripts\toolkit.ps1
+```
+
+```bash
+# macOS / Linux (pwsh required)
+chmod +x scripts/*.sh scripts/validation/*.sh
+./scripts/toolkit.sh
+```
+
+Direct sync from repository root:
 
 ```powershell
 .\scripts\sync-antigravity.ps1
+```
+
+```bash
+./scripts/sync-antigravity.sh
 ```
 
 This deploy is idempotent and syncs:
@@ -69,5 +88,5 @@ This writes manifest schema v2 with a `classic` section only. Legacy `speckit` k
 
 - Chat policy: `pt-BR`
 - Code/tests/skills docs: English
-- Skill commands in docs: underscore naming (`breakdown_tasks`, not `breakdown-tasks`)
+- Skill commands in docs: underscore naming (`split_story_checklist`, not `split-story-checklist`)
 - Canonical SDD paths: `features/NNN-slug/` (not root `PRD/` / `PLAN/`)

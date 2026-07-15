@@ -12,7 +12,7 @@ Install path after sync: `{pluginRoot}/skills/_shared/agents/`
 |---------|-------------|------------------------------|----------|
 | `repo_analyst` | Brownfield / impact unclear | `ANALYSIS/` notes | App code; invent APIs |
 | `architect` | `needs_domain` or cross-cutting design | `ARCH/` notes | App code; corporate patterns |
-| `security` | `needs_security` | `SEC/` notes (subset) | ADO/compliance theater |
+| `security` | `needs_security` | `SEC/` notes (subset) | compliance theater |
 | `database` | `needs_database` | `ANALYSIS/` or `ARCH/` DB slice | Force a vendor; corp DBA rules |
 | `qa_checklist` | Before handoff / review | Checklist bullets in CONTINUITY or STORY only | Write production tests silently; **no** specialist pass file; **no** `prompts/qa*.md` file |
 
@@ -64,6 +64,6 @@ Set on `FEATURE.md` during O1 triage. Run a specialist **only** when the flag is
 
 ## Must not
 
-- Port ADO, Celebration, Keycloak, mandatory Sonar corp agents
+- Port org-only tracker/IdP agents
 - Create one file per aspirational design-md agent
 - Let orchestrator parent implement application code

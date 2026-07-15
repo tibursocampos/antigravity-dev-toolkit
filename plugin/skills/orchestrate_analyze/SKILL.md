@@ -1,4 +1,4 @@
-﻿---
+---
 name: orchestrate_analyze
 description: Forma C O1: triage a feature, run conditional serial specialist passes, write FEATURE.md + CONTINUITY + US/TS under features/NNN-slug/. No app code. Use when invoking orchestrate_analyze.
 ---
@@ -63,7 +63,7 @@ Does **not** write PRD/PLAN (that is O2 via `sdd_spec` / `sdd_plan` contracts). 
 | Templates | `{pluginRoot}/skills/_shared/templates/features/{FEATURE,CONTINUITY,TREE}.md`, `.../story/STORY.md` |
 | Specialist prompts | `{pluginRoot}/skills/_shared/agents/prompts/{repo_analyst,architect,security,database,impact,risk,generate-story}.md` |
 | Triage tables, boundaries, NuGet example | `skills/orchestrate_analyze/reference.md` |
-| Scorecard rubric (reuse) | `skills/refine_backlog_item/reference.md` |
+| Scorecard rubric (reuse) | `skills/refine_story/reference.md` |
 | Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
@@ -172,7 +172,7 @@ Merge specialist notes + user input into:
 
 1. **FEATURE.md** - overview, story index, all `needs_*`, status `draft`
 2. **CONTINUITY.md** - phase `analyze`, decisions, flags, open items, **Memory-bank** path + status (`fresh` \| `refreshed` \| `created`)
-3. **STORY.md** per US/TS - template structure; BDD Given/When/Then; deps; scorecard summary (rubric from `refine_backlog_item/reference.md`; map use skill 100 -> 1-5 in STORY table)
+3. **STORY.md** per US/TS - template structure; BDD Given/When/Then; deps; scorecard summary (rubric from `refine_story/reference.md`; map use skill 100 -> 1-5 in STORY table)
 
 Use `generate-story` prompt patterns for drafts. Prefer pt-BR artifact prose; paths/ids English. CONTINUITY references the bank only - **do not** paste bank body into CONTINUITY.
 
@@ -237,7 +237,7 @@ Do **not** paste full specialist dumps into the parent chat.
 - Call `*-developer` / `developer` to **implement** code (suggesting the trivial shortcut is allowed)
 - Skip human backlog approval or treat silence as `sim`
 - Write PRD/PLAN (O2 owns that via `sdd_spec` / `sdd_plan` contracts)
-- Create ADO / Celebration / Keycloak / mandatory Sonar corp content
+- Create external work-item tracker or org-only compliance content
 - Create ~40 agent files or expand the roster beyond `ROSTER.md`
 - Modify toolkit `.gitignore` as part of porting this skill into the toolkit repo; at runtime follow `STORAGE.md` only for consumer repo SDD patterns
 - Change the `sdd_develop` one-step-per-session contract
@@ -253,7 +253,7 @@ Do **not** paste full specialist dumps into the parent chat.
 | Context pause mid-O1 | `use skill orchestrate_analyze - <full-feature-path>` |
 | Trivial after triage | `use skill developer` or stack `*-developer` |
 | Single clear story, skip O2 multi | `use skill sdd_spec` (Forma A) after STORY exists |
-| Informal single item only | `use skill refine_backlog_item` (Forma B) |
+| Informal single item only | `use skill refine_story` (Forma B) |
 
 ### Canonical O2 handoff (exact pattern)
 

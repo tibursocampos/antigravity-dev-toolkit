@@ -2,7 +2,7 @@
 
 **Required** before writing production code (~3-5 minutes). Reduces rework in review.
 
-Load **only** what the task needs. Paths assume `scripts/sync-cursor.ps1` installed under `~/.cursor/skills/_shared/`.
+Load **only** what the task needs. Paths assume `scripts/sync-antigravity.ps1` deployed under `{pluginRoot}/skills/_shared/`.
 
 ---
 

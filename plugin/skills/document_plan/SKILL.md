@@ -1,4 +1,4 @@
-﻿---
+---
 name: document_plan
 description: Create a baby-step documentation plan (overview + domain deep dives for RAG). Asks doc language before writing. Use when planning repo docs or invoking /document_plan.
 ---
@@ -111,7 +111,7 @@ use skill document_implement
 ## Must not
 
 - Embed MES, Athena, or organization-specific product context
-- Require Azure DevOps, corporate wikis, or fixed .NET/Angular versions without detection
+- Require external wiki APIs, or fixed .NET/Angular versions without detection
 - Create `docs/documentation-plan/` inside **antigravity-dev-toolkit** during porting (only in consumer repos at runtime)
 - Write `docs/` before the language question is answered
 - Default product doc language without asking

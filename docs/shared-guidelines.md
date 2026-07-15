@@ -38,7 +38,7 @@ Shared guidelines live under `plugin/skills/_shared/` and are loaded lazily by s
 
 ## Naming conventions
 
-- Skill folders and skill command docs: underscore names (`sdd_spec`, `breakdown_tasks`)
+- Skill folders and skill command docs: underscore names (`sdd_spec`, `split_story_checklist`)
 - PRD file: `NNN_short_slug.md`
 - PLAN file: `PLAN_NNN_short_slug.md`
 - Feature tree: `features/NNN-slug/[USnn|TSnn]/{PRD,PLAN}/...` (+ FEATURE.md / CONTINUITY.md for Forma C)

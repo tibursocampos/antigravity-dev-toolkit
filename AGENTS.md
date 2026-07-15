@@ -58,7 +58,7 @@ Before any tool call:
 | Forma | When | Pipeline |
 |-------|------|----------|
 | **A** Classic SDD | One feature, clear path | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
-| **B** Backlog prep | Informal item before SDD | `refine_backlog_item` -> `breakdown_tasks` -> A or C |
+| **B** Backlog prep | Informal item before SDD | `refine_story` -> `split_story_checklist` -> A or C |
 | **C** Orchestrated | Multi-story / brownfield / specialists | Step 0 memory-bank -> `orchestrate_analyze` -> `orchestrate_deliver` -> (`orchestrate_develop` \| `sdd_develop`) |
 
 Guides: `docs/guides/10-forma-c-orquestracao.md`, `11-forma-c-caso-nuget-extract.md`, `12-forma-c-caso-mobile-app.md`.
@@ -101,7 +101,7 @@ Maintainer suite (utility scripts not required for normal usage):
 
 ## Skill naming and invocation
 
-- Skill folder names are underscore-based (example: `breakdown_tasks`).
+- Skill folder names are underscore-based (example: `split_story_checklist`).
 - Keep docs and examples aligned with folder names.
 - Prefer `use skill skill_name` invoke form.
 
@@ -123,4 +123,4 @@ Persisted in `~/.gemini/antigravity-ide/sdd/preferences.json` as `caveman_mode` 
 
 Integration docs: [docs/impeccable-integration.md](docs/impeccable-integration.md), [docs/blip-plugin-integration.md](docs/blip-plugin-integration.md).
 
-Stack developers: `react_developer`, `angular_developer`, `vue_developer`, `blazor_developer`, `electron_developer`, `javascript_developer`. See [docs/guides/08-stack-developers.md](docs/guides/08-stack-developers.md).
+Stack developers: `react_developer`, `react_native_developer`, `angular_developer`, `vue_developer`, `blazor_developer`, `electron_developer`, `javascript_developer`. See [docs/guides/08-stack-developers.md](docs/guides/08-stack-developers.md).

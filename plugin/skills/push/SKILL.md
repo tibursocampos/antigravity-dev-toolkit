@@ -1,4 +1,4 @@
-﻿---
+---
 name: push
 description: Execute git push on the current branch after confirmation. Git-only. Use when pushing changes or invoking /push.
 ---
@@ -37,7 +37,7 @@ Current branch pushed to `origin` with upstream set when needed. No force-push o
 
 ## Lazy-load
 
-| When | Path (after `scripts/sync-cursor.ps1`) |
+| When | Path (after `scripts/sync-antigravity.ps1`) |
 |------|----------------------------------------|
 | Branch rules | `~/.cursor/rules/branch-validation.mdc` |
 | Commit flow | `{pluginRoot}/skills/_shared/developer_common/step-4-commits-pr.md` |
@@ -84,7 +84,7 @@ Return branch and push status.
 
 - Push from invalid branch
 - Force push default branches
-- ADO/MCP work-item APIs or mandatory PR creation
+- External work-item APIs or mandatory PR creation
 
 ## Handoff
 

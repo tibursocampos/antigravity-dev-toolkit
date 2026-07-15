@@ -73,6 +73,7 @@ Premium UI without a brief -> suggest `use skill impeccable shape` before stack 
    | `.csproj` with `Microsoft.AspNetCore.Components`, or `_Imports.razor` / `App.razor` | `blazor_developer` |
    | `package.json` with `electron`, `electron-builder`, or `electron-vite` | `electron_developer` |
    | `package.json` with `vue` (and not React/Angular) | `vue_developer` |
+   | `package.json` with `react-native` or `expo` | `react_native_developer` |
    | `package.json` with `react` | `react_developer` |
    | `package.json` with `@angular/core` or `angular` | `angular_developer` |
    | `package.json` (Node.js, no framework above) | `javascript_developer` |
@@ -81,7 +82,7 @@ Premium UI without a brief -> suggest `use skill impeccable shape` before stack 
 
 2. **Invoke the specialized skill (if match found)**:
    - Silently read the `SKILL.md` of the matched stack under `{pluginRoot}/skills/`:
-     - `blip_plugin_developer`, `blazor_developer`, `electron_developer`, `vue_developer`, `dotnet_developer`, `react_developer`, `angular_developer`, `javascript_developer`, or `python_developer`
+     - `blip_plugin_developer`, `blazor_developer`, `electron_developer`, `vue_developer`, `react_native_developer`, `dotnet_developer`, `react_developer`, `angular_developer`, `javascript_developer`, or `python_developer`
    - Assume the identity and instructions of that skill immediately.
    - Do **not** ask the user for confirmation to switch skills.
 

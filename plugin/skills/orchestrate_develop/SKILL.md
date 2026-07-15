@@ -1,4 +1,4 @@
-﻿---
+---
 name: orchestrate_develop
 description: Forma C O3: one PLAN step per session (sdd_develop contract) (sdd_develop contract); parent never writes app code. Updates CONTINUITY; handoff to code_review. Use when invoking orchestrate_develop.
 ---
@@ -279,7 +279,7 @@ Full copy in `reference.md`.
 - Merge N PLAN steps into one session
 - Bypass or weaken `sdd_develop` one-step-per-session contract
 - Auto-commit / auto-push
-- Create ADO / Celebration / Keycloak / mandatory Sonar corp content
+- Create external work-item tracker or org-only compliance content
 - Force multi-angle code_review
 - Introduce git worktrees for multi-US parallelism (MVP)
 - Write new PRD/PLAN (O2 / sdd_spec / sdd_plan own that)

@@ -112,9 +112,9 @@ Resume caveman after the clear part is done.
 | `commit`, `push` | **NEVER** — excluded regardless of setting |
 | `sdd_spec`, `sdd_plan` | **LITE** |
 | `orchestrate_analyze`, `orchestrate_deliver` | **LITE** |
-| `document_plan`, `refine_backlog_item`, `memory_bank_init` | **LITE** |
+| `document_plan`, `refine_story`, `memory_bank_init` | **LITE** |
 | `sdd_develop`, `orchestrate_develop`, `document_implement` | **FULL** (or prefs level if lower) |
-| `breakdown_tasks`, `code_review`, `developer`, `fix_build`, `test_coverage` | **FULL** |
+| `split_story_checklist`, `code_review`, `developer`, `repair_dotnet_build`, `test_coverage` | **FULL** |
 | `*_developer`, ops (`api_integrate`, `containerize`, `i18n_manager`, `performance_profile`, `refactor`) | **FULL** |
 | Forma C specialist passes / agent prompts | **FULL** chat; **ultra receipt** schema when mode ON (see `_shared/agents/ROUTING.md`) |
 | General chat / `dev_persona` | **FULL** (or prefs `caveman_level`) |

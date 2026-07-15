@@ -143,7 +143,7 @@ Do not claim Pass if ReportGenerator output or Cobertura files are missing.
 |-----------|------|
 | Pass | `use skill code_review` - paste approval block from report |
 | Fail - add tests | `use skill dotnet_developer` or `use skill sdd_develop` |
-| Build/test broken | `use skill fix_build` |
+| Build/test broken | `use skill repair_dotnet_build` |
 | Commit coverage tooling in consumer repo | `use skill commit` |
 | SDD feature with PLAN | Last PLAN step or `code_review` after all `sdd_develop` steps |
 | Small fix | `use skill dotnet_developer` to raise coverage, then re-run this skill |

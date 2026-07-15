@@ -29,4 +29,4 @@ Install path after sync: `{pluginRoot}/skills/_shared/agents/ROUTING.md`
 
 ## Stack handoff (implement time)
 
-Use existing skills: `dotnet_developer`, `react_developer`, `angular_developer`, `vue_developer`, `blazor_developer`, `electron_developer`, `javascript_developer`, `python_developer`, or router `developer`. Prefer after O2 PLAN exists; for trivial work skip Forma C.
+Use existing skills: `dotnet_developer`, `react_developer`, `react_native_developer`, `angular_developer`, `vue_developer`, `blazor_developer`, `electron_developer`, `javascript_developer`, `python_developer`, or router `developer`. Prefer after O2 PLAN exists; for trivial work skip Forma C.

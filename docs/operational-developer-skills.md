@@ -5,7 +5,7 @@ These skills are used outside or around the full SDD lifecycle.
 ## Main operational chain
 
 - `code_review`: review quality and risk before merge.
-- `fix_build`: recover broken local build/test state.
+- `repair_dotnet_build`: recover broken local build/test state.
 - `test_coverage`: measure coverage against thresholds.
 - `commit`: create approved conventional commits.
 - `push`: publish branch safely.
@@ -23,8 +23,8 @@ All mutating git actions still require explicit confirmation.
 
 ## Backlog preparation skills
 
-- `refine_backlog_item`: convert informal requests to structured backlog markdown with BDD criteria.
-- `breakdown_tasks`: convert refined backlog into grouped implementation task checklists.
+- `refine_story`: convert informal requests to structured backlog markdown with BDD criteria.
+- `split_story_checklist`: convert refined backlog into grouped implementation task checklists.
 
 These two skills are upstream preparation and naturally hand off to `sdd_spec` / `sdd_plan` / `sdd_develop`.
 

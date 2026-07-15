@@ -9,7 +9,7 @@ Also listed in `plugin/skills/dev_persona/SKILL.md` (router).
 | Forma | Skills | Guide |
 |-------|--------|-------|
 | **A** Classic SDD | `sdd_spec`, `sdd_plan`, `sdd_develop` | [01-sdd-workflow](guides/01-sdd-workflow.md) |
-| **B** Backlog prep | `refine_backlog_item`, `breakdown_tasks` | [guides README](guides/README.md) |
+| **B** Backlog prep | `refine_story`, `split_story_checklist` | [guides README](guides/README.md) |
 | **C** Orchestrated | `memory_bank_init` (Step 0), `orchestrate_analyze`, `orchestrate_deliver`, `orchestrate_develop` | [10-forma-c](guides/10-forma-c-orquestracao.md) · [11 NuGet](guides/11-forma-c-caso-nuget-extract.md) · [12 mobile](guides/12-forma-c-caso-mobile-app.md) |
 
 **Storage:** Classic + Forma C artifacts under `features/NNN-slug/`; memory-bank co-located via manifest (`STORAGE.md`). Spec Kit was **removed**.
@@ -41,6 +41,7 @@ Antigravity runs specialists as **serial passes** (no Cursor Task/hooks). See `_
 | `developer` | Hybrid router: detects stack and delegates, or fallback for ad-hoc scripts |
 | `dotnet_developer` | Small/medium .NET work without full SDD |
 | `react_developer` | Small/medium React work without full SDD |
+| `react_native_developer` | Small/medium React Native / Expo work without full SDD |
 | `angular_developer` | Small/medium Angular work without full SDD |
 | `vue_developer` | Small/medium Vue 3 work without full SDD |
 | `blazor_developer` | Small/medium Blazor UI without full SDD |
@@ -60,12 +61,12 @@ Antigravity runs specialists as **serial passes** (no Cursor Task/hooks). See `_
 | Skill | Purpose |
 |-------|---------|
 | `code_review` | Structured review; asks single vs multi-angle if omitted |
-| `fix_build` | Diagnose/fix build and tests |
+| `repair_dotnet_build` | Diagnose/fix build and tests |
 | `test_coverage` | .NET Coverlet coverage report |
 | `commit` | Conventional commit on valid branch |
 | `push` | Safe git push after confirmation |
-| `add_migrations` | EF Core migration discovery |
-| `create_message_consumer` | Message consumer scaffold |
+| `ef_add_migration` | EF Core migration discovery |
+| `scaffold_message_handler` | Message consumer scaffold |
 | `refactor` | Safe incremental refactoring |
 | `api_integrate` | Typed API clients from OpenAPI |
 | `performance_profile` | Profiling and optimization |
@@ -78,6 +79,13 @@ Antigravity runs specialists as **serial passes** (no Cursor Task/hooks). See `_
 |-------|---------|
 | `document_plan` | Baby-step documentation plan |
 | `document_implement` | Execute one documentation plan step |
+
+## Backlog prep (Forma B)
+
+| Skill | Purpose |
+|-------|---------|
+| `refine_story` | Refine backlog item + BDD scorecard |
+| `split_story_checklist` | Grouped implementation checklist with deps |
 
 ## Breaking changes (v Forma C)
 

@@ -47,7 +47,7 @@ Recommend `use skill sdd_spec` -> `sdd_plan` -> `sdd_develop` if **two or more**
 
 ## Lazy-load (only when needed)
 
-| When | Path (after `scripts/sync-cursor.ps1`) |
+| When | Path (after `scripts/sync-antigravity.ps1`) |
 |------|----------------------------------------|
 | Repo context | `{pluginRoot}/skills/_shared/developer_common/step-0-context.md` |
 | Before coding | `{pluginRoot}/skills/_shared/developer_common/step-0.5-review-guidelines.md` |
@@ -134,7 +134,7 @@ use skill sdd_develop - PLAN/... - Step 1
 
 ## Must not
 
-- ADO/MCP work items, `repo-mappings.json`, corporate pipeline or Key Vault mapping guides
+- External work-item APIs, `repo-mappings.json`, or org-only pipeline/Key Vault mapping guides
 - Obsolete test stacks or naming conventions (use xUnit/Moq/`Should_When_` only)
 - Obsolete guideline paths (use `dotnet_guidelines/` only)
 - Nested `feature/base/...` branches; commit on default integration branches

@@ -12,7 +12,7 @@ Use the generic `developer` skill for focused tasks that do not require full SDD
 
 - New Blip plugin scaffold -> `blip_plugin_developer`
 - Existing Blip plugin (`blip-ds`) -> `react_developer`
-- Blazor, Electron, Vue, React, Angular, Node, .NET, Python -> matching `*_developer`
+- Blazor, Electron, Vue, React Native / Expo, React, Angular, Node, .NET, Python -> matching `*_developer`
 
 If no stack matches, `developer` implements directly (HTML, shell scripts, ad-hoc automation).
 

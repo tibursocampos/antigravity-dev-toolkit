@@ -236,6 +236,6 @@ use skill orchestrate_deliver - <full-feature-path>
 - Forked develop process that skips sdd_develop gates
 - Mandatory multi-angle review
 - Git worktrees for multi-US
-- ADO / Celebration / Keycloak / mandatory Sonar corp
+- external work-item tracker or org-only compliance content
 - Spec Kit / `.specify` (removed from toolkit - use Formas A/B/C)
 - Weakening `sdd_develop` one-step contract

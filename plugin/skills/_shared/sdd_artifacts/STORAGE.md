@@ -144,17 +144,17 @@ When the user cites a non-canonical `.md`: read it, build the artifact per skill
 | sdd_develop | No - uses PLAN path from input | No | Updates same PLAN file |
 | orchestrate_* (Forma C) | Yes if first run | Repository mode only | Feature tree + stories |
 | memory_bank_init | Yes (resolve bank root) | Repository mode only (`/memory-bank/` in SDD block) | Bank under resolved `bank_root` |
-| refine_backlog_item | Prefer feature `STORY.md` | No (unless first SDD write) | Optional `docs/backlog/` shortcut |
-| breakdown_tasks | Prefer feature story folder | No | Task checklist under story / backlog |
+| refine_story | Prefer feature `STORY.md` | No (unless first SDD write) | Optional `docs/backlog/` shortcut |
+| split_story_checklist | Prefer feature story folder | No | Task checklist under story / backlog |
 | code_review | No | No | Read-only |
-| fix-build | No | No | Read-only |
+| repair-dotnet-build | No | No | Read-only |
 | document_plan / document_implement | No | No | **Do not** use this file for `docs/documentation-plan/plan.md` |
 
 ---
 
 ## Global manifest and dynamic storage resolution (schema v2)
 
-> **Used by:** all `sdd_*`, `refine_backlog_item`, `breakdown_tasks`, and Forma C `orchestrate_*` skills.
+> **Used by:** all `sdd_*`, `refine_story`, `split_story_checklist`, and Forma C `orchestrate_*` skills.
 
 ### Manifest location
 

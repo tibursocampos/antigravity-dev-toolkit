@@ -1,6 +1,6 @@
-﻿---
-name: breakdown_tasks
-description: Break refined backlog steps into a dependency-aware task checklist (backend, frontend, tests). Prefer features/... story folders. Use when breaking down tasks or invoking /breakdown_tasks.
+---
+name: split_story_checklist
+description: Break refined backlog steps into a dependency-aware task checklist (backend, frontend, tests). Prefer features/... story folders. Use when breaking down tasks or invoking /split_story_checklist.
 ---
 
 ## STOP - Read before ANY tool call
@@ -24,11 +24,11 @@ Gate check:
 
 ---
 
-# Skill: breakdown_tasks
+# Skill: split_story_checklist
 
 ## Trigger
 
-Invoke when the user asks for: `use skill breakdown_tasks`, `break down tasks`, `use skill breakdown_tasks`, or after `refine_backlog_item`.
+Invoke when the user asks for: `use skill split_story_checklist`, `break down tasks`, `use skill split_story_checklist`, or after `refine_story`.
 
 **Input (one of):**
 
@@ -39,11 +39,11 @@ Invoke when the user asks for: `use skill breakdown_tasks`, `break down tasks`, 
 | Chat | User confirms refined markdown from current session |
 | Pasted | User pastes the Steps section |
 
-Prerequisite: content includes structured **Steps** (or Bug **Suggested fix**). If missing, hand off to `use skill refine_backlog_item`.
+Prerequisite: content includes structured **Steps** (or Bug **Suggested fix**). If missing, hand off to `use skill refine_story`.
 
 ## Outcome
 
-In the **target workspace**, a grouped checklist (backend / frontend / tests) with **dependency-aware order** (portable plan-task style - no fixed corporate ADO tasks).
+In the **target workspace**, a grouped checklist (backend / frontend / tests) with **dependency-aware order** (dependency-aware task checklist style).
 
 **Persistence (prefer in order):**
 
@@ -53,14 +53,14 @@ In the **target workspace**, a grouped checklist (backend / frontend / tests) wi
 
 If both `REFINE/tasks.md` and `TASKS.md` already exist: update **`REFINE/tasks.md`** and note the duplicate in chat (do not fork content into both).
 
-**No** creation of external work items; **no** mandatory DeskCheck, Datadog, or SDD-tag workflow tasks.
+**No** creation of external work items; **no** mandatory corporate workflow checklists.
 
 ## Lazy-load
 
 | When | Path |
 |------|------|
 | Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full cap** |
-| Grouping, topology, output template | `skills/breakdown_tasks/reference.md` |
+| Grouping, topology, output template | `skills/split_story_checklist/reference.md` |
 | Resolve SDD PLAN path (handoff) | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` + `reference.md` § SDD PLAN resolution |
 | Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
@@ -79,7 +79,7 @@ If both `REFINE/tasks.md` and `TASKS.md` already exist: update **`REFINE/tasks.m
 2. Load refined content from feature story, path, chat, or paste.
 3. Extract steps from Steps / Suggested fix (`reference.md` § Parsing).
 
-If no steps found, stop and suggest `use skill refine_backlog_item`.
+If no steps found, stop and suggest `use skill refine_story`.
 
 ### 1. Documentation language (blocker before Write)
 
@@ -108,7 +108,7 @@ Write preferred path under the story folder (or shortcut) using `reference.md` �
 - **Execution order** with critical path + parallel waves
 - Optional **Before PR** neutral checklist (user may omit)
 
-Do **not** inject fixed corporate tasks (AI tags, DeskCheck, Sonar boilerplate as mandatory rows).
+Do **not** inject fixed corporate tasks (AI tags, manual sign-off checklist, Sonar boilerplate as mandatory rows).
 
 ### 4. Summarize in chat
 
@@ -126,8 +126,8 @@ Show group names, dependency waves, output path, and suggested next skills.
 
 ## Must not
 
-- Create or update external tracker cards via API (`az`, ADO)
-- Add fixed "workflow" tasks (DeskCheck, Datadog, SDD/DevAI tags) unless the user explicitly requests a custom section
+- Create or update external tracker cards via external work-item APIs
+- Add fixed "workflow" tasks (manual sign-off checklist, Datadog, SDD/DevAI tags) unless the user explicitly requests a custom section
 - Assume toolkit repo paths during consumer runs
 - Write the file before the language question
 

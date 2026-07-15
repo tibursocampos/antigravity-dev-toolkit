@@ -20,7 +20,7 @@ antigravity-dev-toolkit/
 │   └── skills/              # deployed to Antigravity plugin dir
 │       ├── sdd_spec/, … stack *_developer/
 │       ├── impeccable/, blip_plugin_developer/
-│       ├── add_migrations/, create_message_consumer/
+│       ├── ef_add_migration/, scaffold_message_handler/
 │       └── _shared/           # sdd_artifacts, guidelines, developer_common, format_validators
 ├── docs/                      # incl. impeccable-integration.md, blip-plugin-integration.md
 └── scripts/                 # sync-antigravity.ps1, toolkit.ps1, validation/, maintainers/

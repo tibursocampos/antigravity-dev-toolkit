@@ -60,6 +60,20 @@ if (Test-Path -LiteralPath $skillsMd) {
         }
     }
 }
+else {
+    $failures += 'docs/SKILLS.md missing (required catalog)'
+}
+
+# README Skills table must list every skill folder (CI parity with pastas)
+if (Test-Path -LiteralPath $readmePath) {
+    $readme = Get-Content -LiteralPath $readmePath -Raw
+    foreach ($dir in $skillDirs) {
+        $name = $dir.Name
+        if ($readme -notmatch [regex]::Escape("``$name``")) {
+            $failures += "README.md missing Skills table entry for: $name"
+        }
+    }
+}
 
 if ($failures.Count -gt 0) {
     Write-Host 'Docs consistency validation FAILED:' -ForegroundColor Red

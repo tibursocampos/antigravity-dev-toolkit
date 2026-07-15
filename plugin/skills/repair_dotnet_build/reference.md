@@ -1,6 +1,6 @@
-# fix_build - reference
+# repair_dotnet_build - reference
 
-Heuristics and optional CI helpers for `skills/fix_build/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
+Heuristics and optional CI helpers for `skills/repair_dotnet_build/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
 
 ---
 
@@ -77,7 +77,7 @@ gh run view <run-id> --log-failed
 
 Parse failed steps similarly to pasted logs. If `gh` is missing or auth fails, ask the user to paste the failed step log and continue with local `dotnet build` / `dotnet test`.
 
-Do not use this section for Azure Pipelines or other hosts unless the user pastes logs - no REST API calls.
+Do not use this section for non-GitHub hosts unless the user pastes logs - no REST API calls.
 
 ---
 
@@ -124,7 +124,7 @@ After local validation:
 use skill commit
 ```
 
-The commit skill enforces `feature/<slug>` / `feat/<id>` and Conventional Commits. fix_build does not call tracker APIs or link work items.
+The commit skill enforces `feature/<slug>` / `feat/<id>` and Conventional Commits. repair_dotnet_build does not call tracker APIs or link work items.
 
 ---
 
@@ -132,7 +132,7 @@ The commit skill enforces `feature/<slug>` / `feat/<id>` and Conventional Commit
 
 | Need | Skill |
 |------|-------|
-| EF migration after model fix | `use skill add_migrations` |
+| EF migration after model fix | `use skill ef_add_migration` |
 | Small feature without PLAN | `use skill dotnet_developer` |
 | PLAN-sized work | `use skill sdd_develop - <full-plan-path> - Step N` (resolve SDD PLAN per `STORAGE.md` - repo or `~/.gemini/antigravity-ide/sdd/<repo-id>/PLAN/`) |
 | New feature / no PLAN | `use skill sdd_spec` -> `sdd_plan` -> `sdd_develop` (`STORAGE.md` for PRD/PLAN location) |

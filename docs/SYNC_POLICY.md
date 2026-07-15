@@ -10,7 +10,7 @@ How **antigravity-dev-toolkit** and **cursor-dev-toolkit** stay aligned.
 | Classic SDD paths (`features/NNN-slug/`), CONTINUITY, SESSION hardenings | cursor -> antigravity | `sdd_artifacts/` + `sdd_*` skills |
 | Stack skills, `_shared` guidelines (git, frontend, devops, dotnet extras) | antigravity -> cursor | `sync-cursor.ps1` paths |
 | Rules granularity, hooks, `developer_common`, `format_validators` | cursor -> antigravity | `sync-antigravity.ps1` + KI/GUARDRAILS |
-| Operational skills (`add_migrations`, `create_message_consumer`) | cursor -> antigravity | snake_case folders |
+| Operational skills (`ef_add_migration`, `scaffold_message_handler`) | cursor -> antigravity | snake_case folders |
 | Impeccable `reference/*.md` + router | [pbakaus/impeccable](https://github.com/pbakaus/impeccable) -> cursor | `skills/impeccable/` via `sync-impeccable-refs.ps1` - **not** from antigravity personas |
 | Frontend stack skills (`vue_developer`, `blazor_developer`, `electron_developer`) | cursor (authored) | Ported to antigravity (`plugin/skills/`) |
 | Blip plugin skill + `blip_guidelines/` | cursor (authored) | Ported to antigravity (`blip_plugin_developer`) - manual sync |
@@ -40,7 +40,7 @@ How **antigravity-dev-toolkit** and **cursor-dev-toolkit** stay aligned.
 .\scripts\validation\validate-all.ps1
 ```
 
-**Cursor:**
+**Cursor** (from the `cursor-dev-toolkit` clone):
 
 ```powershell
 .\scripts\sync-cursor.ps1

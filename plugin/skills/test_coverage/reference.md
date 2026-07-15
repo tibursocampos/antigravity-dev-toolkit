@@ -41,7 +41,7 @@ If install fails (permissions), document limitation and parse `coverage.cobertur
 
 ### Tests must pass
 
-Run `dotnet build` first. Coverage on failing tests is misleading - fix via `use skill fix_build` before coverage collection.
+Run `dotnet build` first. Coverage on failing tests is misleading - fix via `use skill repair_dotnet_build` before coverage collection.
 
 ---
 
@@ -284,4 +284,4 @@ Do **not** require or generate:
 | 0% on changed files | Wrong test project; tests do not exercise changed code |
 | ReportGenerator not found | `dotnet tool install -g dotnet-reportgenerator-globaltool` |
 | Path mismatch in XML | Normalize `\` vs `/` when matching filenames |
-| Tests fail | `use skill fix_build` first |
+| Tests fail | `use skill repair_dotnet_build` first |

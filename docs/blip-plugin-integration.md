@@ -1,11 +1,6 @@
 # Blip plugin integration (antigravity-dev-toolkit)
 
-Official scaffold: [create-blip-extension](https://github.com/heloineto/create-blip-extension) via `npm create blip-extension@latest`. **Not** `cra-template-blip-plugin` (microbundle) or silent ADO template clone as default.
-
-Reference production plugins:
-
-- **Full profile:** `blip-stellantis-plugin` - multi-route CRUD, `AuthProvider`, buckets, `blip-ds-react`
-- **Lite profile:** `blip-na-produtization` - single page, no auth, direct proxy, BDS web components
+Official scaffold: [create-blip-extension](https://github.com/heloineto/create-blip-extension) via `npm create blip-extension@latest`. Alternative: a **user-provided** template URL/path. Do not invent org-only internal templates. **Not** `cra-template-blip-plugin` (microbundle) as default.
 
 ## Three levels (do not confuse)
 
@@ -42,16 +37,18 @@ There is **no SDK manifest in code** - plugin registration is external (portal J
 
 ## Complexity profiles
 
-| Profile | Reference | When to use |
-|---------|-----------|-------------|
-| **Lite** | `blip-na-produtization` | Single page, no auth, BDS web components, direct HTTP or simple resources |
-| **Full** | `blip-stellantis-plugin` | Multi-route CRUD, `AuthProvider`, JWT buckets, `blip-ds-react`, segment tracking |
+Choose by **technical criteria** only:
+
+| Profile | When to use |
+|---------|-------------|
+| **Lite** | Single page/route, no auth wrapper, BDS web components, direct HTTP or simple Blip resources |
+| **Full** | Multi-route CRUD, `AuthProvider`, JWT + buckets, `blip-ds-react` (or wrappers), segment tracking as needed |
 
 Ask the user which profile during scaffold (Phase 1 of the skill).
 
 ## Post-scaffold checklist
 
-After `npm create blip-extension@latest`:
+After `npm create blip-extension@latest` (or user-provided template):
 
 ```powershell
 cd <plugin-name>
@@ -67,6 +64,7 @@ Then:
 3. **API URL** - set `config/appsettings.json` -> `api.url` and `api.key` (never commit real keys)
 4. **i18n** - confirm `assets/locales/{en,es,pt}/` exist and default language matches portal
 5. **Manual smoke** - run `npm start`, open inside Blip portal, verify iframe height and toast
+6. **CI** - detect existing pipeline (see `deploy-and-ci.md`); do not assume Azure Pipelines
 
 ## Handoff contract
 
@@ -79,21 +77,36 @@ Then:
 
 One session = one phase or one SDD step. Do not scaffold and implement in the same session.
 
-## Anti-patterns (from `blip-stellantis-coupons`)
+## Anti-patterns (REST / scaffold)
 
-The coupons plugin is a documented **negative fixture** - do not use as a template.
+Do not treat any single corporate sample plugin as a template. Prefer these corrections:
 
 | Anti-pattern | Correct approach |
-|--------------|-------------------|
-| Scaffold from `cra-template-blip-plugin` (microbundle) | Use `npm create blip-extension@latest` (CRA + react-scripts) |
+|--------------|------------------|
+| Scaffold from `cra-template-blip-plugin` (microbundle) | Use `npm create blip-extension@latest` (CRA + react-scripts) or a URL the user provides |
 | Skip `npm run config:plugin` | Always run; replaces `PLUGIN_NAME` in charts and appsettings |
 | Two component trees (`src/component/` + `src/components/`) | Single tree under `src/` matching template layout |
-| `response.data` on .NET `Result<T>` | Unwrap `response.data.value` (see `external-api-integration.md`) |
-| Authorization header without `Key ` prefix | Use `Authorization: Key <token>` |
-| English status labels (`Available`) vs API PT (`Disponível`) | Map API enum/display strings explicitly |
+| Treat raw `response.data` as the domain payload | Unwrap the API envelope your contract defines (often `response.data.value`) |
+| Guess auth scheme (`Bearer` vs `Key` vs cookie) | Match OpenAPI / backend contract; document in one client module |
+| Hardcode display labels that disagree with API enums/locales | Map enum/display strings in a constants module |
 | Silent `catch` returning `[]` | Surface auth/API errors via Toast |
 | Missing factory/service files referenced in imports | Scaffold services before UI that imports them |
-| No charts/pipeline/Dockerfile | Keep template CI artifacts; customize, do not delete blindly |
+| Delete CI/charts blindly when present | Detect existing CI; customize, do not remove blindly |
+
+## Generic REST client checklist
+
+Before marking a feature complete, verify the UI has client coverage for each backend route it calls:
+
+| Concern | Pattern |
+|---------|---------|
+| List / search | Paginated GET with query params; unwrap items + total |
+| Detail | GET by id |
+| Mutations | POST/PUT/PATCH/DELETE with clear success/error Toast |
+| Auth failures | Handle 401/403 explicitly (re-auth or unauthorized UI) |
+| Retries | Idempotent GETs may retry with backoff; mutations only when safe |
+| Headers | Centralize auth + content-type + correlation id |
+
+See `external-api-integration.md` for envelopes, auth, and error handling.
 
 ## Guidelines bundle
 
@@ -105,12 +118,12 @@ Lazy-loaded from `plugin/skills/_shared/blip_guidelines/`:
 | `design-system.md` | blip-ds, blip-ds-react, Tailwind, Nunito |
 | `blip-iframe-messages.md` | toast, modal, heightChange, segment |
 | `auth-and-permissions.md` | getToken, buckets, AuthProvider (Full) |
-| `external-api-integration.md` | Result&lt;T&gt;, headers, error handling |
-| `deploy-and-ci.md` | charts, azure-pipelines, Dockerfile, config:plugin |
+| `external-api-integration.md` | REST envelopes, headers, errors, retry |
+| `deploy-and-ci.md` | charts, CI detection, Dockerfile, config:plugin |
 
 ## Sync policy
 
-`blip_plugin_developer` and `blip_guidelines/` are ported from **cursor-dev-toolkit** (authored there). Manual sync when cursor branch updates — not automated cross-repo.
+`blip_plugin_developer` and `blip_guidelines/` are ported from **cursor-dev-toolkit** (authored there). Manual sync when cursor branch updates — not automated cross-repo. Local install uses `sync-antigravity.ps1`.
 
 ## Validation
 
@@ -124,5 +137,5 @@ Bundled with `validate-all.ps1`.
 
 | Template | Why avoid |
 |----------|-----------|
-| `cra-template-blip-plugin` (microbundle npm) | Library structure, not CRA extension; missing charts/pipeline |
-| ADO `package-plugin-template` (internal) | May diverge from public CRA scaffold; optional internal path only with user confirmation |
+| `cra-template-blip-plugin` (microbundle npm) | Library structure, not CRA extension; often missing charts/pipeline |
+| Any unsolicited internal template clone | Use official `npm create blip-extension@latest` or a URL the user explicitly provides |

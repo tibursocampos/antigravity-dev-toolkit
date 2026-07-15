@@ -11,7 +11,7 @@ Companion: `STORAGE.md` (folders, manifest, `.gitignore`).
 | Form | Flow | Canonical writes |
 |------|------|------------------|
 | **A** Classic | `sdd_spec` -> `sdd_plan` -> `sdd_develop` | `features/NNN-slug/USnn/{PRD,PLAN}/` (default story `US01`) |
-| **B** Backlog | `refine_backlog_item` -> `breakdown_tasks` (-> optional SDD / developer) | Prefer `features/.../STORY.md` + story subfolders; `docs/backlog/` shortcut |
+| **B** Backlog | `refine_story` -> `split_story_checklist` (-> optional SDD / developer) | Prefer `features/.../STORY.md` + story subfolders; `docs/backlog/` shortcut |
 | **C** Orchestrated | **Step 0** memory-bank gate -> `orchestrate_analyze` -> `orchestrate_deliver` -> `orchestrate_develop` **or** manual `sdd_develop` | Same `features/` tree; CONTINUITY between stages; bank co-located via manifest (`$Cwd/memory-bank/` or `<classic.path>/memory-bank/`) |
 
 Forms coexist (A / B / C only). **Forma A** does **not** require memory-bank. Gate contract: `MEMORY-BANK.md`.
@@ -196,7 +196,7 @@ If validation fails, do not write - fix path or promote.
 |----------|-----|
 | `sdd_spec`, `sdd_plan`, `sdd_develop` | Step -1 load; steps reference § by name |
 | `orchestrate_*` | Forma C order; feature Prior context; CONTINUITY |
-| `refine_backlog_item`, `breakdown_tasks` | Forma B; prefer feature STORY paths |
+| `refine_story`, `split_story_checklist` | Forma B; prefer feature STORY paths |
 | `STORAGE.md` | Folders, manifest, invalid-path summary |
 | `{pluginRoot}/GUARDRAILS.md` | Short always-on reminder |
 | `code_review` | Handoff to `sdd_spec` for new PRD; read-only SDD discovery |

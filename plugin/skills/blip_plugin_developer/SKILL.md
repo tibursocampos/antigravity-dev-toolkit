@@ -7,7 +7,7 @@ description: Scaffold a new Blip React plugin (create blip-extension / create-bl
 ## STOP - Read before ANY tool call
 
 1. Read `{pluginRoot}/GUARDRAILS.md`
-2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+2. Read `_shared/sdd_opcodes/SESSION.md`; load session-state for `$Cwd`
 3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
 4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
 5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
@@ -37,8 +37,8 @@ A correctly scaffolded Blip plugin repo with `config:plugin` applied, profile do
 
 ## Lazy-load references
 
-| When | Path (after `sync-cursor.ps1`) |
-|------|--------------------------------|
+| When | Path (after `sync-antigravity.ps1`) |
+|------|--------------------------------------|
 | Integration overview | `docs/blip-plugin-integration.md` (in target or toolkit repo) |
 | Architecture | `{pluginRoot}/skills/_shared/blip_guidelines/plugin-architecture.md` |
 | Design system | `{pluginRoot}/skills/_shared/blip_guidelines/design-system.md` |
@@ -49,18 +49,23 @@ A correctly scaffolded Blip plugin repo with `config:plugin` applied, profile do
 | React guidelines | `{pluginRoot}/skills/_shared/react-guidelines/` |
 | Frontend practices | `{pluginRoot}/skills/_shared/frontend-guidelines/frontend-practices.md` |
 | Design brief template | `{pluginRoot}/skills/impeccable/reference/DESIGN-BRIEF-TEMPLATE.md` |
-| Branch / commit | `~/.cursor/rules/branch-validation.mdc` |
+| Branch / commit | `{pluginRoot}/GUARDRAILS.md` (branch / commit rules) |
 
 Do not preload unrelated guideline trees.
 
 ## Must not (defaults)
 
 - Use `cra-template-blip-plugin` (microbundle) as scaffold default
-- Clone ADO `package-plugin-template` silently without user confirmation
+- Scaffold from any unofficial template URL unless the user provides it
 - Skip `npm run config:plugin`
 - Skip `sdd_spec` when starting SDD from scratch
-- Hand off to Antigravity-only personas
+- Hand off to Cursor-only personas without mapping
 - Mix backend API implementation into the plugin scaffold session
+- Prefer org-only CI templates over what the repo already uses
+
+## Working rule
+
+Work with the **local Git repo** and the **detected stack** (`package.json`, existing CI under `.github/workflows`, `azure-pipelines.yml`, etc.). Do not assume remote template clones or org-specific pipelines.
 
 ## Process
 
@@ -71,10 +76,11 @@ Ask the user **(pt-BR)**:
 1. "Onde deseja criar o projeto do plugin? (diretório atual `./` ou informe caminho e nome `<plugin-name>`)"
 2. "Qual perfil? **Lite** (página única, sem auth) ou **Full** (multi-rota, AuthProvider, buckets)?"
 3. "O plugin consome API REST externa (ex.: .NET) ou apenas resources Blip?"
+4. "Template: `npm create blip-extension@latest` (oficial) ou URL de template fornecida por você?"
 
 Wait for answers before running scaffold commands.
 
-**Official scaffold:**
+**Official scaffold (default):**
 
 ```powershell
 npm create blip-extension@latest <plugin-name>
@@ -83,9 +89,11 @@ npm install
 npm run config:plugin
 ```
 
+**User-provided template:** only when the user supplies a URL or path. Clone/use that source; do not invent an internal template.
+
 - `config:plugin` replaces `PLUGIN_NAME` in charts and `appsettings.json`
 - Remove template `.git` only if the user wants a fresh repo history (`Remove-Item -Recurse -Force .git` on Windows)
-- Update `.gitignore` for agent artifacts (`use skill features/`, safety-net `/PRD/`, `/PLAN/` if desired locally)
+- Update `.gitignore` for agent artifacts (`features/`, safety-net `/PRD/`, `/PLAN/` if desired locally)
 
 **Portal checklist (document for user):**
 
@@ -100,8 +108,6 @@ npm run build
 ```
 
 Document manual smoke: `npm start` -> open inside Blip portal -> verify iframe height and toast.
-
-**Optional internal template (not default):** ADO `package-plugin-template` only if user explicitly requests and confirms access. Do not fallback silently.
 
 ### Phase 2 - Documentation flow
 
@@ -132,9 +138,14 @@ Ask **(pt-BR)** what to implement next. Route by scope:
 
 **External API:** if Phase 1 answer was REST backend, remind user to read `external-api-integration.md` during `react_developer` sessions.
 
-#------|----------------|-----------|
-| **Lite** | `blip-na-produtization` | Single route, BDS web components, no AuthProvider |
-| **Full** | `blip-stellantis-plugin` | Multi-route, AuthProvider, buckets, blip-ds-react |
+## Complexity profiles
+
+Choose by technical criteria only — not by historic repo names.
+
+| Profile | Criteria |
+|---------|----------|
+| **Lite** | Single route, BDS web components, no AuthProvider, minimal or no permission gates |
+| **Full** | Multi-route, AuthProvider, buckets, `blip-ds-react` (or equivalent wrappers), segment tracking as needed |
 
 Load `auth-and-permissions.md` only for Full profile.
 

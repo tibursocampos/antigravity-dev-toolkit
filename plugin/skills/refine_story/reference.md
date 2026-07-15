@@ -1,19 +1,19 @@
-# refine_backlog_item - reference
+# refine_story - reference
 
-Scorecard, guardrails, and boundaries for `skills/refine_backlog_item/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
+Scorecard, guardrails, and boundaries for `skills/refine_story/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
 
 ---
 
 ## Boundary: refine vs O1 vs sdd_spec
 
-| Aspect | `refine_backlog_item` (Forma B) | `orchestrate_analyze` (O1) | `sdd_spec` (Forma A) |
+| Aspect | `refine_story` (Forma B) | `orchestrate_analyze` (O1) | `sdd_spec` (Forma A) |
 |--------|----------------------------------|----------------------------|----------------------|
 | Purpose | Fast intake - one backlog item + scorecard | Multi-agent triage + US/TS backlog for a feature | Full PRD for one story/feature |
 | Output | Structured markdown + scorecard | `FEATURE.md`, `CONTINUITY.md`, `STORY.md` × N | PRD under `features/.../PRD/` |
 | Persistence | Prefer `features/.../STORY.md`; shortcut `docs/backlog/` | Feature tree only | Canonical PRD path |
 | Specialists | None | Conditional specialist pass (`needs_*`) | None (consumes Prior context) |
 | When to use | Informal idea, bug, single TS/US | Complex / multi-story / brownfield package | Ready to write PRD for one path |
-| Tracker | Never (no ADO/`az`) | Never | Never |
+| Tracker | Never (no external tracker/`az`) | Never | Never |
 
 Escalate to **O1** when: multiple stories, unclear flags (`needs_*`), brownfield impact needs parallel specialists.
 
@@ -26,7 +26,7 @@ Handoff wording:
 ```
 Item grande / multi-história: /orchestrate_analyze
 Item único pronto para PRD: /sdd_spec
-Checklist local: /breakdown_tasks
+Checklist local: /split_story_checklist
 ```
 
 Before suggesting `sdd_spec`, optionally Glob `features/**/PRD/` (workspace + global feature root) per `STORAGE.md`. Do **not** glob root/flat `PRD/` for execution.
@@ -37,7 +37,7 @@ Before suggesting `sdd_spec`, optionally Glob `features/**/PRD/` (workspace + gl
 
 ## Scorecard rubric
 
-Score immediately after generating the markdown. Maximum **100** points. Portable document-task style (no corporate ADO fields).
+Score immediately after generating the markdown. Maximum **100** points. Portable backlog refinement style (no external work-item fields).
 
 ### Universal criteria (all types)
 
@@ -178,17 +178,17 @@ Do not create `docs/backlog/` in **antigravity-dev-toolkit** during toolkit port
 
 ---
 
-## Relationship to breakdown_tasks
+## Relationship to split_story_checklist
 
 | Skill | Use |
 |-------|------|
-| `refine_backlog_item` | Produces steps under `### Steps` (or Bug suggested fix) with deps |
-| `breakdown_tasks` | Groups those steps with topological / layer grouping into a checklist |
+| `refine_story` | Produces steps under `### Steps` (or Bug suggested fix) with deps |
+| `split_story_checklist` | Groups those steps with topological / layer grouping into a checklist |
 
 After refine, offer:
 
 ```
-use skill breakdown_tasks - <story-or-backlog-path>
+use skill split_story_checklist - <story-or-backlog-path>
 ```
 
 ---
@@ -197,6 +197,6 @@ use skill breakdown_tasks - <story-or-backlog-path>
 
 Do **not** introduce:
 
-- `az` boards / ADO work item commands
-- Celebration, Keycloak, mandatory Sonar corp fields
+- External work-item tracker CLI/API commands
+- External work-item tracker or org-only compliance fields
 - Remote PATCH of work items

@@ -9,6 +9,7 @@ This guide covers stack-specific developers and engineering utilities.
 | `dotnet_developer` | .NET API/backend (non-Blazor) |
 | `blazor_developer` | Blazor UI (WASM, Server, Hybrid) |
 | `react_developer` | React; existing Blip plugins auto-load `blip_guidelines/` |
+| `react_native_developer` | React Native / Expo |
 | `angular_developer` | Angular |
 | `vue_developer` | Vue 3 |
 | `electron_developer` | Electron desktop |

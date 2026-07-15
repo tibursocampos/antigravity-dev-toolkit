@@ -128,7 +128,7 @@ else {
 }
 
 $stackSkillsWithBrief = @(
-    'react_developer', 'angular_developer', 'javascript_developer',
+    'react_developer', 'react_native_developer', 'angular_developer', 'javascript_developer',
     'vue_developer', 'blazor_developer', 'electron_developer', 'blip_plugin_developer'
 )
 foreach ($skill in $stackSkillsWithBrief) {
@@ -144,7 +144,7 @@ foreach ($skill in $stackSkillsWithBrief) {
 $developerPath = Join-Path $skillsRoot 'developer\SKILL.md'
 if (Test-Path -LiteralPath $developerPath) {
     $devContent = Get-Content -LiteralPath $developerPath -Raw
-    foreach ($skill in @('vue_developer', 'blazor_developer', 'electron_developer', 'blip_plugin_developer')) {
+    foreach ($skill in @('vue_developer', 'blazor_developer', 'electron_developer', 'blip_plugin_developer', 'react_native_developer')) {
         if ($devContent -notmatch [regex]::Escape($skill)) {
             $failures += "developer/SKILL.md missing router entry for: $skill"
         }
@@ -154,7 +154,7 @@ if (Test-Path -LiteralPath $developerPath) {
 $impeccablePath = Join-Path $skillsRoot 'impeccable\SKILL.md'
 if (Test-Path -LiteralPath $impeccablePath) {
     $impContent = Get-Content -LiteralPath $impeccablePath -Raw
-    foreach ($skill in @('vue_developer', 'blazor_developer', 'electron_developer')) {
+    foreach ($skill in @('vue_developer', 'blazor_developer', 'electron_developer', 'react_native_developer')) {
         if ($impContent -notmatch [regex]::Escape($skill)) {
             $failures += "impeccable/SKILL.md missing handoff for: $skill"
         }
