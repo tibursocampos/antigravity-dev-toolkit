@@ -4,7 +4,7 @@ The `scripts/` directory contains the automation, validation, and local synchron
 
 ## Core Orchestrator: `toolkit.ps1`
 
-`scripts/toolkit.ps1` is the central orchestrator script for the repository. It is designed to be run locally by contributors and CI environments to ensure changes adhere to the repository's strict constraints.
+`scripts/toolkit.ps1` is the central orchestrator script for the repository. It is designed to be run locally by maintainers and CI to ensure changes adhere to the repository's constraints.
 
 ### Key Capabilities
 - **Synchronization**: Automatically calls `sync-antigravity.ps1` to deploy local skills to the Antigravity AppData folder.

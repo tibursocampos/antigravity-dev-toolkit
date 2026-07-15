@@ -1,6 +1,6 @@
 # antigravity-dev-toolkit
 
-Personal Antigravity IDE plugin toolkit for disciplined software execution: gate-first skills, SDD Formas A/B/C (`features/NNN-slug/`), strong guardrails, and Git developer workflows. Public clone/fork + PR.
+Personal Antigravity IDE plugin toolkit for disciplined software execution: gate-first skills, SDD Formas A/B/C (`features/NNN-slug/`), strong guardrails, and Git developer workflows. **Public** — clone and fork freely; **no upstream contributions** (see [CONTRIBUTING.md](CONTRIBUTING.md)).
 
 ## What this is
 
@@ -115,14 +115,15 @@ Canonical details: [docs/SKILLS.md](docs/SKILLS.md).
 - [docs/SKILLS.md](docs/SKILLS.md) — skill catalog (36)
 - [docs/guides/](docs/guides/) — user guides (incl. Forma C 10–12)
 - [docs/INSTALL.md](docs/INSTALL.md) — install / sync (Win + Unix)
-- [docs/REPO_GOVERNANCE.md](docs/REPO_GOVERNANCE.md) — public repo + rulesets
-- [CONTRIBUTING.md](CONTRIBUTING.md) — fork → PR
+- [docs/REPO_GOVERNANCE.md](docs/REPO_GOVERNANCE.md) — public policy + maintainer rulesets
+- [CONTRIBUTING.md](CONTRIBUTING.md) — clone/fork OK; no community PRs
 - [docs/ENFORCEMENT.md](docs/ENFORCEMENT.md) — enforcement model
 - [docs/SYNC_POLICY.md](docs/SYNC_POLICY.md) — sync with cursor-dev-toolkit
 
-## Contributor notes
+## Maintainer notes
 
 1. Chat replies: pt-BR. Skill sources and production code: English.
 2. Skill folders use underscores (`sdd_spec`).
 3. Respect one-step-per-session in `sdd_develop`, Forma C O3, and `document_implement`.
 4. Never auto-run mutating git; confirm with `sim`.
+5. This repo does not accept community PRs — see [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -1,5 +1,7 @@
 # Install and Validate
 
+> **Repository policy:** public — clone and fork freely. **No upstream contributions** (do not open PRs here). See [CONTRIBUTING.md](../CONTRIBUTING.md).
+
 ## Prerequisites
 
 | Requirement | Notes |
