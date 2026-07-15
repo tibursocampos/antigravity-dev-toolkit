@@ -44,11 +44,18 @@ Recommend `sdd_spec` -> `sdd_plan` -> `sdd_develop` for schema changes, new serv
 | Python guidelines | `{pluginRoot}/skills/_shared/python-guidelines/` |
 | Principles | `{pluginRoot}/skills/_shared/code_guidelines/principles/` |
 | Context | `{pluginRoot}/GUARDRAILS.md` |
-| Caveman (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` |
 
 Do not preload unrelated guideline trees.
 
 ## Process
+
+### Step -1b - Caveman Mode (Full cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Full** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
 
 ### 0. Workspace
 

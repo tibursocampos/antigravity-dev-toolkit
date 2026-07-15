@@ -1,4 +1,4 @@
----
+﻿---
 name: document_plan
 description: Create a baby-step documentation plan (overview + domain deep dives for RAG). Asks doc language before writing. Use when planning repo docs or invoking /document_plan.
 ---
@@ -45,11 +45,19 @@ Product documentation prose follows the **language the user chooses** (pt-BR or 
 
 | When | Path |
 |------|------|
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Lite cap** |
 | Plan template, domain checklist | `skills/document_plan/reference.md` or `{pluginRoot}/skills/document_plan/reference.md` after sync |
 | SDD vs RAG plan boundary | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` (read section Read-only discovery - do not conflate paths) |
 | Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
+
+### Step -1b - Caveman Mode (Lite cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Lite** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
 
 ### 0. Workspace and stack
 

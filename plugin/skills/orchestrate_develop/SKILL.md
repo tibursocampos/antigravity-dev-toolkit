@@ -1,4 +1,4 @@
----
+﻿---
 name: orchestrate_develop
 description: Forma C O3: one PLAN step per session (sdd_develop contract) (sdd_develop contract); parent never writes app code. Updates CONTINUITY; handoff to code_review. Use when invoking orchestrate_develop.
 ---
@@ -50,6 +50,7 @@ Required: full feature path **or** a specific `PLAN/PLAN_NNN_*.md` path under a 
 
 | When | Path |
 |------|------|
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full cap** |
 | Pipeline Forma C, paths | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` |
 | Storage | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` |
 | Step 0 Memory Bank Gate | `{pluginRoot}/skills/_shared/sdd_artifacts/MEMORY-BANK.md` |
@@ -63,6 +64,13 @@ Required: full feature path **or** a specific `PLAN/PLAN_NNN_*.md` path under a 
 | Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
+
+### Step -1b - Caveman Mode (Full cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Full** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
 
 ### 1. Gate check
 

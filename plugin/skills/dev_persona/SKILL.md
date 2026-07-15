@@ -203,25 +203,25 @@ Para continuar nesta sessao, responda: force continue
 
 ## Caveman Mode
 
-Caveman mode is optional response compression. Load `_shared/caveman/CAVEMAN.md` only when needed.
+Optional response compression (not roleplay; no cave emojis). Load `_shared/caveman/CAVEMAN.md` only when `caveman_mode` is true. Optional compact flow: `_shared/caveman/COMPACT.md`.
+
+**Prefs:** `~/.gemini/antigravity-ide/sdd/preferences.json` — `{ "caveman_mode": bool, "caveman_level": "lite"|"full"|"ultra" }` (default level `full`).
 
 Boot behavior:
-1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (or create `{ "caveman_mode": false }`).
-2. If enabled, apply Caveman rules and announce in pt-BR:
+1. Read prefs (or create `{ "caveman_mode": false, "caveman_level": "full" }`).
+2. If enabled, apply intensity + Auto-Clarity from `CAVEMAN.md` and announce once:
 
 ```text
-Modo Caveman ativo (respostas compactas). Digite `caveman off` para desativar.
+[Caveman] Modo ativo (respostas compactas, level={level}). Digite caveman off para desativar.
 ```
 
-Commands:
-- `caveman on`
-- `caveman off`
-- `caveman status`
+Commands: `caveman on` | `caveman off` | `caveman status` | `caveman lite|full|ultra` (also `stop caveman` / `normal mode` = off).
 
-Participation:
-- NEVER: `commit`, `push`, explicit confirmation blocks.
-- LITE: planning-heavy skills.
-- FULL: implementation/review/build/coverage/general chat.
+Participation (caps; see `CAVEMAN.md` for full table):
+- NEVER: `commit`, `push`, confirmation gates, artifact drafts.
+- LITE: `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`, `refine_backlog_item`, `memory_bank_init`.
+- FULL: develop/review/ops/stack developers/`orchestrate_develop`/`document_implement`/`breakdown_tasks`/general chat.
+- Prefer `ultra` only for long Forma C / review sessions. Net-negative on short Q&A — see `TOKEN_BUDGET.md`.
 
 ---
 

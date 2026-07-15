@@ -10,7 +10,15 @@ jobs:
   validate:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
+
+      # Deploy creates ~/.gemini/antigravity-ide/{plugins,knowledge,sdd/sessions}
+      # so validate-toolkit-deploy.ps1 can check the same paths as a local sync.
+      - name: Sync toolkit to Antigravity paths
+        shell: pwsh
+        run: |
+          ./scripts/sync-antigravity.ps1
+        working-directory: ${{ github.workspace }}
 
       - name: Run smoke test
         shell: pwsh

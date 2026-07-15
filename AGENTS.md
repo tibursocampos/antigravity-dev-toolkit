@@ -107,13 +107,11 @@ Maintainer suite (utility scripts not required for normal usage):
 
 ## Caveman mode
 
-Persisted in `~/.gemini/antigravity-ide/sdd/preferences.json` as `caveman_mode`.
+Persisted in `~/.gemini/antigravity-ide/sdd/preferences.json` as `caveman_mode` + `caveman_level` (`lite`|`full`|`ultra`).
 
-- `caveman on`: enable compact responses.
-- `caveman off`: disable compact responses.
-- `caveman status`: report current mode.
-
-Never compress confirmation gates, artifact drafts, or safety messages.
+- `caveman on` / `off` / `status` / `lite|full|ultra`
+- Contract: `plugin/skills/_shared/caveman/CAVEMAN.md` (lazy). Compact prose files: `COMPACT.md`.
+- Never compress confirmation gates, artifact drafts, or safety messages. `commit`/`push` are NEVER.
 
 ## Optional frontend workflows
 

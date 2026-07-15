@@ -15,6 +15,7 @@ Antigravity has **no** Cursor `Task` / hooks equivalent. Forma C uses:
 1. Run the specialist **in the current chat model** (user’s Antigravity selection).
 2. Do **not** ask the user about model choice for routine work.
 3. Do **not** pick premium / alternate models on your own.
+4. If Caveman is ON: require end-of-pass **receipt** per `RECEIPT.md`; inherit parent intensity; keep gates/drafts clear (Auto-Clarity).
 
 ## Rare premium gate
 

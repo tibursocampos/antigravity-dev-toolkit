@@ -1,4 +1,4 @@
----
+﻿---
 name: commit
 description: >
   Review staged and unstaged changes, draft a Conventional Commits message, commit on a valid
@@ -44,6 +44,9 @@ One or more **Conventional Commits** on `feature/<slug>` or `feat/<id>`, with op
 | Message validator | `_shared/format_validators/commit-message-validator.md` |
 
 ## Process
+
+### Caveman Mode
+**NEVER** - This skill ignores `caveman_mode`. Use clear prose always. Do not load `CAVEMAN.md` for chat compression. Commit/PR text stays normal English.
 
 ### 0. Workspace
 

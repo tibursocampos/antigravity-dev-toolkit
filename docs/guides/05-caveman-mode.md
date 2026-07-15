@@ -1,28 +1,71 @@
 # Guide 05: Caveman Mode
 
-Caveman mode compresses conversational prose while preserving execution safety.
+Optional response compression: shorter chat prose, same technical substance. Not roleplay — notices use ASCII `[Caveman]`.
+
+Full contract: `plugin/skills/_shared/caveman/CAVEMAN.md`  
+Optional continuity/memory compact: `plugin/skills/_shared/caveman/COMPACT.md`
+
+Inspired by [juliusbrussee/caveman](https://github.com/juliusbrussee/caveman) (portable ideas only).
 
 ## State
 
-- File: `~/.gemini/antigravity-ide/sdd/preferences.json`
-- Key: `caveman_mode`
-- Commands: `caveman on`, `caveman off`, `caveman status`
+File: `~/.gemini/antigravity-ide/sdd/preferences.json`
 
-## Participation levels
+```json
+{
+  "caveman_mode": false,
+  "caveman_level": "full"
+}
+```
 
-- **NEVER**: `commit`, `push`
-- **LITE**: `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`
-- **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `orchestrate_develop`, general chat
+Commands:
 
-## Never-compress content
+| Command | Effect |
+|---------|--------|
+| `caveman on` | Enable mode (default level `full`) |
+| `caveman off` / `stop caveman` / `normal mode` | Disable |
+| `caveman status` | Report on/off + level |
+| `caveman lite` / `full` / `ultra` | Set intensity (turns mode on if needed) |
 
-- confirmation gates (`sim / ajustar / cancelar`)
-- artifact drafts
-- paths, commands, code blocks, and safety alerts
+## Intensity
 
-## Interaction with guardrails
+| Level | Use when |
+|-------|----------|
+| **lite** | Planning / clarifying — full sentences, no filler |
+| **full** | Default — telegraphic fragments |
+| **ultra** | Long Forma C / review sessions only |
 
-Caveman mode does not bypass:
-- `GUARDRAILS.md`
-- session-state gates
-- one-step-per-session limits
+Skill **caps** still apply (Lite skills never escalate to ultra from prefs).
+
+## Participation
+
+| Cap | Skills |
+|-----|--------|
+| **NEVER** | `commit`, `push` |
+| **LITE** | `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`, `refine_backlog_item`, `memory_bank_init` |
+| **FULL** | `sdd_develop`, `orchestrate_develop`, `document_implement`, `breakdown_tasks`, `code_review`, `developer`, `fix_build`, `test_coverage`, stack `*_developer`, ops (`api_integrate`, `containerize`, `i18n_manager`, `performance_profile`, `refactor`), general chat |
+
+## Auto-Clarity
+
+Drop compression for security warnings, irreversible confirms, ambiguous multi-step order, or when the user asks to clarify. Resume after.
+
+## Never-compress
+
+- Gates `(sim / ajustar / cancelar)`
+- Artifact drafts (FEATURE, PRD, PLAN, CONTINUITY, …)
+- Paths, commands, code blocks, safety/git alerts
+
+## Honest cost
+
+- Output prose can drop ~22–87% on verbose replies.
+- Loading `CAVEMAN.md` adds ~1–1.5k **input** tokens per turn.
+- Net-negative on short Q&A; prefer ON for long review/debug/orchestration.
+- See [TOKEN_BUDGET.md](../TOKEN_BUDGET.md).
+
+## Continuity compact
+
+When narrative files dominate context, propose compacting `CONTINUITY.md` / memory-bank prose via `COMPACT.md` (backup `.original.md` + validators + `sim`). Never PRD/PLAN/STORY.
+
+## Guardrails
+
+Caveman does **not** bypass `GUARDRAILS.md`, session-state gates, or one-step-per-session limits.

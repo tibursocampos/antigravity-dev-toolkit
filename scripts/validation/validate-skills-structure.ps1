@@ -41,6 +41,9 @@ $centralArtifacts = @(
     'plugin\skills\_shared\agents\ROSTER.md',
     'plugin\skills\_shared\agents\ROUTING.md',
     'plugin\skills\_shared\agents\SUBAGENT-MODEL.md',
+    'plugin\skills\_shared\agents\RECEIPT.md',
+    'plugin\skills\_shared\caveman\CAVEMAN.md',
+    'plugin\skills\_shared\caveman\COMPACT.md',
     'plugin\skills\_shared\templates\features\FEATURE.md',
     'plugin\skills\_shared\templates\features\CONTINUITY.md',
     'plugin\skills\_shared\templates\memory_bank\project-context.md'
@@ -127,6 +130,30 @@ foreach ($dir in $skillDirs) {
         $refPath = Join-Path $dir.FullName 'reference.md'
         if (-not (Test-Path -LiteralPath $refPath)) {
             $failures += "$($dir.Name) : missing reference.md"
+        }
+    }
+
+    # Caveman participation wiring (see _shared/caveman/CAVEMAN.md)
+    $cavemanLite = @(
+        'sdd_spec', 'sdd_plan', 'orchestrate_analyze', 'orchestrate_deliver',
+        'document_plan', 'refine_backlog_item', 'memory_bank_init'
+    )
+    $cavemanFull = @(
+        'sdd_develop', 'orchestrate_develop', 'document_implement', 'breakdown_tasks',
+        'code_review', 'developer', 'fix_build', 'test_coverage',
+        'dotnet_developer', 'react_developer', 'vue_developer', 'angular_developer',
+        'blazor_developer', 'electron_developer', 'javascript_developer', 'python_developer',
+        'api_integrate', 'containerize', 'i18n_manager', 'performance_profile', 'refactor'
+    )
+    $cavemanNever = @('commit', 'push')
+    if ($dir.Name -in $cavemanNever) {
+        if ($content -notmatch '(?m)^\*\*NEVER\*\*') {
+            $failures += "$relativeSkill : Caveman NEVER skills must declare **NEVER**"
+        }
+    }
+    elseif ($dir.Name -in $cavemanLite -or $dir.Name -in $cavemanFull) {
+        if ($content -notmatch 'Step -1b - Caveman Mode') {
+            $failures += "$relativeSkill : missing Step -1b - Caveman Mode block"
         }
     }
 }

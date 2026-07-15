@@ -1,4 +1,4 @@
----
+﻿---
 name: orchestrate_deliver
 description: Forma C O2: run sdd_spec then sdd_plan per approved US/TS; human-approve PRD/PLAN; emit multi-path handoff. No app code. Use when invoking orchestrate_deliver.
 ---
@@ -50,6 +50,7 @@ Orchestrator **does not** implement application code. **Does not** rewrite `sdd_
 
 | When | Path |
 |------|------|
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Lite cap** |
 | Pipeline Forma C, confirm, paths | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` |
 | Storage, manifest, feature tree | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` |
 | Step 0 Memory Bank Gate | `{pluginRoot}/skills/_shared/sdd_artifacts/MEMORY-BANK.md` |
@@ -62,6 +63,13 @@ Orchestrator **does not** implement application code. **Does not** rewrite `sdd_
 | Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
+
+### Step -1b - Caveman Mode (Lite cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Lite** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
 
 ### 1. Gate check
 

@@ -5,9 +5,11 @@
 
 .DESCRIPTION
   Called by validate-all.ps1.
+  Checks the same primary install root used by sync-antigravity.ps1
+  (~/.gemini/antigravity-ide/...), plus legacy APPDATA / LOCALAPPDATA fallbacks.
 
 .EXAMPLE
-  .\scripts\validate-toolkit-deploy.ps1
+  .\scripts\validation\validate-toolkit-deploy.ps1
 #>
 [CmdletBinding()]
 param()
@@ -21,7 +23,10 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 }
 $repoRoot = Split-Path -Parent (Split-Path -Parent $scriptDir)
 $pluginId = 'Local.raphadev.antigravity-dev-toolkit'
+
+# Order matches sync-antigravity.ps1 Get-AntigravityPluginsRoot (primary first)
 $pluginsCandidates = @(
+    (Join-Path $env:USERPROFILE ".gemini\antigravity-ide\plugins\$pluginId"),
     (Join-Path $env:APPDATA "antigravity-ide\plugins\$pluginId"),
     (Join-Path $env:LOCALAPPDATA "Google\antigravity-ide\plugins\$pluginId")
 )
@@ -34,6 +39,7 @@ if (-not $pluginDest) {
 $checks = @(
     @{ Path = Join-Path $pluginDest 'GUARDRAILS.md'; Label = 'GUARDRAILS.md in plugin' },
     @{ Path = Join-Path $pluginDest 'skills\_shared\sdd_artifacts\SESSION.md'; Label = 'SESSION.md in plugin' },
+    @{ Path = Join-Path $pluginDest 'skills\_shared\caveman\CAVEMAN.md'; Label = 'CAVEMAN.md in plugin' },
     @{ Path = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\global_guardrails\metadata.json'; Label = 'global_guardrails KI' },
     @{ Path = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge\custom_skills\metadata.json'; Label = 'custom_skills KI' },
     @{ Path = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\sdd\sessions'; Label = 'sessions directory' }
@@ -50,9 +56,28 @@ foreach ($check in $checks) {
     }
 }
 
+# Repo source must always exist (CI-friendly invariant, independent of sync)
+$repoChecks = @(
+    @{ Path = Join-Path $repoRoot 'plugin\GUARDRAILS.md'; Label = 'repo GUARDRAILS.md' },
+    @{ Path = Join-Path $repoRoot 'plugin\skills\_shared\sdd_artifacts\SESSION.md'; Label = 'repo SESSION.md' },
+    @{ Path = Join-Path $repoRoot 'plugin\skills\_shared\caveman\CAVEMAN.md'; Label = 'repo CAVEMAN.md' },
+    @{ Path = Join-Path $repoRoot 'plugin\skills\_shared\caveman\COMPACT.md'; Label = 'repo COMPACT.md' },
+    @{ Path = Join-Path $repoRoot 'plugin\skills\_shared\agents\RECEIPT.md'; Label = 'repo RECEIPT.md' }
+)
+foreach ($check in $repoChecks) {
+    if (Test-Path -LiteralPath $check.Path) {
+        Write-Host "[OK] $($check.Label)" -ForegroundColor Green
+    }
+    else {
+        Write-Host "[MISSING] $($check.Label) - $($check.Path)" -ForegroundColor Red
+        $failed = $true
+    }
+}
+
 $skillCount = (Get-ChildItem -LiteralPath (Join-Path $repoRoot 'plugin\skills') -Directory |
     Where-Object { $_.Name -ne '_shared' }).Count
 Write-Host "Skills in repo: $skillCount"
+Write-Host "Plugin dest resolved: $pluginDest"
 
 if ($failed) {
     Write-Host 'Deploy validation FAILED. Run: .\scripts\sync-antigravity.ps1' -ForegroundColor Red

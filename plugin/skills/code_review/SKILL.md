@@ -1,4 +1,4 @@
----
+﻿---
 name: code_review
 description: Review a branch or diff against PRD/PLAN and project standards. Asks single vs multi-angle when omitted. Use when reviewing a PR or invoking /code_review.
 ---
@@ -68,7 +68,7 @@ Ask the user **only after** step 0.5 if zero or multiple PRD/PLAN pairs remain a
 | Pre-PR gate (.NET) | `{pluginRoot}/skills/_shared/dotnet_guidelines/checklist.md` |
 | .NET coverage report | `{pluginRoot}/skills/test_coverage/reference.md` (when PRD/user/PLAN requires coverage) |
 | Principles | `{pluginRoot}/skills/_shared/code_guidelines/principles/principles-cheatsheet.md` |
-| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full mode** |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full cap** |
 | Final Git hygiene | `{pluginRoot}/skills/_shared/developer_common/step-7-checklist.md` |
 | Report template | `reference.md` (this skill) |
 
@@ -78,13 +78,12 @@ Do **not** preload `code_guidelines/languages/**` or corporate static-analysis w
 
 ## Process
 
-### -1. Caveman Mode
-
-Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
-- If file missing -> create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
-  > Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
-- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
+### Step -1b - Caveman Mode (Full cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Full** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
 
 ### 0. Workspace
 

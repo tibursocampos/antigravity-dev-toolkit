@@ -1,4 +1,4 @@
----
+﻿---
 name: containerize
 description: >
   Analyze project structure to write optimized multi-stage Dockerfiles, .dockerignore files, and docker-compose.yml
@@ -54,6 +54,13 @@ A set of production-ready container configurations:
 
 ## Process
 
+### Step -1b - Caveman Mode (Full cap)
+1. Read `~/.gemini/antigravity-ide/sdd/preferences.json` (create `{ "caveman_mode": false, "caveman_level": "full" }` if missing).
+2. If `caveman_mode` is false: continue without compression.
+3. If true: load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md`; apply **Full** participation cap + prefs `caveman_level` (Lite skills never escalate); show once: `[Caveman] Modo ativo (respostas compactas, level={effective}). Digite caveman off para desativar.`
+4. Honor `caveman on|off|status|lite|full|ultra` (and `stop caveman` / `normal mode`) during the session.
+5. Auto-Clarity + never-compress gates/drafts/paths per `CAVEMAN.md`.
+
 ### -1. Re-check guardrails and session
 Confirm `GUARDRAILS.md` and `SESSION.md` are loaded.
 If missing, ask user (pt-BR):
@@ -66,8 +73,6 @@ Antes de containerizar, confirme:
 Posso seguir? (sim / ajustar / cancelar)
 ```
 
-### -2. Caveman Mode Check
-Check `~/.gemini/antigravity-ide/sdd/preferences.json` and honor active compressions.
 
 ### 0. Workspace Inspection
 * Identify the programming language/platform (C#, Node.js, Python, static frontend).

@@ -23,7 +23,9 @@ Install path after sync: `{pluginRoot}/skills/_shared/agents/ROUTING.md`
 
 **Pass model:** see `SUBAGENT-MODEL.md` — current chat model by default; premium only after rare hard-task gate + user **sim**.
 
-**Memory-bank (Forma C Step 0):** after gate, pass resolved `bank_root` (`$Cwd/memory-bank/` or `<classic.path>/memory-bank/` per `STORAGE.md`) as **read-only** Prior context to specialists / O2 drafts / O3 develop (selective files). Do not place bank under `features/`. Forma A / manual `sdd_*` do not require the gate.
+**Caveman receipts:** when `caveman_mode` is ON, specialists return the schema in `RECEIPT.md` (ultra structured findings). Parent inherits prefs `caveman_level` but **never** compresses gates or artifact drafts. Prefer level `ultra` only for long multi-specialist O1 sessions. Load `_shared/caveman/CAVEMAN.md` only if mode ON.
+
+**Memory-bank (Forma C Step 0):** after gate, pass resolved `bank_root` (`$Cwd/memory-bank/` or `<classic.path>/memory-bank/` per `STORAGE.md`) as **read-only** Prior context to specialists / O2 drafts / O3 develop (selective files). Do not place bank under `features/`. Forma A / manual `sdd_*` do not require the gate. Optional narrative compact: `_shared/caveman/COMPACT.md` (user **sim**).
 
 ## Stack handoff (implement time)
 

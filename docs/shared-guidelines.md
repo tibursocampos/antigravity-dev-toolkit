@@ -9,7 +9,11 @@ Shared guidelines live under `plugin/skills/_shared/` and are loaded lazily by s
   - `PIPELINE.md`: stage order, write confirmation rules, and missing-artifact dialogs
   - `SESSION.md`: session-state file schema and gate enforcement
 - `_shared/caveman/CAVEMAN.md`
-  - Compression behavior and exclusions
+  - Compression levels (`lite`/`full`/`ultra`), Auto-Clarity, participation caps
+- `_shared/caveman/COMPACT.md`
+  - Optional CONTINUITY / memory narrative compact (validators + `sim`)
+- `_shared/agents/RECEIPT.md`
+  - Forma C specialist receipt schema when caveman is ON
 - `_shared/dotnet_guidelines/`
   - Clean architecture, C# patterns, formatting, checklist
 - `_shared/code_guidelines/`

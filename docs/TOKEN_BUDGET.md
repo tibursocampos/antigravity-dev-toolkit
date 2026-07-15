@@ -22,6 +22,17 @@ Guidelines for using and extending this toolkit without blowing context or cost.
 4. **Lean router** - `AGENTS.md` and `dev_persona` stay pointers, not full guideline paste.
 5. **KI injection** - `sync-antigravity.ps1` writes summaries; do not duplicate full GUARDRAILS in every skill.
 
+## Caveman vs context budget
+
+| Lever | What it cuts | When |
+|-------|--------------|------|
+| Lazy-load / one-step sessions | **Input** (skills, guidelines) | Always |
+| Caveman mode (`CAVEMAN.md`) | **Output** chat prose | Opt-in; levels `lite`/`full`/`ultra` |
+| Continuity compact (`COMPACT.md`) | **Input** on later turns (smaller CONTINUITY/memory narrative) | Explicit `sim` |
+| Forma C specialist receipts | **Input** reinjected from specialist passes | Caveman ON |
+
+**Honest cost:** loading Caveman rules costs ~1–1.5k input/turn. Prefer `full`/`ultra` for long review/debug/orchestration; keep **off** for terse Q&A. Planning skills stay **Lite** cap. See [guides/05-caveman-mode.md](guides/05-caveman-mode.md).
+
 ## Stack skills
 
 Each `*_developer` skill loads only its stack guidelines + `developer_common` steps when needed.

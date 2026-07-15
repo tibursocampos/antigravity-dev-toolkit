@@ -1,4 +1,4 @@
----
+﻿---
 name: push
 description: Execute git push on the current branch after confirmation. Git-only. Use when pushing changes or invoking /push.
 ---
@@ -43,6 +43,9 @@ Current branch pushed to `origin` with upstream set when needed. No force-push o
 | Commit flow | `{pluginRoot}/skills/_shared/developer_common/step-4-commits-pr.md` |
 
 ## Process
+
+### Caveman Mode
+**NEVER** - This skill ignores `caveman_mode`. Use clear prose always. Do not load `CAVEMAN.md` for chat compression. Commit/PR text stays normal English.
 
 ### -1. Re-check guardrails and session
 
