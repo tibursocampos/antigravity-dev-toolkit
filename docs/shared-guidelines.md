@@ -37,21 +37,20 @@ Shared guidelines live under `plugin/skills/_shared/` and are loaded lazily by s
 - Skill folders and skill command docs: underscore names (`sdd_spec`, `breakdown_tasks`)
 - PRD file: `NNN_short_slug.md`
 - PLAN file: `PLAN_NNN_short_slug.md`
-- Spec Kit files: `.specify/specs/NNN-<slug>/{spec.md,plan.md,tasks.md}`
+- Feature tree: `features/NNN-slug/[USnn|TSnn]/{PRD,PLAN}/...` (+ FEATURE.md / CONTINUITY.md for Forma C)
 
 ## Validation scripts tied to shared rules
 
 Primary smoke test:
 
 ```powershell
-.\scripts\validate-all.ps1
+.\scripts\validation\validate-all.ps1
 ```
 
 | Script | Purpose |
 |--------|---------|
 | `validate-all.ps1` | Orchestrator — run after every sync |
-| `validate-skills-structure.ps1` | STOP gate, frontmatter, central artifacts, manifest v2 |
+| `validate-skills-structure.ps1` | STOP gate, frontmatter, Forma C artifacts, manifest v2 |
 | `validate-docs-consistency.ps1` | Naming and obsolete phrases |
 | `validate-skills-english.ps1` | Skill body language heuristic |
 | `validate-session-gates.ps1` | Session gate status (opt-in: `-IncludeSessionGate`) |
-| `validate-speckit-init.ps1` | `.specify/` integrity (opt-in: `-IncludeSpeckit`) |

@@ -1,0 +1,151 @@
+---
+name: memory_bank_init
+description: Create or refresh workspace memory-bank/ (MVP contract + read-only inventory). Path follows STORAGE manifest. No app code; no uv/specify. Use when invoking memory_bank_init or Forma C Step 0 / Step N needs create/refresh/refresh-light.
+---
+
+## STOP - Read before ANY tool call
+
+1. Read `{pluginRoot}/GUARDRAILS.md`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
+4. After create **or** refresh / refresh-light completes: **STOP** - handoff only (do not start O1/O2/O3 in this skill)
+5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
+
+### Step -1 - Gate check (report in chat before continuing)
+
+```
+Gate check:
+[ ] GUARDRAILS.md read
+[ ] SESSION.md read; session-state loaded
+[ ] MEMORY-BANK.md read
+[ ] STORAGE.md read (bank_root resolution)
+[ ] User confirmed current action (sim)
+-> If any unchecked: STOP
+```
+
+---
+
+# Skill: memory_bank_init
+
+## Trigger
+
+Invoke when the user asks for: `use skill memory_bank_init`, `init memory bank`, `refresh memory bank`, or when Forma C Step 0 / Step N (`MEMORY-BANK.md`) requires create/refresh/refresh-light.
+
+Optional args: `create` (default if missing), `refresh`, `refresh-light`, path to consumer repo.
+
+## Outcome
+
+Under the resolved **`bank_root`** (`STORAGE.md` + `MEMORY-BANK.md`):
+
+```text
+memory-bank/
+  project-context.md
+  tech-stack.json
+  architecture.md
+  domain-knowledge.md
+  conventions.md
+  known-risks.md
+  .inventory/
+    sources.json
+    gaps.md
+    refresh-history.jsonl
+```
+
+| `storage_mode` | `bank_root` |
+|----------------|-------------|
+| **repository** | `$Cwd/memory-bank/` |
+| **global** | `<classic.path>/memory-bank/` |
+
+**Does not** write application code. **Does not** install Python/uv/specify. **Does not** place the bank under `features/NNN-slug/`. Bank is **local** - not committed (gitignore in repository mode only).
+
+## Lazy-load
+
+| When | Path |
+|------|------|
+| Gate policies, stale, versioning, Step N | `{pluginRoot}/skills/_shared/sdd_artifacts/MEMORY-BANK.md` |
+| Manifest, `bank_root`, `.gitignore` | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` |
+| Templates | `{pluginRoot}/skills/_shared/templates/memory_bank/` |
+| Inventory script | toolkit `scripts/inventory/Invoke-MemoryBankInventory.ps1` (or synced copy if present) |
+| Fill patterns, markers | `skills/memory_bank_init/reference.md` |
+| Context pressure | `{pluginRoot}/GUARDRAILS.md` |
+
+## Process
+
+### 1. Gate check
+
+Report Step -1 checklist. Load `MEMORY-BANK.md` and `STORAGE.md`. **STOP** if unchecked.
+
+### 2. Resolve target
+
+1. Confirm **consumer** repo (not toolkit unless explicit).
+2. Resolve storage with `$Workflow = classic` (`STORAGE.md`).
+3. `bank_root`:
+   - **repository** -> `$Cwd/memory-bank/`
+   - **global** -> `<classic.path>/memory-bank/`
+4. Never under `features/`.
+5. Mode:
+   - **create** if bank missinguse skill incomplete
+   - **refresh** if user asked or Step 0 marked stale
+   - **refresh-light** if user asked or O3 Step N after code changes
+
+### 3. Gitignore (repository only)
+
+If `storage_mode` is **repository**: ensure SDD `.gitignore` block per `STORAGE.md` (includes `use skill memory-bank/`) **before** the first bank Write.
+
+If **global**: do **not** edit or suggest SDD patterns in the consumer `.gitignore`.
+
+### 4. Confirm before write
+
+Show (pt-BR): mode, full `bank_root`, files to create/update. Ask:
+
+`Posso gravar o memory-bank em '{path}'? (sim / ajustar / cancelar)`
+
+Write only after **sim**.
+
+### 5. Inventory (read-only scan of consumer)
+
+Prefer script (always scan `$Cwd`; write inventory under `bank_root`):
+
+```powershell
+.\scripts\inventory\Invoke-MemoryBankInventory.ps1 -RepoPath "<consumer>" -BankPath "<bank_root>" -AllowCreateInventory
+```
+
+If script path unavailable, run equivalent Glob/Grep from `reference.md` and write **only** under `<bank_root>/.inventory/`.
+
+### 6. Scaffold or refresh files
+
+| Mode | Action |
+|------|--------|
+| create | Copy templates from `templates/memory_bank/`; fill GENERATED regions + obvious fields from inventory/README/AGENTS |
+| refresh | Re-run inventory; update GENERATED regions and `tech-stack.json`; preserve human prose outside markers |
+| refresh-light | Re-run inventory; update GENERATED regions and `tech-stack.json` only; do not rewrite human prose sections; append history with `action: refresh-light` |
+
+Rules:
+
+- Preserve `<!-- BEGIN GENERATED: … -->` / `<!-- END GENERATED: … -->` discipline (`reference.md`)
+- **No secrets** - env names / `***` only
+- Evidence-based domain/architecture; unknowns -> `gaps.md`
+- Phase-2 contracts stay as gap lines only (no new required files)
+
+### 7. Report + handoff
+
+Report paths written, stack hints, blocking gaps (if any), storage mode.
+
+Handoff examples:
+
+```text
+use skill orchestrate_analyze
+use skill memory_bank_init - refresh
+use skill memory_bank_init - refresh-light
+```
+
+## Must not
+
+- Write application / test source
+- Create bank under `features/NNN-slug/`
+- Require external CLI tooling (uv, specify, Spec Kit installers)
+- Skip confirm-before-write
+- Dump entire bank into orchestrator parent context
+- Auto-commit
+- Edit consumer `.gitignore` when `storage_mode` is **global**
+- Recommend committing memory-bank files to the application repo

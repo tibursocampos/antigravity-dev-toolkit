@@ -5,13 +5,10 @@
 
 .DESCRIPTION
   Orchestrates deploy, structure, docs, and language validations. Optional
-  Spec Kit and session-gate checks are available via flags.
+  session-gate checks are available via flags.
 
 .PARAMETER RepoPath
-  Repository path for optional Spec Kit validation.
-
-.PARAMETER IncludeSpeckit
-  Run validate-speckit-init.ps1.
+  Repository path for optional session-gate validation.
 
 .PARAMETER IncludeSessionGate
   Run validate-session-gates.ps1.
@@ -26,15 +23,14 @@
   Suppress per-check banners; print summary only.
 
 .EXAMPLE
-  .\scripts\validate-all.ps1
+  .\scripts\validation\validate-all.ps1
 
 .EXAMPLE
-  .\scripts\validate-all.ps1 -IncludeSpeckit -RepoPath "D:\Source\Repos\MyApp"
+  .\scripts\validation\validate-all.ps1 -IncludeSessionGate -RepoPath "D:\Source\Repos\MyApp"
 #>
 [CmdletBinding()]
 param(
     [string] $RepoPath = (Get-Location).Path,
-    [switch] $IncludeSpeckit,
     [switch] $IncludeSessionGate,
     [ValidateSet('storage_confirmed', 'write_confirmed', 'step_confirmed', 'tests_run')]
     [string] $RequiredGate = 'write_confirmed',
@@ -50,12 +46,6 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
     $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 }
 
-function Write-Banner([string] $Message) {
-    if (-not $Quiet) {
-        Write-Host $Message -ForegroundColor Cyan
-    }
-}
-
 function Invoke-ValidationCheck {
     param(
         [string] $Name,
@@ -63,25 +53,20 @@ function Invoke-ValidationCheck {
         [hashtable] $Arguments = @{}
     )
 
-    Write-Banner "Running: $Name"
+    if (-not $Quiet) {
+        Write-Host ''
+        Write-Host "=== $Name ===" -ForegroundColor Cyan
+    }
+
+    if (-not (Test-Path -LiteralPath $ScriptPath)) {
+        Write-Host "Missing script: $ScriptPath" -ForegroundColor Red
+        return [PSCustomObject]@{ Name = $Name; Status = 'FAIL'; ExitCode = 1 }
+    }
+
     & $ScriptPath @Arguments
-    $exitCode = $LASTEXITCODE
-    if ($null -eq $exitCode) {
-        $exitCode = 0
-    }
-
-    return [PSCustomObject]@{
-        Name     = $Name
-        Status   = if ($exitCode -eq 0) { 'PASS' } else { 'FAIL' }
-        ExitCode = $exitCode
-    }
-}
-
-if (-not $Quiet) {
-    Write-Host ''
-    Write-Host 'antigravity-dev-toolkit smoke test' -ForegroundColor Cyan
-    Write-Host '==================================' -ForegroundColor Cyan
-    Write-Host ''
+    $code = $LASTEXITCODE
+    $status = if ($code -eq 0) { 'PASS' } else { 'FAIL' }
+    return [PSCustomObject]@{ Name = $Name; Status = $status; ExitCode = $code }
 }
 
 $results = @()
@@ -102,23 +87,6 @@ foreach ($check in $coreChecks) {
 
     if ($FailFast -and $result.Status -eq 'FAIL') {
         break
-    }
-}
-
-if (-not ($FailFast -and ($results | Where-Object { $_.Status -eq 'FAIL' }))) {
-    if ($IncludeSpeckit) {
-        $result = Invoke-ValidationCheck `
-            -Name 'speckit-init' `
-            -ScriptPath (Join-Path $scriptDir 'validate-speckit-init.ps1') `
-            -Arguments @{ RepoPath = $RepoPath }
-        $results += $result
-
-        if ($FailFast -and $result.Status -eq 'FAIL') {
-            # stop optional checks
-        }
-    }
-    else {
-        $results += [PSCustomObject]@{ Name = 'speckit-init'; Status = 'SKIP'; ExitCode = 0 }
     }
 }
 

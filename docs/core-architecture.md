@@ -27,18 +27,15 @@ Storage decisions are resolved by:
 
 `~/.gemini/antigravity-ide/sdd/manifest.json`
 
-Schema v2 stores both workflows independently:
+Schema v2 stores Classic SDD / Forma C under:
 
-- `classic` for `sdd_*`
-- `speckit` for `speckit_*`
+- `classic` for `sdd_*` and `orchestrate_*` (`features/` + co-located `memory-bank/`)
 
-Each supports:
+Each `classic` entry supports:
 - `storage_mode: repository | global`
 - `path`
 
-Speckit also tracks init status:
-- `initialized`
-- `init_validated_at`
+Legacy `speckit` keys from older manifests are ignored (Spec Kit removed).
 
 ## Session-state architecture
 

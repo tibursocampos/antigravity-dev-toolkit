@@ -1,9 +1,6 @@
 ---
 name: sdd_plan
-description: >
-  Create a baby-step PLAN from an existing PRD. Writes an agent PLAN .md in pt-BR by default
-  (in PLAN/ or docs/PLAN/ of the target repo). Use when the user says "use skill sdd_plan",
-  "create plan", "/sdd_plan". Requires a PRD; output feeds sdd_develop.
+description: Create a baby-step PLAN from an existing PRD (agent PLAN .md, pt-BR default). Feeds sdd_develop. Use when creating a plan or invoking /sdd_plan.
 ---
 
 ## STOP - Read before ANY tool call
@@ -20,9 +17,9 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-- If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
@@ -31,88 +28,92 @@ Gate check:
 
 ## Trigger
 
-Invoke when the user asks for: `use skill sdd_plan`, `create plan`, `execution plan`, or `/sdd_plan`.
+Invoke when the user asks for: `use skill sdd_plan`, `create plan`, `execution plan`.
 
 ## Outcome
 
-A **PLAN** in **pt-BR** at a **canonical** path (`PLAN/PLAN_NNN_*.md`). Same `NNN` as PRD. Each step = one `sdd_develop` session. Paths and test names in **English**; no code blocks.
+A **PLAN** in **pt-BR** at a **canonical** path under `features/NNN-slug/USnn/PLAN/PLAN_NNN_*.md` (same story as the PRD; global under `~/.gemini/antigravity-ide/sdd/<repo-id>/features/...`). Root/flat `PLAN/` is **not** a valid Classic SDD path. Same `NNN` as PRD. Each step = one `sdd_develop` session. Paths and test names in **English**; no code blocks.
 
 ## Lazy-load (only when needed)
 
 | When | Path |
 |------|------|
-| Pipeline guards, missing PRD dialog | `_shared/sdd_artifacts/PIPELINE.md` |
-| Storage schema v2, manifest, `.gitignore` | `_shared/sdd_artifacts/STORAGE.md` |
-| SDD language, context, .NET | `dev_persona` § Language, `_shared/dotnet_guidelines/*.md` |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` - **Lite mode** (only framing and introductions) |
+| Pipeline guards, missing PRD dialog | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` |
+| Storage, manifest, `.gitignore` | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Lite mode** |
+| SDD language, context, .NET | `sdd-artifact-language-pt-br.mdc`, `context-management.mdc`, `dotnet_guidelines/*.md` |
 
 ## Process
 
 ### -1. Pipeline and mode
 
 Load `STORAGE.md` and `PIPELINE.md`. Use `STORAGE.md` schema v2 and run the dynamic storage resolution algorithm with parameter `$Workflow = classic`. Resolve `storage_mode` and `path` for the active repository. If this is the first run for the repository, execute storage mode selection and persist it in `manifest.json`.
-Do not author PRD and do not write production code/tests in this skill.
+Phase A/B as for `sdd_spec`. No PRD authoring; no production/test code.
 
 Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
 - If file missing -> create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` -> load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
-  > 🪨 Caveman mode is active (compact responses - Lite). Type `caveman off` any time to disable it.
+- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > Modo Caveman ativo (respostas compactas - Lite). Digite `caveman off` a qualquer momento para desativar.
 - In Lite mode: compress only framing and introductions. Plan drafts, confirmation gates, and clarifying questions are **never** compressed.
 - Honor `caveman on` / `caveman off` at any point during the session.
 
 ### 0. Workspace
 
-Target repository. Read `README.md` if present.
+Target repo. Read `AGENTS.md` / `README.md` if present.
 
 ### 1. Resolve PRD
 
-Glob canonical PRDs under the resolved destination directory (local or global).
+Glob canonical PRDs under `features/**/PRD/` only (workspace + global feature root). Do **not** resolve or execute against root/flat `PRD/` or `docs/PRD/`.
 
 | Situation | Action |
-|----------|------|
-| User provided canonical PRD path | `Read`; validate status **Pronto para planejamento** |
-| No canonical PRD | Use options from `PIPELINE.md` § `sdd_plan` without PRD - create PRD first or collect text/file |
-| User chooses "create PRD" | Handoff to `sdd_spec`; do not write PLAN until PRD exists (unless user explicitly chooses option 2) |
-| Non-canonical `.md` | Promote per `PIPELINE.md` or ask for the correct file |
+|-----------|--------|
+| User gave canonical PRD path (must be `features/.../PRD/` or global `.../features/.../PRD/`) | `Read`; validate status **Pronto para planejamento** / **Ready for planning** |
+| No canonical PRD | `PIPELINE.md` section `sdd_plan` without PRD - options 1 or 2; then collect text or file path |
+| "Criar PRD" | Choice **1** -> hand off to `sdd_spec` inputs; do not write PLAN until PRD exists (unless user chose **2**) |
+| Non-canonical `.md` (root `PRD/`, `docs/PRD/`, etc.) | Promote under `features/...` via `sdd_spec` or ask for a canonical feature path |
+| PRD under feature story | Load Prior context siblings (`PIPELINE.md` § Feature / story siblings) |
 
-Summarize PRD and ask to proceed.
+Summarize PRD; ask to proceed.
 
 ### 2-4. Explore, technical questions (<=10), baby steps
 
-Use Glob/Grep/Read. Keep each step around 20-45 minutes. For documentation steps, `sdd_develop` must ask documentation language first.
+Glob/Grep/Read. Steps ~20-45 min each. Doc-update steps: **sdd_develop** asks doc language.
 
 ### 5. Context checkpoint
 
-See `dev_persona` § Context Management; provide an in-chat PLAN draft if context usage reaches >=40%.
+`context-management.mdc`; PLAN draft in chat if >=40%.
 
-### 5.75. Confirm before write
+### 5.5 PLAN storage
 
-Show `PLAN_NNN_*`, full path (resolved under the active storage-mode directory), PRD reference path, and step count. **sim** is required before `Write`.
+`STORAGE.md`; global PLAN if PRD is global; else manifest or prompt.
 
-### 6. Write PLAN (after sim)
+### 5.75 Confirm before write
 
-1. Validate path per `PIPELINE.md` § Path validation helper - abort if invalid.
-2. Create `PLAN/` under the resolved destination if missing.
-3. Write `PLAN_NNN_*` with `NNN` matching the PRD. PRD header must include the full PRD path; all steps **Pendente**; progress `0/N`.
-4. Warn before overwriting an existing PLAN with completed steps.
-5. If `storage_mode` is `repository`, enforce `.gitignore` patterns per `STORAGE.md` § Repository mode - `.gitignore`.
+`PIPELINE.md` section Confirm before write - `PLAN_NNN_*`, full path, PRD link, step count. **sim** required before `Write` in Agent.
+
+### 6. Write PLAN (Agent + sim only)
+
+1. Validate canonical PLAN path under same story as PRD (`features/.../PLAN/`); `NNN` **equals** PRD `NNN`. Do **not** write or update PLANs at repo-root `PLAN/`.
+2. Repository mode: `.gitignore` per `STORAGE.md` (include `use skill features/` and `use skill memory-bank/`; keep `/PRD/` `/PLAN/` as safety net only). Global mode: do **not** edit `.gitignore`.
+3. Template `reference.md`; PRD header = full PRD path; steps **Pendente**; `0/N`.
+4. Warn if overwriting PLAN with completed steps.
 
 ### 7. Validate with user
 
-Present steps, dependencies, and risks. Confirm the first `sdd_develop` step.
+Present steps, deps, risks. Confirm first sdd_develop step.
 
 ## Must not
 
 - Write PLAN in English by default; embed implementation code
-- Create or overwrite PRD; implement or commit in this skill
-- Write PLAN without canonical PRD (except explicit user choice with provided specs)
-- Skip confirmation before writing; claim PLAN saved without successful `Write`
-- Use an `NNN` different from PRD
+- Create or overwrite PRD; sdd_develop or commit here
+- Write PLAN without canonical PRD (except explicit user choice **2** with specs)
+- Skip confirm-before-write; claim PLAN saved without `Write`
+- `NNN` mismatch vs PRD; new writes outside `features/.../PLAN/`
 
 ## Handoff
 
 ```
-use skill sdd_develop - <full-plan-path> - Step 1
+use skill sdd_develop - features/NNN-slug/US01/PLAN/PLAN_NNN_slug.md - Step 1
 ```
 
 One session = one PLAN step.

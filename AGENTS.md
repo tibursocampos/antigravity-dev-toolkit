@@ -4,7 +4,7 @@ This file is the human-readable guardrails reference for the toolkit repository.
 
 ## Scope
 
-Applies to all toolkit skills, including SDD, Spec Kit, developer, operational, infrastructure, and frontend architecture skills (e.g., `blip_plugin_developer`).
+Applies to all toolkit skills, including SDD Formas A/B/C, developer, operational, infrastructure, and frontend architecture skills (e.g., `blip_plugin_developer`).
 
 ## Enforcement model
 
@@ -33,8 +33,9 @@ Before any tool call:
 - No automatic mutating git commands (`commit`, `push`, `merge`, `rebase`, branch creation).
 - Read-only git inspection is allowed (`status`, `diff`, `log`).
 - New artifact writes require explicit confirmation.
-- `sdd_develop`, `speckit_develop`, and `document_implement` execute one step per session.
+- `sdd_develop`, Forma C O3, and `document_implement` execute one step per session.
 - Tests must run before marking a step complete.
+- New Classic / Forma C writes land under `features/NNN-slug/` (see `STORAGE.md`). Root flat `PRD/` / `PLAN/` are not valid destinations.
 
 ## Language policy
 
@@ -47,10 +48,22 @@ Before any tool call:
 
 - Manifest file: `~/.gemini/antigravity-ide/sdd/manifest.json`.
 - Schema version: `2`.
-- Per-repository sections:
-  - `classic`: storage mode/path for `sdd_*`.
-  - `speckit`: storage mode/path/init state for `speckit_*`.
-- First run prompts user for storage mode(s); decisions are persisted.
+- Per-repository section:
+  - `classic`: storage mode/path for `sdd_*` and Forma C (`features/` + co-located `memory-bank/`).
+- First run prompts user for storage mode; decisions are persisted.
+- Legacy `speckit` keys in old manifests are **ignored** (Spec Kit removed).
+
+## Workflows (Formas A / B / C)
+
+| Forma | When | Pipeline |
+|-------|------|----------|
+| **A** Classic SDD | One feature, clear path | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
+| **B** Backlog prep | Informal item before SDD | `refine_backlog_item` -> `breakdown_tasks` -> A or C |
+| **C** Orchestrated | Multi-story / brownfield / specialists | Step 0 memory-bank -> `orchestrate_analyze` -> `orchestrate_deliver` -> (`orchestrate_develop` \| `sdd_develop`) |
+
+Guides: `docs/guides/10-forma-c-orquestracao.md`, `11-forma-c-caso-nuget-extract.md`, `12-forma-c-caso-mobile-app.md`.
+
+**Forma C note (Antigravity):** O1/O2 use **serial specialist passes** (no Cursor `Task`/hooks). O3 = one `sdd_develop` step per session; parent never writes app code in bulk.
 
 ## Session-state gates
 
@@ -82,7 +95,6 @@ Individual checks (also invoked by `validate-all.ps1`):
 - `scripts/validation/validate-blip-plugin-skill.ps1`
 - `scripts/validation/validate-frontend-ecosystem.ps1`
 - `scripts/validation/validate-session-gates.ps1` (optional via `-IncludeSessionGate`)
-- `scripts/validation/validate-speckit-init.ps1` (optional via `-IncludeSpeckit`)
 
 Maintainer suite (utility scripts not required for normal usage):
 - `scripts/maintainers/`
@@ -91,7 +103,7 @@ Maintainer suite (utility scripts not required for normal usage):
 
 - Skill folder names are underscore-based (example: `breakdown_tasks`).
 - Keep docs and examples aligned with folder names.
-- Hyphenated names may exist in frontmatter for matching, but docs should prefer underscore skill commands.
+- Prefer `use skill skill_name` invoke form.
 
 ## Caveman mode
 

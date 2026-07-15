@@ -11,8 +11,8 @@ Caveman mode compresses conversational prose while preserving execution safety.
 ## Participation levels
 
 - **NEVER**: `commit`, `push`
-- **LITE**: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan`
-- **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`, general chat
+- **LITE**: `sdd_spec`, `sdd_plan`, `orchestrate_analyze`, `orchestrate_deliver`, `document_plan`
+- **FULL**: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `orchestrate_develop`, general chat
 
 ## Never-compress content
 

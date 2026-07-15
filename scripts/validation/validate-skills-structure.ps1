@@ -5,10 +5,10 @@
 
 .DESCRIPTION
   Called by validate-all.ps1. Checks frontmatter, STOP gate blocks, central
-  artifact files, and manifest schema v2 when manifest exists.
+  artifact files, Forma C shared assets, and manifest schema v2 when manifest exists.
 
 .EXAMPLE
-  .\scripts\validate-skills-structure.ps1
+  .\scripts\validation\validate-skills-structure.ps1
 #>
 [CmdletBinding()]
 param(
@@ -36,13 +36,39 @@ $centralArtifacts = @(
     'plugin\skills\_shared\sdd_artifacts\SESSION.md',
     'plugin\skills\_shared\sdd_artifacts\PIPELINE.md',
     'plugin\skills\_shared\sdd_artifacts\STORAGE.md',
-    'plugin\skills\_shared\SKILL_TEMPLATE.md'
+    'plugin\skills\_shared\sdd_artifacts\MEMORY-BANK.md',
+    'plugin\skills\_shared\SKILL_TEMPLATE.md',
+    'plugin\skills\_shared\agents\ROSTER.md',
+    'plugin\skills\_shared\agents\ROUTING.md',
+    'plugin\skills\_shared\agents\SUBAGENT-MODEL.md',
+    'plugin\skills\_shared\templates\features\FEATURE.md',
+    'plugin\skills\_shared\templates\features\CONTINUITY.md',
+    'plugin\skills\_shared\templates\memory_bank\project-context.md'
 )
 
 foreach ($relative in $centralArtifacts) {
     $path = Join-Path $RepoRoot $relative
     if (-not (Test-Path -LiteralPath $path)) {
         $failures += "Missing central artifact: $relative"
+    }
+}
+
+$requiredSkills = @(
+    'memory_bank_init', 'orchestrate_analyze', 'orchestrate_deliver', 'orchestrate_develop',
+    'sdd_spec', 'sdd_plan', 'sdd_develop', 'dev_persona'
+)
+foreach ($name in $requiredSkills) {
+    $skillPath = Join-Path $skillsRoot "$name\SKILL.md"
+    if (-not (Test-Path -LiteralPath $skillPath)) {
+        $failures += "Missing required skill: $name/SKILL.md"
+    }
+}
+
+$forbiddenSkills = @('speckit_init', 'speckit_setup', 'speckit_spec', 'speckit_plan', 'speckit_develop')
+foreach ($name in $forbiddenSkills) {
+    $skillDir = Join-Path $skillsRoot $name
+    if (Test-Path -LiteralPath $skillDir) {
+        $failures += "Forbidden Spec Kit skill still present: $name"
     }
 }
 
@@ -88,11 +114,20 @@ foreach ($dir in $skillDirs) {
     }
 
     $workflowSkills = @(
-        'speckit_plan', 'speckit_spec', 'speckit_develop', 'sdd_spec', 'sdd_plan', 'sdd_develop',
+        'orchestrate_analyze', 'orchestrate_deliver', 'orchestrate_develop', 'memory_bank_init',
+        'sdd_spec', 'sdd_plan', 'sdd_develop',
         'code_review', 'test_coverage', 'developer', 'document_plan', 'document_implement'
     )
     if ($dir.Name -in $workflowSkills -and $lineCount -lt 100) {
         Write-Warning "$relativeSkill : workflow skill is only $lineCount lines (soft minimum ~100)"
+    }
+
+    $formaCSkills = @('orchestrate_analyze', 'orchestrate_deliver', 'orchestrate_develop', 'memory_bank_init')
+    if ($dir.Name -in $formaCSkills) {
+        $refPath = Join-Path $dir.FullName 'reference.md'
+        if (-not (Test-Path -LiteralPath $refPath)) {
+            $failures += "$($dir.Name) : missing reference.md"
+        }
     }
 }
 
@@ -114,9 +149,7 @@ if (Test-Path -LiteralPath $manifestPath) {
                 if ($entry.PSObject.Properties.Name -notcontains 'classic') {
                     $failures += "manifest.json : repository '$repoKey' missing classic section"
                 }
-                if ($entry.PSObject.Properties.Name -notcontains 'speckit') {
-                    $failures += "manifest.json : repository '$repoKey' missing speckit section"
-                }
+                # Legacy speckit keys are ignored (not a failure)
             }
         }
     }
@@ -128,5 +161,5 @@ if ($failures.Count -gt 0) {
     exit 1
 }
 
-Write-Host 'Skills structure validation passed.' -ForegroundColor Green
+Write-Host 'Skills structure validation PASSED.' -ForegroundColor Green
 exit 0

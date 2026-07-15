@@ -1,6 +1,6 @@
 # GUARDRAILS — Non-Negotiable Agent Rules
 
-**Applies to:** every skill in `antigravity-dev-toolkit` — SDD, Spec Kit, developer, operational, infrastructure, Git, and documentation skills.
+**Applies to:** every skill in `antigravity-dev-toolkit` — SDD (Formas A/B/C), developer, operational, infrastructure, Git, and documentation skills.
 
 Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/GUARDRAILS.md`
 
@@ -35,7 +35,7 @@ Use `use skill commit` / `use skill push` after confirmation.
 
 ## 2. Write / delete (confirm before write)
 
-Before creating or replacing **new** SDD artifacts (PRD, PLAN, spec, plan, tasks):
+Before creating or replacing **new** SDD artifacts (FEATURE, STORY, PRD, PLAN, CONTINUITY, memory-bank):
 
 1. Show title, path, summary bullets.
 2. Ask **(pt-BR):** `Posso gravar em '{path}'? (sim / ajustar / cancelar)`
@@ -45,12 +45,13 @@ Before creating or replacing **new** SDD artifacts (PRD, PLAN, spec, plan, tasks
 
 Before editing production code or tests: confirm scope unless the user explicitly approved the current step/task.
 
+**Canonical paths:** only under `features/NNN-slug/` (or global classic path). Root flat `PRD/` / `PLAN/` are **not** valid write destinations.
+
 ---
 
-## 3. One step per session (SDD / Spec Kit develop)
+## 3. One step per session (SDD develop)
 
-- `sdd_develop`: exactly **one** PLAN step per session.
-- `speckit_develop`: exactly **one** pending `tasks.md` item per session.
+- `sdd_develop` / Forma C O3: exactly **one** PLAN step per session.
 - `document_implement`: exactly **one** documentation plan step per session.
 
 After completing the step: **STOP**. Do not start step N+1 in the same conversation.
@@ -61,7 +62,7 @@ After completing the step: **STOP**. Do not start step N+1 in the same conversat
 
 Before marking a develop step or task complete:
 
-- Run project tests (`dotnet test`, `npm test`, `pytest`, or per constitution).
+- Run project tests (`dotnet test`, `npm test`, `pytest`, or project convention).
 - Do not mark complete if tests fail and cannot be fixed in scope.
 
 ---
@@ -72,7 +73,7 @@ Before marking a develop step or task complete:
 |---------|----------|
 | Chat replies to user | **pt-BR** |
 | `SKILL.md`, guidelines, this file | **English** |
-| PRD, PLAN, spec, plan, tasks (default) | **pt-BR** |
+| FEATURE, STORY, PRD, PLAN, CONTINUITY (default) | **pt-BR** |
 | Production code, tests, identifiers | **English** |
 
 If the user corrects language, fix the **artifact/code** — do not flip chat to English unless asked.
@@ -89,14 +90,11 @@ If the user corrects language, fix the **artifact/code** — do not flip chat to
 
 ---
 
-## 7. Spec Kit init gate
+## 7. Forma C memory-bank
 
-Do **not** run `speckit_spec`, `speckit_plan`, or `speckit_develop` unless:
+Forma C (`orchestrate_*`) requires Step 0 Memory Bank Gate (`MEMORY-BANK.md`) before triage/deliver/develop. Forma A (`sdd_*`) does **not**.
 
-- `validate-speckit-init.ps1` passes for the resolved path, **or**
-- User explicitly runs `use skill speckit_init` and init completes with `constitution.md`.
-
-Do **not** manually create `.specify/` folders without full init.
+Bank co-locates with `features/` via manifest — never under `features/NNN-slug/`.
 
 ---
 
@@ -121,7 +119,7 @@ Never leave any trace that code, documentation, commits, or comments were produc
 - **Commit messages:** No AI references in title, body, or footer (beyond the already-blocked co-author trailer).
 - **Pull request descriptions:** No AI references.
 - **Technical documentation** (`docs/`, `README.md`, ADRs): No references to AI authorship, generation, or assistance.
-- **SDD / Spec Kit artifacts** (PRD, PLAN, spec, plan, tasks): No AI generation references.
+- **SDD artifacts** (FEATURE, STORY, PRD, PLAN, CONTINUITY): No AI generation references.
 - **Identifiers** (variables, methods, classes): No AI-derived names (`aiResult`, `llmResponse`, `generatedBy`, etc.).
 - **Log messages:** No AI references.
 

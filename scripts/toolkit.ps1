@@ -22,9 +22,9 @@ function Show-Menu {
     Write-Host "[1] 🚀 Sincronizar Toolkit (Deploy para Antigravity)"
     Write-Host "[2] 🧪 Rodar Smoke Tests (Core)"
     Write-Host "[3] ✨ Deploy & Test (Sincronizar + Smoke Tests)"
-    Write-Host "[4] 🛡️ Validação Completa (inclui Spec Kit e Gates)"
+    Write-Host "[4] 🛡️ Validação Completa (inclui Session Gates)"
     Write-Host "[5] 🔧 Executar Suíte de Manutenção (Normalizar e Arrumar Gates)"
-    Write-Host "[6] 📦 Configurar Repositório Atual para SDD (setup-speckit & config)"
+    Write-Host "[6] 📦 Configurar Repositório Atual para SDD (manifest classic)"
     Write-Host "[0] ❌ Sair"
     Write-Host "=========================================" -ForegroundColor Cyan
 }
@@ -73,7 +73,7 @@ while ($true) {
             }
         }
         '4' {
-            $null = Run-Script "validation\validate-all.ps1" "-IncludeSpeckit -IncludeSessionGate"
+            $null = Run-Script "validation\validate-all.ps1" "-IncludeSessionGate"
         }
         '5' {
             Write-Host "`nIniciando Suíte de Manutenção..." -ForegroundColor Cyan
@@ -82,10 +82,8 @@ while ($true) {
             $null = Run-Script "maintainers\inject-skill-gates.ps1"
         }
         '6' {
-            Write-Host "`nCertifique-se de que o npm está instalado." -ForegroundColor Yellow
-            if (Run-Script "setup-speckit.ps1") {
-                $null = Run-Script "configure-repo-sdd.ps1"
-            }
+            Write-Host "`nConfigurando manifest classic (features/ + memory-bank) para o CWD atual..." -ForegroundColor Yellow
+            $null = Run-Script "configure-repo-sdd.ps1" "-StorageMode repository"
         }
         '0' {
             Write-Host "Saindo..." -ForegroundColor Cyan

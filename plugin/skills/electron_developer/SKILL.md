@@ -1,4 +1,4 @@
-﻿---
+---
 name: electron-developer
 description: >
   Implement or fix small-to-medium Electron desktop features without full SDD. Covers main process,
@@ -20,7 +20,7 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD / orchestrate skills only)
 [ ] User confirmed current action (sim)
 -> If any unchecked: STOP
 ```

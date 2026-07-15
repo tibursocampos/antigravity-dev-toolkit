@@ -1,15 +1,14 @@
 ---
 name: push
-description: >
-  Execute git push on the current branch. Use when the user says "use skill push",
-  "push changes", or "/push".
+description: Execute git push on the current branch after confirmation. Git-only. Use when pushing changes or invoking /push.
 ---
+
 
 ## STOP - Read before ANY tool call
 
 1. Read `{pluginRoot}/GUARDRAILS.md`
-2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
-3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+2. Read `{pluginRoot}/skills/_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
 4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
 5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
 
@@ -19,9 +18,9 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-â†’ If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
@@ -30,7 +29,18 @@ Gate check:
 
 ## Trigger
 
-Use for `use skill push`, `push changes`, or `/push`.
+Use for `use skill push`, `push changes`, or `use skill push`.
+
+## Outcome
+
+Current branch pushed to `origin` with upstream set when needed. No force-push on protected branches.
+
+## Lazy-load
+
+| When | Path (after `scripts/sync-cursor.ps1`) |
+|------|----------------------------------------|
+| Branch rules | `~/.cursor/rules/branch-validation.mdc` |
+| Commit flow | `{pluginRoot}/skills/_shared/developer_common/step-4-commits-pr.md` |
 
 ## Process
 
@@ -48,8 +58,12 @@ Posso seguir? (sim / ajustar / cancelar)
 
 ### 0. Validate branch
 
-Allowed: `feature/<slug>`, `feat/<id>`.  
-Blocked: `main`, `master`, `develop`, invalid patterns.
+Enforce `branch-validation.mdc`:
+
+- Allowed: `feature/<slug>`, `feat/<id>`
+- Blocked: `main`, `master`, `develop`, invalid patterns
+
+If blocked, stop and show how to create a valid branch. Do not push.
 
 ### 1. Push
 
@@ -67,3 +81,11 @@ Return branch and push status.
 
 - Push from invalid branch
 - Force push default branches
+- ADO/MCP work-item APIs or mandatory PR creation
+
+## Handoff
+
+| Situation | Next |
+|-----------|------|
+| Create PR (user asks) | `gh pr create` per `step-4-commits-pr.md` |
+| Review before PR | `use skill code_review` |

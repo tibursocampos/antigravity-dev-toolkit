@@ -1,17 +1,14 @@
 ---
 name: sdd_develop
-description: >
-  Execute one PLAN baby step. Code always in English; updates PLAN .md in the file's
-  language (pt-BR default). Use when the user says "use skill sdd_develop", "implement step",
-  "/sdd_develop". One session = one PLAN step.
+description: Execute one PLAN baby step (code in English; PLAN in file language, pt-BR default). One session = one step. Use when implementing a PLAN step or invoking /sdd_develop.
 ---
 
 ## STOP - Read before ANY tool call
 
 1. Read `{pluginRoot}/GUARDRAILS.md`
-2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
+2. Read `_shared/sdd_artifacts/SESSION.md`; load **repo** session for `$Cwd`, then after PLAN path is known load **develop** session scoped by PLAN (or PLAN+step) - see `SESSION.md`
 3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
-4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
+4. SDD/develop skills: after **ONE** step/task, **STOP** that develop scope - handoff only
 5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
 
 ### Step -1 - Gate check (report in chat before continuing)
@@ -19,10 +16,10 @@ description: >
 ```
 Gate check:
 [ ] GUARDRAILS.md read
-[ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] SESSION.md read; repo + develop (PLAN-scoped) session loaded
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-- If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
@@ -31,74 +28,80 @@ Gate check:
 
 ## Trigger
 
-Invoke when the user asks for: `use skill sdd_develop`, `implement step`, `execute step`, or `/sdd_develop`.
+Invoke when the user asks for: `use skill sdd_develop`, `implement step`, `execute step`.
 
 ## Outcome
 
-One **PLAN step** completed: **code and tests in English**; PLAN updated in place. Do not start the next step in the same session.
+One **PLAN step** done: **code and tests in English**; PLAN updated in place. Do not start the next step in the same develop session scope.
+
+**Session scoping:** After the PLAN path is resolved, load/create the develop session file per `SESSION.md` (`sessions/{repo-hash}/plan-{plan-hash}.json`). When spawned as an O3 parallel child on the same PLAN, use `plan-{plan-hash}-step-{N}.json`. Gates `step_confirmed` / `tests_run` apply only to that scoped file - never share one flat repo JSON across parallel children. Repo session still owns `storage_confirmed` / `write_confirmed`.
 
 ## Language
 
 | Deliverable | Language |
 |-------------|----------|
 | Code, tests, comments, XML docs | **English** |
-| PLAN progress/notes | **Same language as the PLAN file** |
-| Product `docs/` / README | Ask first whether pt-BR or English |
+| PLAN progress / notes | **Same as PLAN file** |
+| Product `docs/` / README | Ask pt-BR vs English first |
 
-Do not re-ask SDD storage and do not change artifact language mid-PLAN unless the user requests it.
+Do not re-ask SDD storage or change artifact language mid-PLAN unless requested.
 
 ## Required input
 
 | Input | Rule |
-|-------|-------|
-| PLAN path | Canonical: `PLAN/PLAN_NNN_*.md` |
+|-------|------|
+| PLAN path | Canonical only: `features/NNN-slug/USnn/PLAN/PLAN_NNN_*.md` (or `TSnn`; global under `~/.gemini/antigravity-ide/sdd/<repo-id>/features/...`). Root/flat `PLAN/` is **not** valid - do not read/update for execution |
 | Step | `Step 1`, `PASSO 1`, etc. |
 
 ## Lazy-load (only when needed)
 
 | When | Path |
 |------|------|
-| Pipeline and missing PLAN dialog | `_shared/sdd_artifacts/PIPELINE.md` |
-| Storage schema v2 | `_shared/sdd_artifacts/STORAGE.md` |
-| .NET, Git, context | `_shared/dotnet_guidelines/*.md`, `dev_persona` § Git, § Context Management |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` - Full mode |
+| Pipeline, missing PLAN dialog | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` |
+| Storage | `STORAGE.md` |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full mode** |
+| .NET, Git, context | `dotnet_guidelines/*.md`, `branch-validation.mdc`, `conventional-commits.mdc`, `developer_common/GUIDE.md`, `context-management.mdc` |
 
 ## Process
 
 ### -1. Pipeline, mode, and Caveman
 
 Load `STORAGE.md` and `PIPELINE.md`. Use `STORAGE.md` schema v2 and run the dynamic storage resolution algorithm with parameter `$Workflow = classic`. Resolve `storage_mode` and `path` for the active repository. If this is the first run for the repository, execute storage mode selection and persist it in `manifest.json`.
-**Agent mode** is required for code changes and PLAN updates. If the user asks for PRD (`sdd_spec`) or PLAN (`sdd_plan`), route using the missing-artifacts flow and do not create PRD/PLAN in this skill.
+**Agent mode** is required for code changes and PLAN updates. If the user asks for PRD (`sdd_spec`) or PLAN (`sdd_plan`), route using `PIPELINE.md` section Missing artifacts; do not create PRD/PLAN in this skill.
 
 Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
 - If file missing -> create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` -> load `_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
-  > 🪨 Caveman mode is active (compact responses). Type `caveman off` any time to disable it.
-- Honor `caveman on` / `caveman off` commands at any point in the session.
+- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands at any point during the session.
 
 ### 0. Workspace
 
-Target repository. Resolve PLAN:
+Target repo. Resolve PLAN:
 
 | Situation | Action |
-|----------|------|
-| Canonical PLAN path provided | `Read` the exact path (absolute or relative to active storage destination) |
-| No canonical PLAN path | Glob under active storage destination; if not found, use `PIPELINE.md` § `sdd_develop` without PLAN (options 1-3) |
-| User asks to create PRD/PLAN | Redirect to `sdd_spec` / `sdd_plan`; stop |
+|-----------|--------|
+| Canonical PLAN path given (`features/.../PLAN/` or global `.../features/.../PLAN/`) | `Read` at exact path; update **that** file in place |
+| Root/flat `PLAN/` or other non-canonical path | **STOP** - ask user to migrate under `features/.../PLAN/` via `sdd_plan`; do not execute |
+| No canonical PLAN path | Glob `features/**/PLAN/PLAN_*.md` only (workspace + global feature root); if not found, use `PIPELINE.md` section `sdd_develop` without PLAN (options 1-3) |
+| Path under `features/NNN-slug/` | Optionally load `CONTINUITY.md` / story `STORY.md` for Prior context only - **do not** change multi-step rules |
+| User asks "criar PRD/sdd_plan" | Redirect to `sdd_spec` / `sdd_plan`; stop |
 
-Detect stack from the selected PLAN step.
+Detect stack from PLAN step.
+
+After PLAN path is known: create `{sessions}/{repo-hash}/` if needed; load or create develop session with gates `false` (`SESSION.md` § Develop session - never copy develop gates from the flat repo JSON). If this child was given an explicit step-scoped path (O3 parallel same PLAN), use `plan-{plan-hash}-step-{N}.json`.
 
 ### 1. Validate step
 
-Ensure step exists and dependencies are **Concluidas**. Summarize objective, files, and tests; then ask to proceed.
+Step exists; deps **Concluidos** / **Completed**; summarize objective, files, tests; ask to proceed.
 
 ### 2. Git
 
-Validate feature branch per `dev_persona` § Branch validation.
+Feature branch per `branch-validation.mdc`.
 
 ### 3-4. Analyze and implement
 
-Use Glob/Grep/Read for scope. Write code/tests in English. Run targeted build/test commands.
+Glob/Grep/Read scope. Code/tests in English; targeted build/test.
 
 ### 5. Commit (optional)
 
@@ -106,22 +109,30 @@ Offer `use skill commit`; do not auto-commit.
 
 ### 6. Update PLAN + checkpoint
 
-Mark step as completed, update progress, and note next step. Save before any context pause (>=40%).
+`reference.md`: mark step done, progress, next step. Save before context pause (>=40%).
 
 ### 7. Report
 
-Report changed files, test results, and progress `N/M` (pt-BR). Handoff: new conversation -> `use skill sdd_develop - <full-plan-path> - Step N+1`.
-
--------|------|
-| Commit | `use skill commit` |
-| Next step | New session -> `sdd_develop - <plan> - Step N+1` |
-| All steps completed | `use skill code_review` (optional) |
+Files, tests, `N/M` (pt-BR). Handoff: new chat -> `use skill sdd_develop - <full-plan-path> - Step N+1`.
 
 ## Must not
 
-- Write code or comments in Portuguese
-- Start a new PLAN step in the same session
-- Create new PRD or PLAN files in this skill
-- Mark a step complete without running tests
-- Leave AI traces in code comments, XML docs, identifiers, or log messages
-- Write comments that explain what obvious code does
+- Portuguese application code; **multiple PLAN steps per develop session scope** (contract unchanged)
+- Create PRD/PLAN; skip PLAN save; modify `.gitignore`
+- Implement in Plan/Ask without Agent
+- Bypass one-step via orchestrator parent implementing code
+- Use the flat `{repo-hash}.json` for `step_confirmed` / `tests_run` when a PLAN path is known - always use the PLAN-scoped file (or PLAN+step); create scoped with gates false if missing
+
+## Handoff
+
+| Situation | Next |
+|-----------|------|
+| Commit | `use skill commit` |
+| Next step | New session -> `use skill sdd_develop - <full-plan-path> - Step N+1` |
+| All steps done | `use skill code_review` (pass `- single` / `- multi-angle`, or let skill ask) |
+
+Example full path (Forma A):
+
+```
+use skill sdd_develop - features/004-export-profile/US01/PLAN/PLAN_004_export_profile.md - Step 2
+```

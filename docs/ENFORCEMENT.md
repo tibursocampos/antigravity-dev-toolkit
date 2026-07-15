@@ -12,16 +12,16 @@ This document explains why Antigravity IDE agents may ignore toolkit guardrails,
 | **No native IDE hooks** | Unlike Cursor `beforeShellExecution` | Nothing blocks `git commit` or `Write` at runtime |
 | **Skills are honor-system** | Long markdown loaded late or never | Agent runs everything at once, commits, skips confirmation |
 | **Lazy-load fails silently** | Step -1 skipped → `PIPELINE.md` / guidelines not loaded | Wrong language in code/artifacts |
-| **Fragile Spec Kit init** | Agent can create empty `.specify/` without `constitution.md` | `speckit_spec` runs without valid init |
+| **Layout drift** | Root flat `PRD/` / Spec Kit leftovers in old consumers | Writes outside `features/NNN-slug/` |
 
 ## Cursor vs Antigravity
 
-| Layer | Cursor | Antigravity (before this plan) |
-|-------|--------|--------------------------------|
-| Always-on rules | User rules + `.cursor/rules` | None |
-| Shell blocking | `beforeShellExecution` hooks | None |
+| Layer | Cursor | Antigravity |
+|-------|--------|-------------|
+| Always-on rules | User rules + `.cursor/rules` | KI `global_guardrails` + `GUARDRAILS.md` |
+| Shell blocking | `beforeShellExecution` hooks | None (session gates + honor system) |
 | Skill loading | Explicit + rules | KI on explicit invoke only |
-| Context management | Rules + hooks | Manual (honor system) |
+| Forma C specialists | Cursor `Task` | Serial specialist passes (`SUBAGENT-MODEL.md`) |
 
 ## Mitigation layers (this toolkit)
 
@@ -29,7 +29,7 @@ This document explains why Antigravity IDE agents may ignore toolkit guardrails,
 2. **`global_guardrails` KI** — loaded every conversation, first turn
 3. **`SESSION.md` + session-state** — verifiable gates in `~/.gemini/antigravity-ide/sdd/sessions/`
 4. **Gate-first on every skill** — STOP block + step -1 checklist
-5. **Validation scripts** — `validate-all.ps1` smoke test after sync; optional Spec Kit and session-gate checks via flags.
+5. **Validation scripts** — `validate-all.ps1` smoke test after sync; optional session-gate checks via `-IncludeSessionGate`.
 
 ## Limitations
 

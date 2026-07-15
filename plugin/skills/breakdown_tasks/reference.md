@@ -1,17 +1,18 @@
 # breakdown_tasks - reference
 
-Grouping heuristics and templates for `breakdown_tasks/SKILL.md`.
+Grouping heuristics and templates for `skills/breakdown_tasks/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
 
 ---
 
 ## Parsing steps from refined markdown
 
-| Item type | Sections to search |
-|-----------|--------------------|
-| User Story / Technical Story | `Steps` |
-| Bug | `Suggested fix` under Error, or `Steps` |
+| Item type | Section headings to search |
+|-----------|---------------------------|
+| User Story / Technical Story | `### Steps` (emoji heading variants allowed) |
+| STORY.md | `## Steps` or steps embedded after description |
+| Bug | `### Suggested fix` or `### Steps` |
 
-Typical step block:
+Each step block typically matches:
 
 ```markdown
 **Step N - [Title]**
@@ -20,56 +21,73 @@ Typical step block:
 - Depends on: [...]
 ```
 
-Also accept legacy Portuguese step headings like `Etapa N` and normalize to `Step N`.
+Also accept legacy Portuguese headings: `**Etapa N -` (normalize to Step N in output).
 
-If there are only unordered bullets with no step structure, ask the user to rerun `refine_backlog_item` or confirm manual grouping.
+If only a bullet list without step headers, ask the user to re-run `refine_backlog_item` or confirm grouping manually.
+
+---
+
+## Topological order (plan-task portable)
+
+1. Build a directed graph from `Depends on: Step N` / `none`.
+2. Reject cycles - ask user to fix deps before writing the file.
+3. Assign **waves**: wave 0 = no deps; wave k = all deps in earlier waves.
+4. Within a wave, apply layer/repo grouping below.
+5. Document parallel-safe steps: same wave and different groups with no cross edges.
+
+Do **not** invent ADO predecessor links or fixed corporate stage names.
 
 ---
 
 ## Grouping heuristics
 
-Apply in this order:
+Apply in order **after** topology waves:
 
-1. Markdown sub-headings (`####`) if present.
-2. Repository or service names in step text.
-3. Layer-based split (backend vs frontend).
-4. Fallback: single `Implementation` group if no natural split exists.
+**a) Markdown sub-headings (`####`)** - e.g. `#### Backend - billing-api` -> one group per heading.
 
-Limits:
+**b) Repository / service name** - steps mentioning different repos or deployable units group separately.
 
-- Maximum **5** implementation groups.
-- Minimum **1** implementation group when non-test steps exist.
+**c) Layer** - same repo but clear split: Domain/Application/Infrastructure/API -> "Backend"; UI/Angular/React -> "Frontend".
 
-Test split (mandatory):
+**d) Fallback** - ≤3 steps with no natural split -> single group `Implementation`.
 
-Steps with layer `Tests`, `Integration tests`, or titles containing `unit test` / `integration test` go to:
+**Limits:**
 
-- `Tests - Backend`, and/or
+- Maximum **5** implementation groups - merge smallest adjacent groups if exceeded
+- Minimum **1** implementation group when any non-test steps exist
+
+**Test steps (mandatory split):**
+
+Steps whose layer is `Tests`, `Integration tests`, `Testes`, or title contains "unit test" / "integration test" -> move to:
+
+- `Tests - Backend` anduse skill or
 - `Tests - Frontend`
 
-Do not keep test-only steps in feature implementation groups.
+Do not leave test-only steps inside feature implementation groups.
 
 ---
 
-## Output template (`docs/implementation-tasks/<slug>.md`)
+## Output template (preferred: feature story)
+
+`features/NNN-slug/USnn/REFINE/tasks.md`:
 
 ```markdown
 # Implementation tasks: [title]
 
 | Field | Value |
 |-------|--------|
-| **Source** | docs/backlog/<slug>.md \| chat |
+| **Source** | features/.../STORY.md \| docs/backlog/<slug>.md \| chat |
 | **Doc language** | pt-BR \| English |
 | **Repository** | [name] |
 | **Progress** | 0/N groups |
 
 ## Summary
 
-| Group | Steps | Status |
-|-------|-------|--------|
-| Implement [Group 1] | 1-3 | Pending |
-| Implement [Group 2] | 4-5 | Pending |
-| Tests - Backend | 6 | Pending |
+| Group | Steps | Wave | Status |
+|-------|-------|------|--------|
+| Implement [Group 1] | 1-3 | 0 | Pending |
+| Implement [Group 2] | 4-5 | 1 | Pending |
+| Tests - Backend | 6 | 2 | Pending |
 
 ---
 
@@ -77,7 +95,7 @@ Do not keep test-only steps in feature implementation groups.
 
 ### Group 1: [name]
 
-**Steps covered:** 1-2
+**Steps covered:** 1-2 | **Wave:** 0 | **Parallel-safe with:** none
 
 - [ ] **Step 1 - [title]**
   - Layer: [...]
@@ -86,34 +104,22 @@ Do not keep test-only steps in feature implementation groups.
   - Layer: [...]
   - Depends on: Step 1
 
-### Group 2: [name]
-
-**Steps covered:** 3-4
-
-- [ ] **Step 3 - [title]**
-  ...
-
 ---
 
 ## Tests
 
 ### Tests - Backend
 
-**Steps covered:** 5
+**Steps covered:** 5 | **Wave:** 2
 
 - [ ] **Step 5 - [title]**
-  ...
-
-### Tests - Frontend (omit if none)
-
-- [ ] **Step N - [title]**
 
 ---
 
 ## Before PR (optional - neutral checklist)
 
 - [ ] Build and targeted tests pass locally
-- [ ] Backlog acceptance criteria re-read
+- [ ] Acceptance criteria from story/backlog re-read
 - [ ] PR description lists scope and test evidence
 - [ ] No secrets or local paths in diff
 
@@ -121,56 +127,71 @@ Do not keep test-only steps in feature implementation groups.
 
 ## Execution order
 
-**Critical path:** Group 1 -> Group 2 -> ... -> Tests
+**Critical path:** Wave 0 -> Wave 1 -> … -> Tests
+
+**Parallel waves:** list step ids that may run together
 
 **Next:** Group 1 - [name]
 
-## SDD handoff
+## SDD / Forma C handoff
 
-When scope is medium/high complexity:
-
-`use skill sdd_spec -> use skill sdd_plan -> use skill sdd_develop`
-
-This file is planning input and does not replace `PLAN/PLAN_*.md`.
 ```
+use skill sdd_spec -> use skill sdd_plan -> /sdd_develop
+```
+
+or
+
+```
+use skill orchestrate_analyze
+```
+
+This file does **not** replace `features/.../PLAN/PLAN_*.md`.
+```
+
+Shortcut path `docs/implementation-tasks/<slug>.md` (or legacy `docs/sdd_developation-tasks/`) uses the same body.
 
 ---
 
 ## SDD PLAN resolution (read-only)
 
-When handoff says PLAN already exists:
+When the handoff table says **PLAN already exists**, resolve the path before suggesting `sdd_develop`:
 
-1. Read `_shared/sdd_artifacts/STORAGE.md`.
-2. Resolve artifact paths for the active repository using storage rules.
-3. Inspect candidate PLAN files and pick matching `PLAN_NNN_*.md`.
-4. If zero or multiple matches remain, ask once in pt-BR with numbered full paths.
-5. Pass full path in handoff command.
+1. Load `STORAGE.md`.
+2. Glob `features/**/PLAN/PLAN_*.md` only (workspace + global feature root).
+3. Do **not** resolve root/flat `PLAN/PLAN_*.md` or `~/.gemini/antigravity-ide/sdd/<repo-id>/PLAN/` for execution.
+4. If the user named a feature or `NNN`, pick the matching file under `features/`.
+5. If zero or multiple remain, ask once in pt-BR with numbered full paths.
+6. Pass **full path** in the handoff.
 
-Do not use `docs/documentation-plan/plan.md` for SDD handoff.
-
----
-
-## Boundary: breakdown_tasks vs sdd_plan
-
-| Aspect | `breakdown_tasks` | `sdd_plan` |
-|--------|-------------------|------------|
-| Input | Refined backlog steps | PRD acceptance criteria |
-| Output | `docs/implementation-tasks/<slug>.md` | Canonical `PLAN/PLAN_*.md` path |
-| Granularity | Grouped checklist for one item | Baby steps across full feature scope |
-| Tracker usage | Never | Never |
-
-Use `sdd_plan` after `sdd_spec` for SDD workflow. Use `breakdown_tasks` for fast local implementation checklists.
+Do **not** use `docs/documentation-plan/plan.md`.
 
 ---
 
-## Explicit exclusions
+## Boundary: breakdown_tasks vs plan vs O2
+
+| Aspect | `breakdown_tasks` | `sdd_plan` | `orchestrate_deliver` (O2) |
+|--------|-------------------|------------|----------------------------|
+| Input | Refined steps / STORY | PRD | Approved US/TS backlog |
+| Output | Local checklist | `PLAN_*.md` under feature | PRD+PLAN per story |
+| Granularity | Engineering groups + waves | Baby steps + token budget | Multi-story orchestration |
+| Tracker | Never | Never | Never |
+
+---
+
+## Explicit exclusions (ported from corporate plan-task)
 
 Do **not** auto-generate:
 
-- Mandatory AI tag tasks
-- Mandatory log-link tasks
-- Mandatory DeskCheck tasks
-- Mandatory PR quality-tool boilerplate
-- Remote board child tasks via API
+- "Update AI tags" / SDD / DevAI tag tasks
+- "Attach Datadog logs" as a fixed task
+- DeskCheck / DESKCHECK tag tasks
+- "Review own PR" with Sonar/Snyk boilerplate as mandatory rows
+- Child tasks on remote boards via REST PATCH / `az boards`
 
-If the user wants a custom workflow section, add it under **Before PR** using user wording only.
+If the user wants a custom workflow section, add it under **Before PR** with their wording only.
+
+---
+
+## Context management
+
+Per `context-management.mdc`: after writing a large checklist, checkpoint at ≥ 40% context; hand off continuation with file path and next group id.

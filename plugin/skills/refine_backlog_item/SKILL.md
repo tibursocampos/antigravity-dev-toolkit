@@ -1,6 +1,6 @@
 ---
 name: refine_backlog_item
-description: Refine an informal backlog item (Bug, User Story, Technical Story) into structured markdown with BDD acceptance criteria and a quality scorecard. Optional save to docs/backlog/ in the target repo. No tracker API. Use when the user says "use skill refine_backlog_item", "refine backlog", or "/refine_backlog_item".
+description: Refine a Bug, User Story, or Technical Story into structured markdown with BDD acceptance and a quality scorecard. Use when refining backlog or invoking /refine_backlog_item.
 ---
 
 ## STOP - Read before ANY tool call
@@ -17,9 +17,9 @@ description: Refine an informal backlog item (Bug, User Story, Technical Story) 
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-- If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
@@ -28,36 +28,43 @@ Gate check:
 
 ## Trigger
 
-Invoke when the user asks for: `use skill refine_backlog_item`, `refine backlog item`, `/refine_backlog_item`, or quick intake before SDD.
+Invoke when the user asks for: `use skill refine_backlog_item`, `refine backlog item`, `use skill refine_backlog_item`, or quick intake before SDD / Forma C.
 
-Optional input: path to notes, pasted description, or repository context.
+Optional: path to existing notes, or pasted description.
 
 ## Outcome
 
-Structured **markdown** in chat (BDD acceptance criteria + implementation steps) and a **quality scorecard**. Optionally persisted as `docs/backlog/<slug>.md` in the **target workspace**.
+Structured **markdown** in chat (BDD acceptance criteria + implementation steps) and a **quality scorecard** aligned to portable document-task patterns (no ADO).
 
-Does **not** create or update cards in external trackers.
+**Persistence (prefer in order):**
+
+1. `features/NNN-slug/USnn/STORY.md` (or `TSnn`) under resolved classic feature root - optional `REFINE/` notes beside it
+2. Shortcut: `docs/backlog/<slug>.md` in the **target workspace**
+
+Does **not** create or update cards in external work-item trackers.
 
 ## Lazy-load
 
 | When | Path |
 |------|------|
-| Type templates | `_shared/backlog_item_types/{bug,user-story,technical-story}.md` |
-| Scorecard rubric, boundaries, guardrails | `refine_backlog_item/reference.md` |
-| Existing SDD artifacts before handoff | `_shared/sdd_artifacts/STORAGE.md` |
+| Type templates | `skills/_shared/backlog-item-types/{bug,user-story,technical-story}.md` or `{pluginRoot}/skills/_shared/backlog-item-types/` after sync |
+| Scorecard rubric, boundaries vs O1 / sdd_spec | `skills/refine_backlog_item/reference.md` |
+| Feature storage | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md`, `PIPELINE.md` |
+| Story template | `skills/_shared/templates/features/story/STORY.md` |
+| Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
 
 ### 0. Workspace
 
-Confirm the **target repository** (the product being described). Summarize detected stack if useful for steps and repositories sections.
+Confirm **target repository**. Summarize detected stack via Glob if useful.
 
-Do **not** assume there is no PRD because `PRD/` is missing in the workspace. Check storage guidance in `_shared/sdd_artifacts/STORAGE.md` before SDD handoff.
+Do **not** assume there is no PRD because root `PRD/` is missing - check `features/**/PRD/` (and global `.../features/**/PRD/`) per `STORAGE.md`. Root/flat `PRD/` is not a Classic SDD path.
 
 ### 1. Select item type
 
 ```
-Refine backlog item
+[Refine] Refine backlog item
 
 Which type?
 
@@ -66,57 +73,74 @@ Which type?
 3) Technical Story
 ```
 
-Load the matching file from `_shared/backlog_item_types/`.
+Load the matching file from `_shared/backlog-item-types/`. Map: User Story -> `USnn`, Technical Story -> `TSnn`, Bug -> prefer `USnn` or note under existing story.
 
 ### 2. Collect description
 
-Ask for a free-form description (problem, goal, context, constraints). If details are thin, use collection questions from the type file. Do not publish placeholder sections.
+Ask for a free-form description (problem, goal, context, constraints). Wait for enough detail; if thin, use collection questions from the type file - do not ship placeholder `[...]` sections.
 
 ### 3. Generate documentation
 
-Follow the selected type file **Output template** and **Writing guidelines**.
+Follow the type file **Output template** and **Writing guidelines**. Combine user input with structure from the template - calibrate depth, not copy corporate examples.
 
-- Steps: one responsibility per step, infinitive verbs, explicit dependencies, and parallel notes when independent.
-- BDD: use **Given / When / Then / And** with verifiable outcomes.
+**Steps:** one responsibility per step; infinitive verbs; layer order when applicable; explicit dependencies; note parallel steps when independent (feeds `breakdown_tasks` topological grouping).
+
+**BDD:** **Given / When / Then / And**; verifiable outcomes; avoid vague "works correctly".
 
 ### 4. Quality scorecard
 
-Immediately after the markdown, score per `refine_backlog_item/reference.md` scorecard. Show total `/100`, strengths, and concrete improvements.
+Immediately after the markdown, score per `reference.md` section Scorecard. Show total / 100, strengths, and specific improvements.
 
-### 5. Validation
+### 5. Validation (chat-only)
 
-Before final output, apply guardrails in `refine_backlog_item/reference.md` (no vague phrases, complete sections, no unit-test-only acceptance criteria).
+Before presenting as final, check `reference.md` section Guardrails.
 
 ### 6. Optional persistence
 
-Ask whether to save under `docs/backlog/<slug>.md`.
+Ask where to save (pt-BR):
 
-If yes, ask once:
+```text
+Onde gravar o item refinado?
 
-> Ask user (pt-BR): Language for `docs/backlog/` - **pt-BR** or **English**?
+1) features/NNN-slug/USnn/STORY.md (recomendado - Forma B alinhada ao storage)
+2) docs/backlog/<slug>.md (atalho)
+3) Só chat (não gravar)
+```
 
-Write prose in that language. Paths and identifiers stay in English. Build slug from title using kebab-case.
+If saving under `features/`: resolve feature root (`STORAGE.md`); create `FEATURE.md` stub only if missing and user confirms path; ask artifact language default **pt-BR**.
+
+If saving under `docs/backlog/`: **first** ask once:
+
+> Language for product `docs/backlog/` - **pt-BR** or **English**?
+
+Write prose in that language; paths and identifiers stay in English. Slug from title (kebab-case).
 
 ### 7. Handoff
 
 | Situation | Next |
 |-----------|------|
 | Break into implementation checklist | `use skill breakdown_tasks` (same content or saved path) |
-| Medium/high complexity feature | `use skill sdd_spec` - `use skill sdd_plan` - `use skill sdd_develop` |
-| Small isolated code change | `use skill developer` |
+| Multi-story / complex / needs specialists | `use skill orchestrate_analyze` (Forma C O1) |
+| Medium/high complexity single feature (Forma A) | `use skill sdd_spec` -> `use skill sdd_plan` -> `use skill sdd_develop` |
+| Small isolated change | `use skill developer` / stack `*-developer` |
 | Commit saved file | `use skill commit` |
 
 ## Must not
 
-- Call tracker APIs or external work-item integrations
-- Add organization-specific mandatory tags or custom fields
-- Write `docs/backlog/` before language confirmation when saving
-- Treat `docs/backlog/` as SDD PRD replacement
+- Call tracker REST APIs, MCP work-item integrations, or PAT scripts (`az`, ADO)
+- Add organization-specific custom fields, mandatory AI tags, or PATCH guardrails for remote boards
+- Write `docs/backlog/` before the language question when choosing shortcut
+- Duplicate full PRD/PLAN templates - hand off to `sdd_spec` / `sdd_plan` or O1
+- Invent architecture that belongs to O1 specialists
 
 ## Handoff examples
 
 ```
-use skill breakdown_tasks - docs/backlog/export-archived-records.md
+use skill breakdown_tasks - features/004-export/US01/STORY.md
+```
+
+```
+use skill orchestrate_analyze
 ```
 
 ```

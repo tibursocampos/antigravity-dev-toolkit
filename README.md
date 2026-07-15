@@ -1,87 +1,63 @@
 # antigravity-dev-toolkit
 
-Personal Antigravity IDE plugin toolkit for disciplined software execution: gate-first skills, SDD (classic + Spec Kit), strong guardrails, and Git-only workflows.
+Personal Antigravity IDE plugin toolkit for disciplined software execution: gate-first skills, SDD Formas A/B/C (`features/NNN-slug/`), strong guardrails, and Git-only workflows.
 
-## What improved
+## Highlights
 
-- **Enforcement stack**: `plugin/GUARDRAILS.md` + `global_guardrails` KI + session-state gates in `~/.gemini/antigravity-ide/sdd/sessions/`.
-- **Gate-first execution**: every skill starts with Step -1 checks before Write/Shell and before mutating git.
-- **Manifest v2**: classic and speckit storage are resolved independently (`repository` or `global`) from `manifest.json`.
-- **Validation scripts**: unified smoke test (`validate-all.ps1`) plus individual deploy, docs, structure, language, session gates, and Spec Kit init validators.
-- **Naming consistency**: skill folder names use underscores (for example `refine_backlog_item`, `breakdown_tasks`).
-
-## Important behavior
-
-- `dev_persona` is not magic always-on by itself.
-- Always-on behavior is achieved by the `global_guardrails` knowledge item written by `scripts/sync-antigravity.ps1`.
-- Chat language is `pt-BR`; code, tests, and skill source documents remain in English.
+- **Formas A / B / C**: Classic SDD, backlog prep, and orchestrated multi-story (memory-bank + `orchestrate_*`).
+- **Manifest v2**: classic storage (`repository` or `global`) from `manifest.json` under `~/.gemini/antigravity-ide/sdd/`.
+- **Validation scripts**: unified smoke test (`validate-all.ps1`) plus deploy, docs, structure, language, and optional session-gate checks.
+- **Enforcement without native hooks**: `GUARDRAILS.md` + KI injection + SESSION gates.
 
 ## Quick start
 
-1. Clone this repository.
-1. Run:
-
-For an interactive menu to deploy, validate, or maintain the toolkit, run:
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/toolkit.ps1
+.\scripts\sync-antigravity.ps1
+.\scripts\validation\validate-all.ps1
 ```
 
-Or you can run the sync script directly:
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/sync-antigravity.ps1
-```
-
-1. Restart Antigravity IDE.
-1. Run the post-sync smoke test:
+Interactive menu:
 
 ```powershell
-.\scripts\validate-all.ps1
+.\scripts\toolkit.ps1
 ```
 
-Optional flags:
+Register a consumer repo for Classic SDD:
 
 ```powershell
-.\scripts\validate-all.ps1 -IncludeSpeckit -RepoPath "D:\Source\Repos\MyApp"
-.\scripts\validate-all.ps1 -IncludeSessionGate -RepoPath "D:\Source\Repos\MyApp"
+.\scripts\configure-repo-sdd.ps1 -StorageMode repository -RepoPath "D:\Source\Repos\MyApp"
 ```
 
-Individual validators still work in isolation when debugging one check.
+Optional session-gate check:
 
-## Repository map
+```powershell
+.\scripts\validation\validate-all.ps1 -IncludeSessionGate -RepoPath "D:\Source\Repos\MyApp"
+```
 
-- `plugin/plugin.json`: plugin manifest.
-- `plugin/GUARDRAILS.md`: non-negotiable hard rules.
-- `plugin/skills/*/SKILL.md`: skill contracts.
-- `plugin/skills/_shared/`: shared guidelines and SDD artifacts.
-- `docs/`: operator and maintainer documentation.
-- `scripts/`: interactive orchestrator (`toolkit.ps1`) and deployment automation.
-  - `validation/`: test suite.
-  - `maintainers/`: internal utils.
+## Workflows
 
-## Skills
+| Forma | Pipeline |
+|-------|----------|
+| **A** Classic | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
+| **B** Backlog | `refine_backlog_item` -> `breakdown_tasks` -> A or C |
+| **C** Orchestrated | Step 0 `memory_bank_init` -> `orchestrate_analyze` -> `orchestrate_deliver` -> `orchestrate_develop` \| `sdd_develop` |
 
-The toolkit documents **38 skill entries**:
+Canonical artifact root: `features/NNN-slug/` (see `plugin/skills/_shared/sdd_artifacts/STORAGE.md`).
 
-- **36 installed skill folders** in `plugin/skills/`, including frontend design (`impeccable`), Blip plugin scaffold (`blip_plugin_developer`), and stack developers (`vue_developer`, `blazor_developer`, `electron_developer`).
-- **2 migration aliases** kept in docs for compatibility handoffs.
+**Breaking:** Spec Kit (`speckit_*`) and root flat `PRD/` / `PLAN/` flows are removed. Migrate to Formas A/C.
 
-See full catalog in [docs/SKILLS.md](docs/SKILLS.md).
+## Docs
 
-## Guardrails first
+- [AGENTS.md](AGENTS.md) — guardrails contract
+- [docs/SKILLS.md](docs/SKILLS.md) — skill catalog
+- [docs/guides/](docs/guides/) — user guides (incl. Forma C 10–12)
+- [docs/INSTALL.md](docs/INSTALL.md) — install / sync
+- [docs/ENFORCEMENT.md](docs/ENFORCEMENT.md) — enforcement model
+- [docs/SYNC_POLICY.md](docs/SYNC_POLICY.md) — sync with cursor-dev-toolkit
 
-Before any mutating operation, the agent must:
+## Contributor notes
 
-1. Read `GUARDRAILS.md`.
-2. Read and resolve `SESSION.md` for the current workspace.
-3. Verify user confirmation (`sim`) for the current action.
-4. Respect one-step-per-session in `sdd_develop`, `speckit_develop`, and `document_implement`.
-
-## Related docs
-
-- [docs/INSTALL.md](docs/INSTALL.md)
-- [docs/core-architecture.md](docs/core-architecture.md)
-- [docs/sdd-workflow.md](docs/sdd-workflow.md)
-- [docs/shared-guidelines.md](docs/shared-guidelines.md)
-- [docs/guides/README.md](docs/guides/README.md)
-- [docs/impeccable-integration.md](docs/impeccable-integration.md)
-- [docs/blip-plugin-integration.md](docs/blip-plugin-integration.md)
+1. Chat replies: pt-BR. Skill sources and production code: English.
+2. Skill folders use underscores (`sdd_spec`).
+3. Respect one-step-per-session in `sdd_develop`, Forma C O3, and `document_implement`.
+4. Never auto-run mutating git; confirm with `sim`.

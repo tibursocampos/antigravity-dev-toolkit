@@ -20,7 +20,7 @@ Skill body (process, guardrails, handoff) must be **English**. User-facing promp
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD / orchestrate skills only)
 [ ] User confirmed current action (sim)
 -> If any unchecked: STOP
 ```

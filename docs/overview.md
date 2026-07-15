@@ -3,7 +3,7 @@
 `antigravity-dev-toolkit` is a local Antigravity plugin focused on controlled delivery:
 - gate-first execution
 - strict guardrails
-- SDD and Spec Kit workflows
+- SDD Formas A / B / C (`features/NNN-slug/` + optional Forma C memory-bank)
 - Git-only engineering operations
 
 ## Core architecture
@@ -11,7 +11,7 @@
 - `plugin/plugin.json`: plugin metadata
 - `plugin/GUARDRAILS.md`: hard non-negotiable rules
 - `plugin/skills/`: skill contracts
-- `plugin/skills/_shared/`: shared references and runtime policies
+- `plugin/skills/_shared/`: shared references and runtime policies (incl. agents, templates, MEMORY-BANK)
 - `scripts/`: sync and validation automation
 
 ## Enforcement stack
@@ -26,11 +26,7 @@ The toolkit relies on layered enforcement because Antigravity does not currently
 
 ## Storage model
 
-Manifest v2 (`~/.gemini/antigravity-ide/sdd/manifest.json`) resolves:
-- classic workflow storage
-- speckit workflow storage
-
-Both can be `repository` or `global`.
+Manifest v2 (`~/.gemini/antigravity-ide/sdd/manifest.json`) resolves classic workflow storage (`repository` or `global`). Legacy `speckit` keys are ignored.
 
 ## Language model
 
@@ -41,4 +37,4 @@ Both can be `repository` or `global`.
 
 ## Skills
 
-See [SKILLS.md](SKILLS.md) for the full 31-entry catalog (29 installed folders + 2 migration aliases).
+See [SKILLS.md](SKILLS.md) for the full catalog (includes Forma C and `dev_persona`).

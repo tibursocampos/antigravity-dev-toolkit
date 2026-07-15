@@ -1,9 +1,6 @@
 ---
 name: sdd_spec
-description: >
-  Create a PRD for a new feature or change. Writes an agent PRD .md in pt-BR by default
-  (in PRD/ or docs/PRD/ of the target repo). Use when the user says "use skill sdd_spec",
-  "create spec", "new feature", or "/sdd_spec". Output feeds the sdd_plan skill.
+description: Create a PRD for a new feature or change (agent PRD .md, pt-BR default under features/). Feeds sdd_plan. Use when creating a spec or invoking /sdd_spec.
 ---
 
 ## STOP - Read before ANY tool call
@@ -20,9 +17,9 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-- If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
@@ -31,11 +28,11 @@ Gate check:
 
 ## Trigger
 
-Invoke when the user asks for: `use skill sdd_spec`, `create spec`, `new feature`, or `/sdd_spec`.
+Invoke when the user asks for: `use skill sdd_spec`, `create spec`, `new feature`.
 
 ## Outcome
 
-A complete **PRD** (agent `.md` artifact) in **Brazilian Portuguese (pt-BR)** at a **canonical** path (`PRD/`, `docs/PRD/`). English only if the user overrides in this invocation. Mandatory input for **sdd_plan**.
+A complete **PRD** (agent `.md` artifact) in **Brazilian Portuguese (pt-BR)** at a **canonical** path under `features/NNN-slug/USnn/PRD/` (Forma A default story `US01`; or `TSnn`). Global: `~/.gemini/antigravity-ide/sdd/<repo-id>/features/...`. Root/flat `PRD/` is **not** a valid Classic SDD path. English only if the user overrides in this invocation. Mandatory input for **sdd_plan**.
 
 ## PRD boundaries
 
@@ -45,34 +42,36 @@ The PRD answers **what**, not **how**. No implementation code. Identifiers (type
 
 | When | Path (after sync) |
 |------|-------------------|
-| Pipeline guards, modes, confirm, paths | `_shared/sdd_artifacts/PIPELINE.md` |
-| Storage schema v2, manifest, `.gitignore` | `_shared/sdd_artifacts/STORAGE.md` |
-| .NET / C# context | `_shared/dotnet_guidelines/clean-architecture.md`, `csharp-patterns.md` |
-| Caveman Mode (if active) | `_shared/caveman/CAVEMAN.md` - **Lite mode** (only framing and introductions) |
+| Pipeline guards, modes, confirm, paths | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` |
+| Storage, manifest, `.gitignore` | `{pluginRoot}/skills/_shared/sdd_artifacts/STORAGE.md` |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Lite mode** |
+| SDD artifact language | `~/.cursor/rules/sdd-artifact-language-pt-br.mdc` |
+| .NET / C# context | `dotnet_guidelines/clean-architecture.md`, `csharp-patterns.md` |
+| Context pressure | `{pluginRoot}/GUARDRAILS.md` |
 
 ## Process
 
 ### -1. Pipeline and mode
 
 Load `STORAGE.md` and `PIPELINE.md`. Use `STORAGE.md` schema v2 and run the dynamic storage resolution algorithm with parameter `$Workflow = classic`. Resolve `storage_mode` and `path` for the active repository. If this is the first run for the repository, execute the storage mode selection flow and persist it in `manifest.json`.
-Confirm before writing - no `Write` without explicit **sim** from the user. Guardrail: without PLAN, do not `Write` to `*.cs`, `*.csproj`, or migrations.
+Apply Phase A/B: in Plan/Ask, draft in chat only until Agent + user **sim** on section Confirm below. Pipeline lock: no PLAN, no `Edit`/`Write` on `*.cs`, `*.csproj`, migrations.
 
 Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
 - If file missing -> create with `{ "caveman_mode": false }`.
-- If `caveman_mode: true` -> load `_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
-  > 🪨 Caveman mode is active (compact responses - Lite). Type `caveman off` any time to disable it.
+- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (**Lite mode** rules only) and display:
+  > Modo Caveman ativo (respostas compactas - Lite). Digite `caveman off` a qualquer momento para desativar.
 - In Lite mode: compress only framing and introductions. Spec drafts, confirmation gates, and clarifying questions are **never** compressed.
 - Honor `caveman on` / `caveman off` at any point during the session.
 
 ### 0. Workspace
 
-Target repository (not `antigravity-dev-toolkit`, unless that is the explicit scope). Read `README.md`. Detect stack. Glob existing PRDs to determine `NNN`.
+Target repo (not `antigravity-dev-toolkit` unless subject). Read `AGENTS.md` / `README.md`. Detect stack. Resolve `<repo-id>` and classic feature root (`STORAGE.md`). Glob PRDs under `features/**/PRD/` only (workspace + global feature root) for `NNN`. Forma A default story folder = `US01` when unspecified.
 
 ### 1. Requirements
 
-**Prior context** (chat, code review, backlog): provide a structured summary plus at most **3** gap questions - skip the full questionnaire.
+**Prior context** (chat, code_review, backlog, **feature siblings**): structured summary + max **3** gap questions - skip full questionnaire (`PIPELINE.md` section Prior context + Feature / story siblings). When under `features/NNN-slug/`, load `FEATURE.md`, `CONTINUITY.md`, and story `STORY.md` / optional `REFINE|ANALYSIS|ARCH|SEC` before asking.
 
-**Otherwise**, Ask user (pt-BR):
+**Otherwise** ask (pt-BR):
 
 ```
 Vou criar o PRD. Informe:
@@ -87,35 +86,41 @@ Wait for answers.
 
 ### 2-5. Confirm repo, explore code, clarify (<=5), technical analysis
 
-Confirm branch, use Glob/Grep/Read, and capture concise impact and risk notes for the PRD.
+Per existing skill intent: branch confirmation, Glob/Grep/Read, brief impact/risks for the PRD.
 
 ### 6. Context checkpoint
 
-At >=40% context usage, draft in chat or a partial file and notify before continuing. See `dev_persona` § Context Management.
+`context-management.mdc`. At >=40%, draft in chat or partial file; warn before continuing.
 
-### 6.75. Confirm before write
+### 6.75 Confirm before write
 
-Show title, `NNN`, **full canonical path** (resolved under the active storage-mode directory), storage mode, bullets, and status **Pronto para planejamento**. Wait for **sim** / **ajustar** / **cancelar**.
+Show title, `NNN`, **full canonical path** (resolved under the active storage-mode directory), storage mode, bullets, and status **Pronto para planejamento**. Wait for **sim** / **ajustar** / **cancelar**. In Plan/Ask without **sim** in Agent: Phase A message only.
 
-### 7. Write PRD (after sim)
+Record `artifact_language` (default pt-BR) from manifest or user override.
 
-1. Validate path per `PIPELINE.md` § Path validation helper - abort if invalid.
-2. Create `PRD/` or `docs/PRD/` in the resolved destination if missing.
-3. Write `NNN_short_feature_slug.md`; body in pt-BR.
-4. If `storage_mode` is `repository`, enforce `.gitignore` patterns per `STORAGE.md` § Repository mode - `.gitignore`.
+### 7. Write PRD (Agent + sim only)
 
-Report written path, language, and storage mode. Handoff: `use skill sdd_plan - <full-prd-path>`.
+1. Validate path per `PIPELINE.md` section Path validation - abort if non-canonical (**writes** only under `features/.../PRD/`).
+2. Repository mode: `.gitignore` per `STORAGE.md` (include `use skill features/` and `use skill memory-bank/`; keep `/PRD/` `/PLAN/` as safety net only). Global mode: do **not** edit `.gitignore`.
+3. Path: `features/NNN-slug/US01/PRD/NNN_short_feature_slug.md` (adjust story id); body from `reference.md`.
+4. Product `docs/` in scope: ask doc language first.
+
+Report path, storage, language, `.gitignore` changes. Handoff with **full** feature path:
+
+```
+use skill sdd_plan - features/NNN-slug/US01/PRD/NNN_short_feature_slug.md
+```
 
 ## Must not
 
-- Write PRD in English by default; include implementation code in PRD
-- Write outside canonical PRD folders; skip confirmation before writing
-- Write in production code or tests; create PLAN in this session
-- Claim "PRD saved" without a successful `Write`
-- Use external trackers; paste full guideline bodies into PRD
+- English PRD body by default; implementation code in PRD
+- `Write` outside canonical feature PRD folders (never root/flat `PRD/`); skip confirm-before-write
+- `Edit`/`Write` production or test code; create PLAN in this session
+- Claim "PRD saved" without successful `Write`
+- External trackers; paste full guideline bodies into PRD
 
 ## Handoff
 
 ```
-use skill sdd_plan - <full-prd-path>
+use skill sdd_plan - <full-prd-path-under-features>
 ```

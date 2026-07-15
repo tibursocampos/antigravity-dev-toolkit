@@ -20,7 +20,7 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD / orchestrate skills only)
 [ ] User confirmed current action (sim)
 â†’ If any unchecked: STOP
 ```
@@ -85,7 +85,6 @@ Check `~/.gemini/antigravity-ide/sdd/preferences.json` and honor active compress
 * Stop and ask the user to choose the workflow execution path to refactor and localize these strings:
   * **Option A - Direct Developer Skill (`use skill developer`):** For straightforward local string extraction and key replacements.
   * **Option B - Classic SDD (`use skill sdd_spec` -> `sdd_plan` -> `sdd_develop`):** For massive application-wide localization tasks requiring formal specifications (PRD) and a detailed plan (PLAN) in Portuguese.
-  * **Option C - Spec Kit (`use skill speckit_spec` -> `speckit_plan` -> `speckit_develop`):** For repositories initialized with Spec Kit.
   * **Option D - Plain Chat Plan:** Establish a simple task list directly in the chat, executing steps one by one without extra file creations.
 * **Wait for explicit user choice** before writing code or initializing another workflow.
 

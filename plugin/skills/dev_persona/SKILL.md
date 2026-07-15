@@ -20,7 +20,7 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD / orchestrate skills only)
 [ ] User confirmed current action (sim)
 -> If any unchecked: STOP
 ```
@@ -229,14 +229,13 @@ Participation:
 
 | Skill | Purpose |
 |---|---|
-| `sdd_spec` | Create PRD |
+| `sdd_spec` | Create PRD under `features/NNN-slug/` (Forma A) |
 | `sdd_plan` | Create PLAN from PRD |
 | `sdd_develop` | Execute one PLAN step |
-| `speckit_setup` | Install Spec Kit prerequisites |
-| `speckit_init` | Initialize `.specify/` and validate constitution |
-| `speckit_spec` | Create `spec.md` under `.specify/specs/` |
-| `speckit_plan` | Generate `plan.md` and `tasks.md` |
-| `speckit_develop` | Execute one Spec Kit task |
+| `memory_bank_init` | Create/refresh memory-bank (Forma C Step 0 / Step N) |
+| `orchestrate_analyze` | Forma C O1 — triage + serial specialists + FEATURE/CONTINUITY |
+| `orchestrate_deliver` | Forma C O2 — PRD/PLAN per story |
+| `orchestrate_develop` | Forma C O3 — one develop session per PLAN step |
 | `developer` | Router: invokes the correct specialized developer skill based on stack |
 | `impeccable` | Frontend design router (shape, audit, polish) -> DESIGN-BRIEF handoff |
 | `dotnet_developer` | Small/medium C#/.NET implementation without full SDD |
@@ -291,7 +290,7 @@ All deliverables must be indistinguishable from work produced without AI assista
 | Commit messages | No AI references in title, body, or footer. |
 | PR descriptions | No AI references. |
 | `docs/`, `README.md`, ADRs | No AI authorship or generation references. |
-| SDD / Spec Kit artifacts | No AI generation references. |
+| SDD artifacts (FEATURE/STORY/PRD/PLAN/CONTINUITY) | No AI generation references. |
 | Identifiers | No AI-derived names (`aiResult`, `llmResponse`, `generatedBy`, etc.). |
 | Log messages | No AI references. |
 

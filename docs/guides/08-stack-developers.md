@@ -37,7 +37,7 @@ For **new** Blip plugin projects (no repo yet), invoke `use skill blip_plugin_de
 ## Blip plugin flow
 
 1. `use skill blip_plugin_developer` -> scaffold + profile (Lite/Full)
-2. `sdd_spec` -> `sdd_plan` -> `sdd_develop` (or Spec Kit chain)
+2. `sdd_spec` -> `sdd_plan` -> `sdd_develop` (or Forma C)
 3. Optional: `impeccable shape` -> `docs/DESIGN-BRIEF.md`
 4. `use skill react_developer` for implementation
 
@@ -61,7 +61,7 @@ See [02-developer.md](02-developer.md) for the router and [02b-dotnet_developer.
 
 ## When to escalate to SDD
 
-Use `sdd_spec` -> `sdd_plan` -> `sdd_develop` (or Spec Kit chain) when **two or more** apply:
+Use `sdd_spec` -> `sdd_plan` -> `sdd_develop` (or Forma C) when **two or more** apply:
 
 - 3+ architectural layers touched
 - Schema/migration changes

@@ -53,9 +53,9 @@ Expected savings: 22-87% of output prose tokens per session.
 | Skill / Context | Level |
 |---|---|
 | `commit`, `push` | **NEVER** - excluded regardless of setting |
-| `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | **LITE** when mode ON |
+| `sdd_spec`, `sdd_plan`, `sdd_spec`, `sdd_plan` | **LITE** when mode ON |
 | `code_review`, `developer`, `fix_build`, `test_coverage` | **FULL** when mode ON |
-| `sdd_develop`, `speckit_develop`, conversas gerais / chat normal | **FULL** when mode ON |
+| `sdd_develop`, `sdd_develop`, conversas gerais / chat normal | **FULL** when mode ON |
 
 **Always protected in every skill (never compressed under any mode):**
 - Confirmation gates: `(sim / ajustar / cancelar)` blocks
@@ -67,7 +67,7 @@ Expected savings: 22-87% of output prose tokens per session.
 
 ## Full Mode Rules
 
-Apply to: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `speckit_develop`.
+Apply to: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop`, `sdd_develop`.
 
 **Strip completely:**
 - Opening preambles ("Claro! Vou ajudar com isso.", "Ótima pergunta!", "Com certeza!")
@@ -92,7 +92,7 @@ Apply to: `code_review`, `developer`, `fix_build`, `test_coverage`, `sdd_develop
 
 ## Lite Mode Rules
 
-Apply to: `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan`.
+Apply to: `sdd_spec`, `sdd_plan`, `sdd_spec`, `sdd_plan`.
 
 **Strip:**
 - Opening preambles and framing before questions
@@ -135,8 +135,8 @@ Posso gravar em `{path}`? (sim / ajustar / cancelar)
 
 | Consumer | Load condition |
 |---|---|
-| `sdd_develop`, `speckit_develop` | Step -1, if caveman_mode check passes |
+| `sdd_develop`, `sdd_develop` | Step -1, if caveman_mode check passes |
 | `code_review`, `developer`, `fix_build`, `test_coverage` | Step -1, if caveman_mode check passes |
-| `sdd_spec`, `sdd_plan`, `speckit_spec`, `speckit_plan` | Step -1, if caveman_mode check passes (Lite rules only) |
+| `sdd_spec`, `sdd_plan`, `sdd_spec`, `sdd_plan` | Step -1, if caveman_mode check passes (Lite rules only) |
 | `dev_persona` | Global boot check (first message) and active in-session command listener |
 | `PIPELINE.md` | Reference only - documents confirmation gate protection |

@@ -1,65 +1,74 @@
 # refine_backlog_item - reference
 
-Scorecard, guardrails, and boundaries for `refine_backlog_item/SKILL.md`.
+Scorecard, guardrails, and boundaries for `skills/refine_backlog_item/SKILL.md`. Keep `SKILL.md` under 500 lines; use this file for extended detail.
 
 ---
 
-## Boundary: refine_backlog_item vs sdd_spec
+## Boundary: refine vs O1 vs sdd_spec
 
-| Aspect | `refine_backlog_item` | `sdd_spec` |
-|--------|------------------------|------------|
-| Purpose | Fast intake and clarification for one backlog item | Full PRD for medium/high complexity features |
-| Output | Structured markdown + scorecard in chat | PRD with SDD storage and traceability |
-| Persistence | Optional `docs/backlog/<slug>.md` | Canonical SDD artifact path from `_shared/sdd_artifacts/STORAGE.md` |
-| Acceptance | BDD in item template + scorecard rubric | PRD acceptance criteria + handoff to `sdd_plan` |
-| Escalation trigger | Scope spans multiple areas, migrations, or unclear boundaries | Run `sdd_spec`; do not expand refine output into a PRD inline |
+| Aspect | `refine_backlog_item` (Forma B) | `orchestrate_analyze` (O1) | `sdd_spec` (Forma A) |
+|--------|----------------------------------|----------------------------|----------------------|
+| Purpose | Fast intake - one backlog item + scorecard | Multi-agent triage + US/TS backlog for a feature | Full PRD for one story/feature |
+| Output | Structured markdown + scorecard | `FEATURE.md`, `CONTINUITY.md`, `STORY.md` × N | PRD under `features/.../PRD/` |
+| Persistence | Prefer `features/.../STORY.md`; shortcut `docs/backlog/` | Feature tree only | Canonical PRD path |
+| Specialists | None | Conditional specialist pass (`needs_*`) | None (consumes Prior context) |
+| When to use | Informal idea, bug, single TS/US | Complex / multi-story / brownfield package | Ready to write PRD for one path |
+| Tracker | Never (no ADO/`az`) | Never | Never |
 
-`sdd_spec` does **not** replace refine for one-line ideas. Refine first, then escalate when needed.
+Escalate to **O1** when: multiple stories, unclear flags (`needs_*`), brownfield impact needs parallel specialists.
 
-Suggested escalation wording:
+Escalate to **sdd_spec** when: single story is clear enough for a PRD (or after refine approval).
+
+Do **not** expand refine into a full PRD inline.
+
+Handoff wording:
 
 ```
-This item is large enough for SDD. Next: use skill sdd_spec, then use skill sdd_plan.
+Item grande / multi-história: /orchestrate_analyze
+Item único pronto para PRD: /sdd_spec
+Checklist local: /breakdown_tasks
 ```
 
-Before suggesting `sdd_spec`, optionally inspect existing SDD artifacts using `_shared/sdd_artifacts/STORAGE.md` resolution rules to avoid duplicate scope.
+Before suggesting `sdd_spec`, optionally Glob `features/**/PRD/` (workspace + global feature root) per `STORAGE.md`. Do **not** glob root/flat `PRD/` for execution.
+
+`sdd_spec` owns storage choice, manifest, `.gitignore`, and confirm-before-write. Refine does **not** write PRD/PLAN. Promote `docs/backlog/` via `sdd_spec` or O1 - never treat backlog files as PRD.
 
 ---
 
 ## Scorecard rubric
 
-Score immediately after generating markdown. Maximum **100** points.
+Score immediately after generating the markdown. Maximum **100** points. Portable document-task style (no corporate ADO fields).
 
-### Universal criteria (all item types)
+### Universal criteria (all types)
 
 | Criterion | Max | Scoring guide |
 |-----------|-----|----------------|
-| Objective | 15 | 15: specific and concise / 8: mostly correct but generic / 3: vague / 0: missing |
-| Acceptance criteria (BDD) | 25 | 25: complete happy path + error + edge / 15: partial / 8: weak format / 0: missing |
-| Implementation steps | 20 | 20: granular, ordered, explicit deps / 12: mostly good / 5: generic / 0: missing |
-| No vague language | 10 | 10: none / 5: 1-2 vague phrases / 0: multiple vague statements |
+| Objective | 15 | 15: affirmative, ≤3 sentences, correct perspective, specific / 8: correct but long or generic / 3: vague or wrong perspective / 0: missing |
+| Acceptance criteria (BDD) | 25 | 25: all Given/When/Then, covers happy path + error + edge / 15: BDD present but incomplete / 8: no BDD or intent language / 0: missing |
+| Implementation steps | 20 | 20: baby steps, infinitive verbs, layer order, explicit deps / 12: steps ok but weak granularity or deps / 5: generic steps / 0: missing |
+| No vague language | 10 | 10: none / 5: 1-2 vague phrases / 0: multiple |
 
 ### Type-specific criteria (30 points total)
 
-**Technical Story**
+**Technical Story:**
 
 | Criterion | Max |
 |-----------|-----|
-| Technical context (problem, solution, scope) | 10 |
-| Repositories/areas listed | 5 |
-| Technical specificity | 10 |
-| Dependencies declared or omitted correctly | 5 |
+| Technical context (problem -> solution -> scope) | 10 |
+| Repositories / areas listed | 5 |
+| Technical specificity (types, endpoints, events when relevant) | 10 |
+| Dependencies declared or N/A justified | 5 |
 
-**User Story**
+**User Story:**
 
 | Criterion | Max |
 |-----------|-----|
 | Context + current vs expected flow | 10 |
-| Repositories/areas listed | 5 |
-| Business AC and technical AC separated | 10 |
-| Dependencies declared or omitted correctly | 5 |
+| Repositories / areas listed | 5 |
+| Business AC vs technical AC separated | 10 |
+| Dependencies declared or N/A justified | 5 |
 
-**Bug**
+**Bug:**
 
 | Criterion | Max |
 |-----------|-----|
@@ -97,41 +106,59 @@ Score immediately after generating markdown. Maximum **100** points.
 ---
 ```
 
-Rules: notes must be concrete, and improvements must identify precise gaps.
+Rules: notes must be specific (not "OK"); improvements name exact gaps; incomplete user input reflected honestly.
+
+When persisting as `STORY.md`, copy a short scorecard summary into the template `Scorecard (resumo)` table (1-5 scale mapped from /100 bands: 80+ = 5, 60-79 = 4, 40-59 = 3, else ≤2).
 
 ---
 
-## Guardrails (before final output)
+## Guardrails (before marking output final)
+
+**Universal:**
 
 - [ ] No empty or placeholder sections
-- [ ] No vague phrases like "works correctly", "as expected", "properly"
+- [ ] No vague phrases: "works correctly", "as expected", "properly"
 - [ ] BDD uses **Given / When / Then / And**
-- [ ] No unit-test-only scenarios in acceptance criteria
-- [ ] No environment-variable checks as acceptance criteria
-- [ ] Heading structure matches the selected type template
+- [ ] No unit-test scenarios in acceptance criteria
+- [ ] No "verify environment variable X" as acceptance criteria
+- [ ] Section icons/headings match the type template when saving chat form
 
-**Technical Story / User Story**
+**Technical Story / User Story:**
 
 - [ ] Steps ordered by layer when applicable
-- [ ] Dependencies section omitted if none
+- [ ] Dependencies section omitted when none (not "N/A" filler)
+- [ ] Each step has explicit `Depends on:` for topological breakdown
 
-**User Story**
+**User Story:**
 
-- [ ] Business AC avoids implementation jargon
-- [ ] Technical AC uses checklist format, not BDD
+- [ ] Business AC without implementation jargon
+- [ ] Technical AC as checkboxes, not BDD
 
-**Bug**
+**Bug:**
 
 - [ ] Reproduction steps are actionable
 - [ ] Expected result describes positive behavior
 
-If guardrails fail, request missing details before publishing.
+If guardrails fail, ask for missing detail - do not publish incomplete docs.
 
 ---
 
-## Optional save: `docs/backlog/<slug>.md`
+## Optional save: feature STORY (preferred)
 
-Prefix saved file with metadata:
+```markdown
+# STORY: US01 - [title]
+...
+```
+
+Use `skills/_shared/templates/features/story/STORY.md`. Place under `features/NNN-slug/USnn/STORY.md`. Optional raw refine dump: `features/NNN-slug/USnn/REFINE/refine.md`.
+
+Do **not** create `REFINE/` at repo root.
+
+---
+
+## Optional save: `docs/backlog/<slug>.md` (shortcut)
+
+Prefix file with metadata:
 
 ```markdown
 # Backlog: [title]
@@ -142,21 +169,34 @@ Prefix saved file with metadata:
 | **Doc language** | pt-BR \| English |
 | **Refined** | YYYY-MM-DD |
 | **Repository** | [folder or remote name] |
+| **Preferred promote** | features/NNN-slug/USnn/STORY.md |
 
 [generated body]
 ```
+
+Do not create `docs/backlog/` in **antigravity-dev-toolkit** during toolkit porting - only in consumer repos at runtime.
 
 ---
 
 ## Relationship to breakdown_tasks
 
 | Skill | Use |
-|-------|-----|
-| `refine_backlog_item` | Produces steps under `Steps` (or Bug `Suggested fix`) |
-| `breakdown_tasks` | Groups those steps into an implementation checklist file |
+|-------|------|
+| `refine_backlog_item` | Produces steps under `### Steps` (or Bug suggested fix) with deps |
+| `breakdown_tasks` | Groups those steps with topological / layer grouping into a checklist |
 
 After refine, offer:
 
 ```
-use skill breakdown_tasks
+use skill breakdown_tasks - <story-or-backlog-path>
 ```
+
+---
+
+## Explicit exclusions
+
+Do **not** introduce:
+
+- `az` boards / ADO work item commands
+- Celebration, Keycloak, mandatory Sonar corp fields
+- Remote PATCH of work items

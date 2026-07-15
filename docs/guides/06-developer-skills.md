@@ -44,7 +44,7 @@ Integration: [impeccable-integration.md](../impeccable-integration.md), [blip-pl
 3. Choose execution path:
    - direct with `developer` or a stack-specific skill
    - full classic SDD (`sdd_spec` -> `sdd_plan` -> `sdd_develop`)
-   - Spec Kit flow (`speckit_spec` -> `speckit_plan` -> `speckit_develop`)
+   - Forma C (`orchestrate_analyze` -> `orchestrate_deliver` -> `orchestrate_develop` / `sdd_develop`)
 
 ## Safety rules
 

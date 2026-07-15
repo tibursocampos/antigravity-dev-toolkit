@@ -1,16 +1,13 @@
 ---
-name: fix-build
-description: >
-  Diagnose and fix failing dotnet build or test runs in the target workspace. Local-first,
-  optional GitHub Actions evidence via gh. Use when the user says "use skill fix-build",
-  "fix build", or "/fix-build". Git-only handoff.
+name: fix_build
+description: Diagnose and fix failing dotnet build or test runs. Local first; optional GitHub Actions via gh. Use when fixing a build or invoking /fix_build.
 ---
 
 ## STOP - Read before ANY tool call
 
 1. Read `{pluginRoot}/GUARDRAILS.md`
 2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
-3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
 4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
 5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
 
@@ -20,70 +17,131 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-â†’ If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
 
-# Skill: fix-build
+# Skill: fix_build
 
 ## Trigger
 
-Use for `use skill fix-build`, `/fix-build`, build/test failures, or CI failures requiring local reproduction.
+Invoke when the user asks for: `use skill fix_build`, `fix build`, `use skill fix_build`, or when build/test failures block progress.
+
+**Arguments (optional):**
+
+| Input | Meaning |
+|-------|---------|
+| (none) | Run local `dotnet build` / `dotnet test` in the open workspace |
+| Pasted log | Analyze the log text the user provides |
+| `gh` context | User names a failed workflow run - use `gh` per `reference.md` section CI (optional) |
+
+Do not require a build ID from Azure Pipelines or any PAT.
 
 ## Outcome
 
-Clear diagnosis, approved fix plan, applied minimal changes, and local re-validation.
+Structured diagnosis, proposed fixes with rationale, fixes applied only after user confirmation, local re-validation, then handoff to `use skill commit` if the user wants to commit.
+
+## Lazy-load
+
+| When | Path |
+|------|------|
+| Locale / timezone / Bogus heuristics | `skills/fix_build/reference.md` or `{pluginRoot}/skills/fix_build/reference.md` after sync |
+| C# patterns | `{pluginRoot}/skills/_shared/dotnet_guidelines/csharp-patterns.md` |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full mode** |
+| Commit | `use skill commit` |
 
 ## Process
 
-### -1. Re-check guardrails and session
+### -1. Caveman Mode
 
-If not confirmed, ask user (pt-BR):
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing -> create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > [Caveman] Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
-```text
-Antes de continuar, confirme:
-- GUARDRAILS.md lido
-- SESSION.md carregado
+### 0. Workspace
 
-Posso seguir? (sim / ajustar / cancelar)
-```
+Confirm **target repository** (`.sln` or test projects). Summarize failure source: local run, pasted CI log, or optional `gh run view`.
 
-### -2. Caveman mode
+### 1. Collect failure evidence
 
-Load Caveman rules only if enabled in preferences.
-
-### 0. Gather evidence
-
-Default:
+**Local (default):**
 
 ```bash
 dotnet build
 dotnet test --no-build
 ```
 
-Also accept pasted logs and optional `gh run view` output.
+Capture errors: file, line, test name, expected vs actual.
 
-### 1. Diagnose
+**Pasted log:** extract compile errors, restore failures, and test failures (`[FAIL]`, `Error Message`, `Expected`/`Actual`).
 
-Classify each failure: compile, NuGet/restore, test assertion, config, CI YAML.
+**GitHub Actions (optional):** if user points to a run and `gh` is available, fetch logs per `reference.md` section CI. Skip if unavailable - stay on local reproduction.
 
-### 2. Propose fixes
+### 2. Structured diagnosis
 
-List file + cause + change and wait for explicit confirmation before editing.
+Present:
 
-### 3. Apply and validate
+```
+## Build diagnosis
 
-Re-run build/tests. Use scoped tests for very large solutions.
+**Source:** local | pasted log | GitHub Actions
+**Branch:** <current branch>
+**Failures:** N
 
-### 4. Handoff
+### Items
+1. [<category>] <summary> - <file>:<line> or <test name>
+...
+```
 
-Offer `use skill commit`. Do not auto-commit or auto-push.
+Categories: compile, restore/NuGet, test assertion, configuration, pipeline config (YAML only if user supplied log).
+
+### 3. Root-cause investigation
+
+For each item, Read/Grep the codebase. Apply heuristics in `reference.md` section Common causes (culture, timezone, Bogus seed, fixture order, glob in CI YAML).
+
+Load `csharp-patterns.md` only when editing production or test code.
+
+### 4. Propose fixes
+
+List each change: file, problem, cause, proposed fix. **Wait for user confirmation** before Edit/Write.
+
+### 5. Apply and validate
+
+After approval, apply minimal diffs. Re-run:
+
+```bash
+dotnet build
+dotnet test --no-build
+```
+
+Or scoped test filter when the repo is large (see `reference.md` section Scoped test).
+
+### 6. Handoff
+
+When build and targeted tests pass, offer:
+
+```
+use skill commit
+```
+
+Do not auto-commit. Do not push unless the user asks via commit skill or explicitly.
 
 ## Must not
 
-- Depend on Azure DevOps APIs or PAT
-- Skip local reproduction when possible
+- Azure DevOps REST, PAT, `dev.azure.com`, Credential Manager ADO entries, or corporate org URLs
+- Mandatory external CI API - local reproduction is enough
 - Auto-commit or auto-push
+- Corporate agent pool names or private feed assumptions without repo evidence
+
+## Handoff
+
+| Situation | Next |
+|-----------|------|
+| Commit on valid branch | `use skill commit` |
+| New EF migration needed | `use skill add_migrations` |
+| Large feature scope | `use skill sdd_spec` -> `sdd_plan` -> `sdd_develop` |

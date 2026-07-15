@@ -1,16 +1,13 @@
 ---
-name: test-coverage
-description: >
-  Run .NET test coverage (Coverlet), report new-code/branch/per-file metrics, and evaluate
-  against a threshold (default 80%). Use when the user says "use skill test-coverage",
-  "coverage report", or "/coverage".
+name: test_coverage
+description: Run .NET Coverlet coverage, report Sonar-aligned metrics, and evaluate against a threshold (default 80%). Use for coverage reports or when invoking /test_coverage.
 ---
 
 ## STOP - Read before ANY tool call
 
 1. Read `{pluginRoot}/GUARDRAILS.md`
 2. Read `_shared/sdd_artifacts/SESSION.md`; load session-state for `$Cwd`
-3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** â€” do **NOT** Write/Shell
+3. If the relevant gate is not approved: **STOP** - ask user **(pt-BR)** - do **NOT** Write/Shell
 4. SDD/develop skills: after **ONE** step/task, **STOP** session - handoff only
 5. This skill body is **English**; user-facing prompts may be **(pt-BR)**
 
@@ -20,69 +17,141 @@ description: >
 Gate check:
 [ ] GUARDRAILS.md read
 [ ] SESSION.md read; session-state loaded
-[ ] PIPELINE.md read (SDD/speckit skills only)
+[ ] PIPELINE.md read (SDD skills only)
 [ ] User confirmed current action (sim)
-â†’ If any unchecked: STOP
+-> If any unchecked: STOP
 ```
 
 ---
 
-# Skill: test-coverage
-
 ## Trigger
 
-Use for `use skill test-coverage`, `/coverage`, or when review/PLAN requires coverage evidence.
+Invoke when the user asks for: `use skill test_coverage`, `coverage report`, `coverage`, or when a PLAN step / `code_review` requires coverage evidence.
+
+**Arguments (optional):**
+
+| Input | Meaning |
+|-------|---------|
+| Base branch | `main`, `develop` - ask once if missing (same as `code_review`) |
+| Test project path | `path/to/Tests.csproj` - auto-detect `*Tests.csproj` / `*.Tests.csproj` if omitted |
+| Threshold | Minimum line coverage on **changed production `.cs` files** (default: **80**) |
+| Target | **100** - aspirational; document gaps when below 100 but >= threshold |
 
 ## Outcome
 
-Coverage report in pt-BR including:
-- New-code coverage on changed production files
-- Overall branch coverage
-- Per-file coverage
-- Pass/Fail against threshold
+A structured **coverage report** in **pt-BR** with:
+
+- **Coverage on new code** - line coverage on changed production files vs base branch
+- **Overall branch coverage** - solution-wide line coverage after tests
+- **Per-file breakdown** - each changed production file with line %
+- **Decision:** Pass (>= threshold) or Fail (< threshold) with gap list
+
+Does not modify code unless the user asks for test additions in a follow-up.
+
+## Lazy-load
+
+| When | Path |
+|------|------|
+| Commands, parsing, exclusions, on-disk report paths | `test_coverage/reference.md` after sync |
+| Cursor mode (Agent for shell) | `{pluginRoot}/skills/_shared/sdd_artifacts/PIPELINE.md` section Cursor mode |
+| Caveman Mode (if active) | `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` - **Full mode** |
+| Add tests for gaps | `{pluginRoot}/skills/_shared/dotnet_guidelines/csharp-patterns.md` |
+| Commit | `use skill commit` |
 
 ## Process
 
-### -1. Re-check guardrails and session
+### -1. Mode
 
-If missing, ask user (pt-BR):
+`PIPELINE.md`: **Agent** required for `dotnet test` and ReportGenerator. In Plan/Ask, explain limitation and list expected paths under `TestResults/` after the user switches to Agent.
 
-```text
-Antes da cobertura, confirme:
-- GUARDRAILS.md lido
-- SESSION.md carregado
+Check `~/.gemini/antigravity-ide/sdd/preferences.json`:
+- If file missing -> create with `{ "caveman_mode": false }`.
+- If `caveman_mode: true` -> load `{pluginRoot}/skills/_shared/caveman/CAVEMAN.md` (Full mode rules) and display:
+  > Modo Caveman ativo (respostas compactas). Digite `caveman off` a qualquer momento para desativar.
+- Honor `caveman on` / `caveman off` commands from the user at any point during the session.
 
-Posso seguir? (sim / ajustar / cancelar)
-```
+### 0. Workspace
 
-### -2. Resolve scope
+Confirm **target .NET repository** (`.sln` or `*Tests.csproj`). If the workspace is `antigravity-dev-toolkit` only (no test projects), stop and ask which consumer repo to open.
 
-Set base branch and changed production `.cs` files.
+Detect stack; read `AGENTS.md` / `README.md` when present.
 
-### 0. Collect coverage
+### 1. Resolve scope
+
+**Base branch:** user argument, or `main` / `develop` (ask once if ambiguous).
 
 ```bash
-dotnet test --collect:"XPlat Code Coverage" --results-directory TestResults/
-reportgenerator -reports:"TestResults/**/coverage.cobertura.xml" -targetdir:"TestResults/CoverageReport" -reporttypes:"Html;TextSummary;Cobertura"
+git fetch origin   # when remote comparison is needed
+git rev-parse --abbrev-ref HEAD
+git diff <base>...HEAD --name-only -- "*.cs"
 ```
 
-### 1. Compute metrics
+Filter to **production** changed files per `reference.md` section Exclusions. Record the list for per-file metrics.
 
-Calculate new-code/overall/per-file percentages and compare with threshold (default 80).
+### 2. Prerequisites check
 
-### 2. Report artifacts
+Before running tests, verify per `reference.md` section Prerequisites:
 
-Always return paths for:
-- `TestResults/CoverageReport/Summary.txt`
-- `TestResults/CoverageReport/index.html`
-- at least one `coverage.cobertura.xml`
+- `coverlet.collector` on test project(s)
+- `dotnet test` succeeds
+- `reportgenerator` global tool (install once if missing)
 
-### 3. Handoff
+If `coverlet.collector` is missing, stop with install instructions - do not fail silently.
 
-If gaps remain, suggest tests or `fix_build`. If acceptable, hand off to `code_review` or `commit`.
+### 3. Collect coverage (mandatory ReportGenerator)
+
+1. Run `dotnet test` with Coverlet -> `TestResults/**/coverage.cobertura.xml` per `reference.md` section Commands.
+2. **Always** run ReportGenerator -> `TestResults/CoverageReport/` (`Summary.txt`, `index.html`, Cobertura). Do not finish with XML only.
+
+Use scoped test project when the repo is large or user provided a path.
+
+### 4. Compute metrics
+
+Parse Cobertura / ReportGenerator output per `reference.md` section Metrics:
+
+| Metric | Definition |
+|--------|------------|
+| **New code** | Weighted line coverage on changed production `.cs` files |
+| **Overall branch** | Line coverage across included assemblies |
+| **Per-file** | Line % per changed production file |
+
+Exclude migrations, generated code, and test projects from **new code** denominator (see reference).
+
+### 5. Evaluate threshold
+
+| Result | When |
+|--------|------|
+| **Pass** | New code coverage >= threshold (default 80%) |
+| **Fail** | New code coverage < threshold |
+
+Always note distance to **target 100%** for files below 100% even when Pass.
+
+### 6. Report (chat + on-disk artifacts)
+
+Use the template in `reference.md`. **Required in chat:**
+
+- Workspace-relative paths to `TestResults/CoverageReport/Summary.txt`, `index.html` (if generated), and at least one `coverage.cobertura.xml`
+- Key table from `Summary.txt` (paste **Resumo** section)
+- Commands run, limitations, approval block (Pass) or gaps (Fail)
+
+Do not claim Pass if ReportGenerator output or Cobertura files are missing.
+
+### 7. Handoff
+
+| Situation | Next |
+|-----------|------|
+| Pass | `use skill code_review` - paste approval block from report |
+| Fail - add tests | `use skill dotnet_developer` or `use skill sdd_develop` |
+| Build/test broken | `use skill fix_build` |
+| Commit coverage tooling in consumer repo | `use skill commit` |
+| SDD feature with PLAN | Last PLAN step or `code_review` after all `sdd_develop` steps |
+| Small fix | `use skill dotnet_developer` to raise coverage, then re-run this skill |
 
 ## Must not
 
-- Claim pass without ReportGenerator output
-- Include generated/migration files in new-code denominator
-- Auto-commit or auto-push
+- Require SonarLint, Visual Studio, SonarQube login, or corporate pipeline APIs
+- Auto-commit, auto-push, or add tests without user request
+- Claim Pass when tests did not run, coverlet output is missing, or ReportGenerator was skipped
+- Deliver coverage **only** in chat without citing on-disk paths under `TestResults/`
+- Count EF migrations, `*.g.cs`, or `*.Designer.cs` in new-code denominator
+- Block merge by itself - gate is informational unless PRD/PLAN/`code_review` applies threshold

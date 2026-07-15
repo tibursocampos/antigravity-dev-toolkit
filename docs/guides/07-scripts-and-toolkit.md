@@ -28,10 +28,10 @@ The `scripts/validation/` folder houses several focused validation modules invok
 4. **`validate-docs-consistency.ps1`**: Verifies that the catalog in `docs/SKILLS.md` matches the actual physical folders in `plugin/skills/`.
 5. **`validate-skills-english.ps1`**: Enforces the language policy by scanning skill bodies (excluding prompts) for English adherence.
 6. **`validate-session-gates.ps1`**: Validates the presence of `SESSION.md` gate checks logic in skill instructions.
-7. **`validate-speckit-init.ps1`**: Validates the Spec Kit constitution and template integrity.
+7. **`validate-session-gates.ps1`**: Optional gate status check for a consumer repo (`-IncludeSessionGate`).
 
 ## Utility Scripts
 
-- **`configure-repo-sdd.ps1`**: Configures the local repository (creates `manifest.json` entries) for classic SDD storage.
-- **`setup-speckit.ps1`**: A bootstrap script used by the `speckit_setup` skill to install prerequisites in a target repository.
+- **`configure-repo-sdd.ps1`**: Configures the local repository (creates `manifest.json` classic entries) for SDD / Forma C storage.
+- **`scripts/inventory/Invoke-MemoryBankInventory.ps1`**: Memory-bank inventory helper used by Forma C Step 0.
 - **`uninstall-toolkit.ps1`**: Reverses the effects of the sync script, cleaning up the Antigravity AppData folder.

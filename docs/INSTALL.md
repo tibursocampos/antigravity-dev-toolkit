@@ -25,7 +25,7 @@ This deploy is idempotent and syncs:
 Run the unified smoke test from repository root:
 
 ```powershell
-.\scripts\validate-all.ps1
+.\scripts\validation\validate-all.ps1
 ```
 
 This orchestrates, in order:
@@ -33,15 +33,15 @@ This orchestrates, in order:
 | Check | Script |
 |-------|--------|
 | Deploy + KIs | `validate-toolkit-deploy.ps1` |
-| Skills structure (STOP, frontmatter, artifacts) | `validate-skills-structure.ps1` |
+| Skills structure (STOP, frontmatter, Forma C artifacts) | `validate-skills-structure.ps1` |
 | Docs consistency | `validate-docs-consistency.ps1` |
 | Skills English | `validate-skills-english.ps1` |
+| Impeccable / Blip / frontend | dedicated validators |
 
 Optional flags:
 
 | Flag | When to use |
 |------|-------------|
-| `-IncludeSpeckit -RepoPath <path>` | Consumer repo has a valid `.specify/` tree |
 | `-IncludeSessionGate -RepoPath <path>` | Verify session gate after user confirmed an action |
 | `-RequiredGate <name>` | Gate name when using `-IncludeSessionGate` (default: `write_confirmed`) |
 | `-FailFast` | Stop on first failing check |
@@ -49,34 +49,20 @@ Optional flags:
 
 Restart Antigravity IDE after a successful smoke test.
 
-## Optional Spec Kit bootstrap
+## Configure Classic SDD for a consumer repo
 
 ```powershell
-.\scripts\setup-speckit.ps1
+.\scripts\configure-repo-sdd.ps1 -StorageMode repository -RepoPath "D:\Source\Repos\MyApp"
 ```
 
-Then configure one repository:
+Or use storage mode `global` (artifacts under `~/.gemini/antigravity-ide/sdd/<repo>/features/`).
 
-```powershell
-.\scripts\configure-repo-sdd.ps1 -StorageMode global -RepoPath "D:\Source\Repos\MyApp"
-```
-
-This writes manifest schema v2 entries:
-- `classic` storage config
-- `speckit` storage config + init validation metadata
+This writes manifest schema v2 with a `classic` section only. Legacy `speckit` keys in older manifests are ignored.
 
 ## Runtime gate validation helpers
 
-- Session gates:
-
 ```powershell
-.\scripts\validate-session-gates.ps1 -RepoPath "D:\Source\Repos\MyApp" -RequiredGate write_confirmed
-```
-
-- Spec Kit init:
-
-```powershell
-.\scripts\validate-speckit-init.ps1 -RepoPath "D:\Source\Repos\MyApp"
+.\scripts\validation\validate-session-gates.ps1 -RepoPath "D:\Source\Repos\MyApp" -RequiredGate write_confirmed
 ```
 
 ## Language and naming reminder
@@ -84,3 +70,4 @@ This writes manifest schema v2 entries:
 - Chat policy: `pt-BR`
 - Code/tests/skills docs: English
 - Skill commands in docs: underscore naming (`breakdown_tasks`, not `breakdown-tasks`)
+- Canonical SDD paths: `features/NNN-slug/` (not root `PRD/` / `PLAN/`)
