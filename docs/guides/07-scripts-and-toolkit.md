@@ -10,6 +10,7 @@ The `scripts/` directory contains the automation, validation, and local synchron
 - **Synchronization**: Automatically calls `sync-antigravity.ps1` to deploy local skills to the Antigravity AppData folder.
 - **Validation**: Acts as a test suite runner. It invokes the validation scripts to guarantee that structural integrity, documentation consistency, and language constraints are met before any code is considered stable.
 - **Maintainer Suite**: Exposes utility functions intended for maintainers of the toolkit rather than regular developers.
+- **Validation and backup submenu** (`[7]`): run `validate-all` or individual validators (`skill-contracts`, `skill-graph`, `skill-fixtures`, `docs-consistency`), list sync backups, and restore a previous backup by `BackupId`.
 
 ## The Sync Process: `sync-antigravity.ps1`
 
