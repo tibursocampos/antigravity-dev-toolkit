@@ -2,7 +2,7 @@
 
 Shared steps for dev skills (`sdd-develop`, `commit`, `code-review`, `developer`). Load only the steps your skill needs.
 
-**Version:** 2.0.0 (cursor-dev-toolkit)  
+**Version:** 2.0.0 (antigravity-dev-toolkit)  
 **Scope:** Git-only - no work-item trackers, no corporate PR APIs.
 
 Install path after sync: `~/.cursor/skills/_shared/developer-common/`
@@ -61,7 +61,7 @@ Override only stack-specific commands (e.g. `dotnet test` vs `npm test`).
 │ - Secrets, format, build, quick tests                        │
 ├──────────────────────────────────────────────────────────────┤
 │ Step 4: Commits (and optional PR)                            │
-│ - Conventional Commits; push; gh pr create if user asks     │
+│ - Conventional Commits; push; open PR in GitHub UI if user asks │
 ├──────────────────────────────────────────────────────────────┤
 │ Step 7: Final checklist                                      │
 │ - Build, tests, branch, commit message                       │

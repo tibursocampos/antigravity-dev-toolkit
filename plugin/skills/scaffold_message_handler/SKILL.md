@@ -38,7 +38,7 @@ Optional arguments: message or event name, queue/topic name, or path to an exist
 
 ## Outcome
 
-In the **target workspace** (not `cursor-dev-toolkit` unless it is the .NET repo under work):
+In the **target workspace** (not this toolkit repo unless it is the .NET repo under work):
 
 1. Detected messaging stack and reference consumer(s)
 2. Confirmed requirements (payload, errors, idempotency, retry, DLQ)

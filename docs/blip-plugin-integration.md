@@ -123,7 +123,7 @@ Lazy-loaded from `plugin/skills/_shared/blip_guidelines/`:
 
 ## Sync policy
 
-`blip_plugin_developer` and `blip_guidelines/` are ported from **cursor-dev-toolkit** (authored there). Manual sync when cursor branch updates — not automated cross-repo. Local install uses `sync-antigravity.ps1`.
+`blip_plugin_developer` and `blip_guidelines/` live in this toolkit and deploy via `sync-antigravity.ps1`.
 
 ## Validation
 

@@ -1,4 +1,4 @@
-# PR Comment Format Validator
+﻿# PR Comment Format Validator
 
 Validates inline pull-request review comments for consistent structure (GitHub/generic).
 
@@ -35,7 +35,7 @@ Validates inline pull-request review comments for consistent structure (GitHub/g
 </details>
 
 ---
-_Review comment - cursor-dev-toolkit code-review_
+_Review comment - antigravity-dev-toolkit code_review_
 ```
 
 ## Validation rules
@@ -103,4 +103,4 @@ Totals: 3 | Valid: 1 | Auto-fixed: 1 | Skipped: 1
 
 ---
 
-**Version:** 1.0.0 (cursor-dev-toolkit)
+**Version:** 1.0.0 (antigravity-dev-toolkit)

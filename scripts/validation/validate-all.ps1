@@ -78,7 +78,10 @@ $coreChecks = @(
     @{ Name = 'skills-english'; Script = 'validate-skills-english.ps1'; Args = @{} },
     @{ Name = 'impeccable-skill'; Script = 'validate-impeccable-skill.ps1'; Args = @{} },
     @{ Name = 'blip-plugin-skill'; Script = 'validate-blip-plugin-skill.ps1'; Args = @{} },
-    @{ Name = 'frontend-ecosystem'; Script = 'validate-frontend-ecosystem.ps1'; Args = @{} }
+    @{ Name = 'frontend-ecosystem'; Script = 'validate-frontend-ecosystem.ps1'; Args = @{} },
+    @{ Name = 'skill-contracts'; Script = 'validate-skill-contracts.ps1'; Args = @{} },
+    @{ Name = 'skill-graph'; Script = 'validate-skill-graph.ps1'; Args = @{} },
+    @{ Name = 'skill-fixtures'; Script = 'validate-skill-fixtures.ps1'; Args = @{} }
 )
 
 foreach ($check in $coreChecks) {

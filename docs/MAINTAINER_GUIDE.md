@@ -56,7 +56,7 @@ Or: `.\scripts\toolkit.ps1` (interactive menu).
 .\scripts\maintainers\sync-impeccable-refs.ps1
 ```
 
-## Shared packs (ported from cursor-dev-toolkit)
+## Shared packs
 
 | Folder | Purpose |
 |--------|---------|
@@ -66,7 +66,3 @@ Or: `.\scripts\toolkit.ps1` (interactive menu).
 ## Session gates
 
 Path: `~/.gemini/antigravity-ide/sdd/sessions/{repo-hash}.json` - see `SESSION.md`.
-
-## Cross-toolkit sync
-
-See [SYNC_POLICY.md](SYNC_POLICY.md) for canonical direction when equalizing with cursor-dev-toolkit.
