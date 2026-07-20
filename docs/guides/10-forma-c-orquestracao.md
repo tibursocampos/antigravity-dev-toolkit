@@ -63,7 +63,7 @@ No clone do **antigravity-dev-toolkit** (ou após atualizar skills O1/O2/O3):
 .\scripts\validation\validate-all.ps1
 ```
 
-Esperado: `Smoke test PASSED` (skills no repo = **34**, incluindo `orchestrate_*` e `memory_bank_init`). Menu interativo: `.\scripts\toolkit.ps1`. Detalhes: [MAINTAINER_GUIDE](../MAINTAINER_GUIDE.md), [INSTALL](../INSTALL.md).
+Esperado: `Smoke test PASSED` (skills no repo = **36**, incluindo `orchestrate_*` e `memory_bank_init`). Menu interativo: `.\scripts\toolkit.ps1`. Detalhes: [MAINTAINER_GUIDE](../MAINTAINER_GUIDE.md), [INSTALL](../INSTALL.md).
 
 Sem sync, `use skill orchestrate_*` pode falhar (skills só existem em ``plugin/skills/`` após o deploy).
 

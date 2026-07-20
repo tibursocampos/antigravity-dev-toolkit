@@ -2,7 +2,7 @@
 
 Validates messages against **Conventional Commits** (Git-only - no work-item tracker APIs).
 
-**Related:** `~/.cursor/rules/conventional-commits.mdc`, `skills/_shared/developer-common/step-4-commits-pr.md`.
+**Related:** conventional commits KI/rules, `plugin/skills/_shared/developer_common/step-4-commits-pr.md`.
 
 ## Expected format
 
@@ -96,4 +96,4 @@ Per commit: `{ isValid, isException, issues[], suggestedFix? }`
 
 ---
 
-**Version:** 1.0.0 (cursor-dev-toolkit)
+**Version:** 1.0.0 (antigravity-dev-toolkit)

@@ -183,7 +183,7 @@ Include in pause message: saved PLAN path, last step completed, next step id/tit
 |-----------------|--------------|
 | Review diff | `use skill code_review` |
 | Commit | `use skill commit` |
-| Open PR | `gh pr create` with repo template - no external work-item fields |
+| Open PR | GitHub web UI with repo template - no external work-item fields |
 
 Do not auto-create PRs or link external trackers.
 
@@ -210,4 +210,4 @@ Do not auto-create PRs or link external trackers.
 | Portuguese implement skill / `PLANO_*` filenames | `sdd_develop`, `PLAN_*` |
 | NUnit-only bans in new tests | `dotnet_guidelines`, xUnit/Moq |
 | Auto sync-commit with work item IDs | Optional `use skill commit` |
-| Auto PR analyzer + work-item links | User runs `gh` / review skill |
+| Auto PR analyzer + work-item links | User opens PR in GitHub UI / review skill |

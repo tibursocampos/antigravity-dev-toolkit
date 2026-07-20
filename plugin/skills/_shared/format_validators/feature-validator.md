@@ -1,10 +1,10 @@
-# PRD Format Validator
+﻿# PRD Format Validator
 
 Validates PRD markdown against the **spec** skill template (`skills/sdd-spec/reference.md`).
 
 **Default language:** pt-BR section titles and metadata labels. If manifest or invocation sets `artifact_language: en`, use the **English override** checklist below instead.
 
-**Output paths:** `PRD/`, `docs/PRD/`, or `~/.cursor/sdd/<repo-id>/PRD/` (see `sdd-artifacts/STORAGE.md`)
+**Output paths:** under `features/.../PRD/` or `~/.gemini/antigravity-ide/sdd/<repo-id>/features/.../PRD/` (see `sdd_artifacts/STORAGE.md`)
 
 ## Validation levels
 
@@ -87,4 +87,4 @@ PRD saved with warnings - review manually.
 
 ---
 
-**Version:** 1.1.0 (cursor-dev-toolkit - pt-BR default artifacts)
+**Version:** 1.1.0 (antigravity-dev-toolkit - pt-BR default artifacts)
