@@ -204,18 +204,22 @@ $pluginsRoot = Get-AntigravityPluginsRoot
 $pluginDest = Join-Path $pluginsRoot $script:PluginId
 $escapedPluginDest = $pluginDest.Replace('\', '\\')
 
+. (Join-Path $repoRoot 'scripts\_lib\Backup-AntigravityToolkit.ps1')
+
 Write-ToolkitMessage "Repo  : $repoRoot"
 Write-ToolkitMessage "Target: $pluginDest"
 if ($DryRun) {
     Write-ToolkitMessage 'Dry run - no files will be written.' ([ConsoleColor]::Yellow)
 }
 
+$null = New-AntigravityToolkitBackup -PluginDest $pluginDest -DryRun:$DryRun
+
 if (-not $DryRun) {
     if (-not (Test-Path -LiteralPath $pluginDest)) {
         New-Item -ItemType Directory -Path $pluginDest -Force | Out-Null
     }
 
-    $sessionsDir = Join-Path $env:USERPROFILE '.gemini\antigravity-ide\sdd\sessions'
+    $sessionsDir = Join-Path (Get-ToolkitUserHome) '.gemini\antigravity-ide\sdd\sessions'
     if (-not (Test-Path -LiteralPath $sessionsDir)) {
         New-Item -ItemType Directory -Path $sessionsDir -Force | Out-Null
         Write-ToolkitMessage "Created sessions dir: $sessionsDir" ([ConsoleColor]::Green)

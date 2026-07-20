@@ -38,13 +38,37 @@ Register a consumer repo for Classic SDD:
 
 ## Workflows
 
-| Forma | Pipeline |
-|-------|----------|
-| **A** Classic | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
-| **B** Backlog | `refine_story` -> `split_story_checklist` -> A or C |
-| **C** Orchestrated | Step 0 `memory_bank_init` -> `orchestrate_analyze` -> `orchestrate_deliver` -> `orchestrate_develop` \| `sdd_develop` |
+| Forma | When | Pipeline |
+|-------|------|----------|
+| **A** Classic | One clear feature | `sdd_spec` -> `sdd_plan` -> `sdd_develop` |
+| **B** Backlog | Rough bug/story first | `refine_story` -> `split_story_checklist` -> A or C |
+| **C** Orchestrated | Multi-story / brownfield | Step 0 `memory_bank_init` -> `orchestrate_analyze` -> `orchestrate_deliver` -> `orchestrate_develop` \| `sdd_develop` |
 
 Canonical artifact root: `features/NNN-slug/` (see `plugin/skills/_shared/sdd_artifacts/STORAGE.md`).
+
+### Forma C (orchestration)
+
+Orchestrators do **not** replace `sdd_*`; they **invoke the same contracts**:
+
+```mermaid
+flowchart LR
+  S0[Step0 memory_bank_init] --> O1[O1 orchestrate_analyze]
+  O1 --> O2[O2 orchestrate_deliver]
+  O2 --> O3[O3 orchestrate_develop]
+  O2 --> Manual[manual sdd_develop]
+  O2 -.-> Spec[reuses sdd_spec]
+  O2 -.-> Plan[reuses sdd_plan]
+  O3 -.-> Dev[reuses sdd_develop]
+```
+
+| Stage | Skill | What it does |
+|-------|-------|----------------|
+| Step 0 | `memory_bank_init` | Healthy `memory-bank/` gate (required for C; not for A) |
+| O1 | `orchestrate_analyze` | Triage, optional specialists, US/TS backlog + CONTINUITY |
+| O2 | `orchestrate_deliver` | PRD + PLAN **per story** via `sdd_spec` / `sdd_plan` contracts |
+| O3 | `orchestrate_develop` | One PLAN step per session via `sdd_develop` contract (or run `sdd_develop` yourself) |
+
+Daily hub: [docs/guides/README.md](docs/guides/README.md). Forma C manual: [docs/guides/10-forma-c-orquestracao.md](docs/guides/10-forma-c-orquestracao.md).
 
 **Breaking:** Spec Kit (`speckit_*`) and root flat `PRD/` / `PLAN/` flows are removed. Migrate to Formas A/C.
 
@@ -56,7 +80,7 @@ antigravity-dev-toolkit/
 ├── AGENTS.md
 ├── CONTRIBUTING.md
 ├── README.md
-├── docs/                  # INSTALL, guides/, SKILLS, REPO_GOVERNANCE, SYNC_POLICY
+├── docs/                  # INSTALL, guides/, SKILLS, REPO_GOVERNANCE, PORTABILITY
 ├── scripts/               # toolkit(.ps1|.sh), sync-antigravity, configure-repo-sdd
 │   ├── validation/
 │   └── maintainers/
@@ -118,7 +142,8 @@ Canonical details: [docs/SKILLS.md](docs/SKILLS.md).
 - [docs/REPO_GOVERNANCE.md](docs/REPO_GOVERNANCE.md) — public policy + maintainer rulesets
 - [CONTRIBUTING.md](CONTRIBUTING.md) — clone/fork OK; no community PRs
 - [docs/ENFORCEMENT.md](docs/ENFORCEMENT.md) — enforcement model
-- [docs/SYNC_POLICY.md](docs/SYNC_POLICY.md) — sync with cursor-dev-toolkit
+- [docs/PORTABILITY.md](docs/PORTABILITY.md) — IDE-specific vs reusable
+- [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md) — design rationale
 
 ## Maintainer notes
 

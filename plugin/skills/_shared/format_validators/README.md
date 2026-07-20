@@ -60,4 +60,4 @@ See `INTEGRATION-GUIDE.md` for step-by-step wiring.
 - False positives: mark optional sections in the validator call.
 - Auto-fix broke content: review preview before applying.
 
-**Version:** 1.0.0 (cursor-dev-toolkit)
+**Version:** 1.0.0 (antigravity-dev-toolkit)

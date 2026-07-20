@@ -1,6 +1,6 @@
-# Format Validators - Integration Guide
+﻿# Format Validators - Integration Guide
 
-How to wire validators into cursor-dev-toolkit skills (Git-only).
+How to wire validators into antigravity-dev-toolkit skills (Git-only).
 
 ## Overview
 
@@ -16,7 +16,7 @@ format-validators
 ## spec
 
 **Validator:** `feature-validator.md`  
-**When:** After PRD draft, before `Write` to resolved PRD folder (repo or `~/.cursor/sdd/<repo-id>/PRD/`). Storage: `sdd-artifacts/STORAGE.md`. Language: pt-BR default (`sdd-artifact-language-pt-br.mdc`); validate EN variant if user overrides.
+**When:** After PRD draft, before `Write` to resolved PRD folder (repo or `~/.gemini/antigravity-ide/sdd/<repo-id>/features/.../PRD/`). Storage: `sdd_artifacts/STORAGE.md`. Language: pt-BR default; validate EN variant if user overrides.
 
 | Context | Level | Behavior |
 |---------|-------|----------|
@@ -78,4 +78,4 @@ Also referenced from `developer-common/step-4-commits-pr.md`.
 
 ---
 
-**Version:** 1.0.0 (cursor-dev-toolkit)
+**Version:** 1.0.0 (antigravity-dev-toolkit)

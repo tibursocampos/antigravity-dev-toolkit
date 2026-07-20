@@ -7,7 +7,7 @@ Guidelines for using and extending this toolkit without blowing context or cost.
 | Package | Default sync |
 |---------|--------------|
 | `dotnet_guidelines` | Yes |
-| `developer_common` | Yes (ported from cursor toolkit) |
+| `developer_common` | Yes |
 | SDD skills (`sdd_spec`, `sdd_plan`, `sdd_develop`) | Yes |
 | Stack `*_developer` skills | Yes - lazy on invoke |
 | `format_validators` | Yes |
@@ -36,5 +36,3 @@ Guidelines for using and extending this toolkit without blowing context or cost.
 ## Stack skills
 
 Each `*_developer` skill loads only its stack guidelines + `developer_common` steps when needed.
-
-See cursor-dev-toolkit `TOKEN_BUDGET.md` for detailed tier targets when porting skills across repos.
