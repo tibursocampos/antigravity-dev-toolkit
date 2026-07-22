@@ -146,23 +146,40 @@ function Sync-DirectoryTree {
     return $changed
 }
 
-function Get-AntigravityPluginsRoot {
-    $candidates = @(
-        # Primary: actual Antigravity IDE install location (must be first)
+function Get-AntigravityPluginsRootCandidates {
+    return @(
+        # Canonical: Antigravity IDE under ~/.gemini
         (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\plugins'),
-        # Fallbacks for alternate installs
+        # Alternate IDE roots (legacy / roaming installs)
         (Join-Path $env:APPDATA 'antigravity-ide\plugins'),
         (Join-Path $env:LOCALAPPDATA 'Google\antigravity-ide\plugins'),
         (Join-Path $env:APPDATA 'antigravity\plugins'),
         (Join-Path $env:LOCALAPPDATA 'Google\antigravity\plugins')
     )
+}
+
+function Get-AntigravityPluginsRoot {
+    $candidates = Get-AntigravityPluginsRootCandidates
     foreach ($c in $candidates) {
         if (Test-Path -LiteralPath $c) {
             return $c
         }
     }
-    # Default to primary if none found (will be created on sync)
     return $candidates[0]
+}
+
+function Get-AntigravityPluginsRoots {
+    $candidates = Get-AntigravityPluginsRootCandidates
+    $roots = @()
+    foreach ($c in $candidates) {
+        if (Test-Path -LiteralPath $c) {
+            $roots += $c
+        }
+    }
+    if ($roots.Count -eq 0) {
+        $roots = @($candidates[0])
+    }
+    return $roots
 }
 
 function Update-ManagedAgentsMd {
@@ -260,14 +277,24 @@ function Write-KnowledgeItem {
 }
 
 $repoRoot = Get-RepoRoot
-$pluginsRoot = Get-AntigravityPluginsRoot
-$pluginDest = Join-Path $pluginsRoot $script:PluginId
+$canonicalPluginsRoot = (Get-AntigravityPluginsRootCandidates)[0]
+$pluginsRoots = @()
+$seenRoots = @{}
+foreach ($root in (@($canonicalPluginsRoot) + @(Get-AntigravityPluginsRoots))) {
+    if ([string]::IsNullOrWhiteSpace($root)) { continue }
+    if ($seenRoots.ContainsKey($root)) { continue }
+    $seenRoots[$root] = $true
+    $pluginsRoots += $root
+}
+# Canonical install used by skills.json / KIs (always ~/.gemini/...)
+$pluginDest = Join-Path $canonicalPluginsRoot $script:PluginId
 $escapedPluginDest = $pluginDest.Replace('\', '\\')
 
 . (Join-Path $repoRoot 'scripts\_lib\Backup-AntigravityToolkit.ps1')
 
 Write-ToolkitMessage "Repo  : $repoRoot"
-Write-ToolkitMessage "Target: $pluginDest"
+Write-ToolkitMessage "Canonical target: $pluginDest"
+Write-ToolkitMessage ("Plugin roots: " + ($pluginsRoots -join '; '))
 if ($DryRun) {
     Write-ToolkitMessage 'Dry run - no files will be written.' ([ConsoleColor]::Yellow)
 }
@@ -275,10 +302,6 @@ if ($DryRun) {
 $null = New-AntigravityToolkitBackup -PluginDest $pluginDest -DryRun:$DryRun
 
 if (-not $DryRun) {
-    if (-not (Test-Path -LiteralPath $pluginDest)) {
-        New-Item -ItemType Directory -Path $pluginDest -Force | Out-Null
-    }
-
     $sessionsDir = Join-Path (Get-ToolkitUserHome) '.gemini\antigravity-ide\sdd\sessions'
     if (-not (Test-Path -LiteralPath $sessionsDir)) {
         New-Item -ItemType Directory -Path $sessionsDir -Force | Out-Null
@@ -289,24 +312,48 @@ if (-not $DryRun) {
 $totalChanges = 0
 
 $pluginJsonSrc = Join-Path $repoRoot 'plugin\plugin.json'
-$pluginJsonDest = Join-Path $pluginDest 'plugin.json'
-if (Test-Path -LiteralPath $pluginJsonSrc) {
-    if (Copy-FileIfChanged -SourcePath $pluginJsonSrc -DestPath $pluginJsonDest) {
-        $totalChanges++
-    }
-}
-
 $guardrailsSrc = Join-Path $repoRoot 'plugin\GUARDRAILS.md'
-$guardrailsDest = Join-Path $pluginDest 'GUARDRAILS.md'
-if (Test-Path -LiteralPath $guardrailsSrc) {
-    if (Copy-FileIfChanged -SourcePath $guardrailsSrc -DestPath $guardrailsDest) {
-        $totalChanges++
+$skillsSrc = Join-Path $repoRoot 'plugin\skills'
+
+foreach ($pluginsRoot in $pluginsRoots) {
+    $rootPluginDest = Join-Path $pluginsRoot $script:PluginId
+    Write-ToolkitMessage "Deploying to: $rootPluginDest"
+
+    if (-not $DryRun) {
+        if (-not (Test-Path -LiteralPath $rootPluginDest)) {
+            New-Item -ItemType Directory -Path $rootPluginDest -Force | Out-Null
+        }
+    }
+
+    if (Test-Path -LiteralPath $pluginJsonSrc) {
+        if (Copy-FileIfChanged -SourcePath $pluginJsonSrc -DestPath (Join-Path $rootPluginDest 'plugin.json')) {
+            $totalChanges++
+        }
+    }
+
+    if (Test-Path -LiteralPath $guardrailsSrc) {
+        if (Copy-FileIfChanged -SourcePath $guardrailsSrc -DestPath (Join-Path $rootPluginDest 'GUARDRAILS.md')) {
+            $totalChanges++
+        }
+    }
+
+    $totalChanges += Sync-DirectoryTree `
+        -SourceRoot $skillsSrc `
+        -DestRoot   (Join-Path $rootPluginDest 'skills')
+
+    $legacyAtRoot = Join-Path $pluginsRoot $script:LegacyPluginId
+    if (Test-Path -LiteralPath $legacyAtRoot) {
+        if ($DryRun) {
+            Write-ToolkitMessage "Would remove legacy plugin directory: $legacyAtRoot" ([ConsoleColor]::Cyan)
+            $totalChanges++
+        }
+        else {
+            Remove-Item -LiteralPath $legacyAtRoot -Recurse -Force
+            Write-ToolkitMessage "Removed legacy plugin directory: $legacyAtRoot" ([ConsoleColor]::DarkRed)
+            $totalChanges++
+        }
     }
 }
-
-$totalChanges += Sync-DirectoryTree `
-    -SourceRoot (Join-Path $repoRoot 'plugin\skills') `
-    -DestRoot   (Join-Path $pluginDest 'skills')
 
 $kiTargets = @(
     (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge'),
@@ -336,8 +383,6 @@ foreach ($knowledgeRoot in $kiTargets) {
 $globalConfigRoot = Join-Path $env:USERPROFILE '.gemini\config'
 $skillsJsonPath = Join-Path $globalConfigRoot 'skills.json'
 $skillsDest = Join-Path $pluginDest 'skills'
-$legacyPluginDest = Join-Path $pluginsRoot $script:LegacyPluginId
-$legacySkillsDest = Join-Path $legacyPluginDest 'skills'
 $configAgentsPath = Join-Path $globalConfigRoot 'AGENTS.md'
 $agentsTemplatePath = Join-Path $repoRoot 'plugin\config\AGENTS.md'
 
@@ -368,7 +413,7 @@ if (-not $DryRun) {
             continue
         }
         $entryPath = [string]$entry.path
-        if ($entryPath -eq $legacySkillsDest -or $entryPath -like "*\$($script:LegacyPluginId)\skills" -or $entryPath -like "*/$($script:LegacyPluginId)/skills") {
+        if ($entryPath -like "*\$($script:LegacyPluginId)\skills" -or $entryPath -like "*/$($script:LegacyPluginId)/skills") {
             $skillsJsonChanged = $true
             continue
         }
@@ -394,20 +439,10 @@ if (-not $DryRun) {
     if (Update-ManagedAgentsMd -ConfigAgentsPath $configAgentsPath -TemplatePath $agentsTemplatePath) {
         $totalChanges++
     }
-
-    if (Test-Path -LiteralPath $legacyPluginDest) {
-        Remove-Item -LiteralPath $legacyPluginDest -Recurse -Force
-        Write-ToolkitMessage "Removed legacy plugin directory: $legacyPluginDest" ([ConsoleColor]::DarkRed)
-        $totalChanges++
-    }
 } else {
     Write-ToolkitMessage "Would update skills registration in: $skillsJsonPath" ([ConsoleColor]::Cyan)
     $totalChanges++
     if (Update-ManagedAgentsMd -ConfigAgentsPath $configAgentsPath -TemplatePath $agentsTemplatePath) {
-        $totalChanges++
-    }
-    if (Test-Path -LiteralPath $legacyPluginDest) {
-        Write-ToolkitMessage "Would remove legacy plugin directory: $legacyPluginDest" ([ConsoleColor]::Cyan)
         $totalChanges++
     }
 }
