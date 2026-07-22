@@ -2,7 +2,7 @@
 
 **Applies to:** every skill in `antigravity-dev-toolkit` — SDD (Formas A/B/C), developer, operational, infrastructure, Git, and documentation skills.
 
-Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/GUARDRAILS.md`
+Install path after sync: `~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/GUARDRAILS.md`
 
 ---
 

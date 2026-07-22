@@ -4,7 +4,9 @@
   Uninstalls antigravity-dev-toolkit from the Antigravity IDE plugins directory.
 
 .DESCRIPTION
-  Removes the plugin folder, custom knowledge items, and removes the plugin registration from skills.json.
+  Removes the plugin folder, custom knowledge items, the managed AGENTS.md block,
+  and removes the plugin registration from skills.json.
+  Also cleans the legacy plugin id Local.raphadev.antigravity-dev-toolkit if present.
 
 .EXAMPLE
   powershell -NoProfile -ExecutionPolicy Bypass -File scripts/uninstall-toolkit.ps1
@@ -18,7 +20,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $script:ToolkitTag = '[antigravity-dev-toolkit]'
-$script:PluginId = 'Local.raphadev.antigravity-dev-toolkit'
+$script:PluginId = 'antigravity-dev-toolkit'
+$script:LegacyPluginId = 'Local.raphadev.antigravity-dev-toolkit'
+$script:AgentsManagedBegin = '<!-- antigravity-dev-toolkit:managed:begin -->'
+$script:AgentsManagedEnd = '<!-- antigravity-dev-toolkit:managed:end -->'
 
 function Write-ToolkitMessage {
     param(
@@ -44,9 +49,44 @@ function Get-AntigravityPluginsRoot {
     return $candidates[0]
 }
 
+function Remove-ManagedAgentsBlock {
+    param([string] $ConfigAgentsPath)
+
+    if (-not (Test-Path -LiteralPath $ConfigAgentsPath)) {
+        return $false
+    }
+
+    $existing = Get-Content -LiteralPath $ConfigAgentsPath -Raw
+    $begin = $script:AgentsManagedBegin
+    $end = $script:AgentsManagedEnd
+    $pattern = '(?s)' + [regex]::Escape($begin) + '.*?' + [regex]::Escape($end) + '\r?\n*'
+
+    if ($existing -notmatch $pattern) {
+        return $false
+    }
+
+    if ($DryRun) {
+        Write-ToolkitMessage "Would remove managed AGENTS.md block: $ConfigAgentsPath" ([ConsoleColor]::Cyan)
+        return $true
+    }
+
+    $newContent = [regex]::Replace($existing, $pattern, '').Trim()
+    if ([string]::IsNullOrWhiteSpace($newContent)) {
+        Remove-Item -LiteralPath $ConfigAgentsPath -Force
+        Write-ToolkitMessage "Removed empty AGENTS.md: $ConfigAgentsPath" ([ConsoleColor]::DarkRed)
+    }
+    else {
+        [System.IO.File]::WriteAllText($ConfigAgentsPath, $newContent + "`n", [System.Text.Encoding]::UTF8)
+        Write-ToolkitMessage "Removed managed AGENTS.md block: $ConfigAgentsPath" ([ConsoleColor]::DarkRed)
+    }
+    return $true
+}
+
 $pluginsRoot = Get-AntigravityPluginsRoot
 $pluginDest = Join-Path $pluginsRoot $script:PluginId
+$legacyPluginDest = Join-Path $pluginsRoot $script:LegacyPluginId
 $skillsDest = Join-Path $pluginDest 'skills'
+$legacySkillsDest = Join-Path $legacyPluginDest 'skills'
 
 $kiTargets = @(
     (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge'),
@@ -72,21 +112,24 @@ foreach ($knowledgeRoot in $kiTargets) {
     }
 }
 
-# 2. Remove Plugin Directory
-if (Test-Path -LiteralPath $pluginDest) {
-    if ($DryRun) {
-        Write-ToolkitMessage "Would remove plugin directory: $pluginDest" ([ConsoleColor]::Cyan)
-        $totalChanges++
-    } else {
-        Remove-Item -LiteralPath $pluginDest -Recurse -Force
-        Write-ToolkitMessage "Removed plugin directory: $pluginDest" ([ConsoleColor]::DarkRed)
-        $totalChanges++
+# 2. Remove Plugin Directory (current + legacy)
+foreach ($dest in @($pluginDest, $legacyPluginDest)) {
+    if (Test-Path -LiteralPath $dest) {
+        if ($DryRun) {
+            Write-ToolkitMessage "Would remove plugin directory: $dest" ([ConsoleColor]::Cyan)
+            $totalChanges++
+        } else {
+            Remove-Item -LiteralPath $dest -Recurse -Force
+            Write-ToolkitMessage "Removed plugin directory: $dest" ([ConsoleColor]::DarkRed)
+            $totalChanges++
+        }
     }
 }
 
 # 3. Update skills.json
 $globalConfigRoot = Join-Path $env:USERPROFILE '.gemini\config'
 $skillsJsonPath = Join-Path $globalConfigRoot 'skills.json'
+$configAgentsPath = Join-Path $globalConfigRoot 'AGENTS.md'
 
 if (Test-Path -LiteralPath $skillsJsonPath) {
     $skillsJsonContent = $null
@@ -98,7 +141,14 @@ if (Test-Path -LiteralPath $skillsJsonPath) {
         $newEntries = @()
         $found = $false
         foreach ($entry in $skillsJsonContent.entries) {
-            if ($entry.path -eq $skillsDest) {
+            $entryPath = [string]$entry.path
+            $isToolkit = ($entryPath -eq $skillsDest) -or
+                ($entryPath -eq $legacySkillsDest) -or
+                ($entryPath -like "*\$($script:LegacyPluginId)\skills") -or
+                ($entryPath -like "*/$($script:LegacyPluginId)/skills") -or
+                ($entryPath -like "*\$($script:PluginId)\skills") -or
+                ($entryPath -like "*/$($script:PluginId)/skills")
+            if ($isToolkit) {
                 $found = $true
             } else {
                 $newEntries += $entry
@@ -118,6 +168,11 @@ if (Test-Path -LiteralPath $skillsJsonPath) {
             }
         }
     }
+}
+
+# 4. Remove managed AGENTS.md block (preserve user /learn content outside markers)
+if (Remove-ManagedAgentsBlock -ConfigAgentsPath $configAgentsPath) {
+    $totalChanges++
 }
 
 Write-Host ''
