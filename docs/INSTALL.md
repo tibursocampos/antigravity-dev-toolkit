@@ -39,7 +39,12 @@ This deploy is idempotent and syncs:
 - `GUARDRAILS.md`
 - all skills under `plugin/skills/`
 - KI entries `custom_skills` and `global_guardrails`
+- `~/.gemini/config/skills.json` (plugin skills path)
+- managed block in `~/.gemini/config/AGENTS.md` (sandbox + skill discovery rules)
 - sessions folder for session-state gates
+- migration away from legacy folder `Local.raphadev.antigravity-dev-toolkit`
+
+Install path: `~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/`.
 
 ## Post-deploy validation
 
@@ -53,7 +58,7 @@ This orchestrates, in order:
 
 | Check | Script |
 |-------|--------|
-| Deploy + KIs | `validate-toolkit-deploy.ps1` |
+| Deploy + KIs + config AGENTS/skills.json | `validate-toolkit-deploy.ps1` |
 | Skills structure (STOP, frontmatter, Forma C artifacts) | `validate-skills-structure.ps1` |
 | Docs consistency | `validate-docs-consistency.ps1` |
 | Skills English | `validate-skills-english.ps1` |
@@ -69,6 +74,30 @@ Optional flags:
 | `-Quiet` | Summary table only |
 
 Restart Antigravity IDE after a successful smoke test.
+
+## Initial configuration (Antigravity chat)
+
+1. Restart Antigravity IDE after sync.
+2. Smoke-test skill discovery:
+
+> What skills from antigravity-dev-toolkit are installed? List a few skill folder names.
+
+**Pass:** real skill folder names from the global plugin path.  
+**Fail:** sandboxed `view_file` on `skills.json`, or skills not found.
+
+If it fails, paste these `/learn` commands **one at a time**, then retry the smoke test (see also [README.md](../README.md#initial-configuration)):
+
+```text
+/learn Whenever you need to read restricted files under .gemini/config (such as skills.json), use the terminal tool run_command with Get-Content (Windows) or cat (Mac/Linux), because direct access via view_file is blocked by the system sandbox.
+
+/learn On the first turn of a conversation, before answering about available skills or running a skill, read ~/.gemini/config/skills.json via Get-Content or cat, then resolve each entries[].path to discover installed skills.
+
+/learn Toolkit skills live only under the global plugin folder ~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/skills/. Never search for SKILL.md in the current workspace or repository.
+
+/learn After resolving the skills path, read GUARDRAILS.md and skills/dev_persona/SKILL.md from that global plugin folder before any mutating action.
+
+/learn When the user says use skill [name] or /[name], open SKILL.md at <plugin>/skills/[name]/SKILL.md (underscore folder names) before acting.
+```
 
 ## Configure Classic SDD for a consumer repo
 

@@ -36,6 +36,37 @@ Register a consumer repo for Classic SDD:
 .\scripts\configure-repo-sdd.ps1 -StorageMode repository -RepoPath "D:\Source\Repos\MyApp"
 ```
 
+## Initial configuration
+
+After the first sync (toolkit menu or `sync-antigravity.ps1`):
+
+1. Run `.\scripts\validation\validate-all.ps1`.
+2. **Restart Antigravity IDE** so it picks up the plugin, KIs, `~/.gemini/config/skills.json`, and the managed block in `~/.gemini/config/AGENTS.md`.
+3. Smoke-test skill discovery in an Antigravity chat:
+
+> What skills from antigravity-dev-toolkit are installed? List a few skill folder names.
+
+**Pass:** the agent lists real folders (`sdd_spec`, `dev_persona`, `commit`, …) without getting stuck on a sandboxed `view_file` of `skills.json`.  
+**Fail:** it cannot find skills, keeps asking to authorize `view_file` on `.gemini/config`, or searches the workspace for `SKILL.md`.
+
+### Manual `/learn` fallback
+
+If the smoke test fails, paste these in Antigravity **one command at a time** (they write rules into `~/.gemini/config/AGENTS.md`). Then restart if needed and repeat the smoke test.
+
+```text
+/learn Whenever you need to read restricted files under .gemini/config (such as skills.json), use the terminal tool run_command with Get-Content (Windows) or cat (Mac/Linux), because direct access via view_file is blocked by the system sandbox.
+
+/learn On the first turn of a conversation, before answering about available skills or running a skill, read ~/.gemini/config/skills.json via Get-Content or cat, then resolve each entries[].path to discover installed skills.
+
+/learn Toolkit skills live only under the global plugin folder ~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/skills/. Never search for SKILL.md in the current workspace or repository.
+
+/learn After resolving the skills path, read GUARDRAILS.md and skills/dev_persona/SKILL.md from that global plugin folder before any mutating action.
+
+/learn When the user says use skill [name] or /[name], open SKILL.md at <plugin>/skills/[name]/SKILL.md (underscore folder names) before acting.
+```
+
+Plugin install folder after sync: `~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/` (not a personal publisher slug).
+
 ## Workflows
 
 | Forma | When | Pipeline |
@@ -87,6 +118,7 @@ antigravity-dev-toolkit/
 └── plugin/
     ├── plugin.json
     ├── GUARDRAILS.md
+    ├── config/            # AGENTS.md template → ~/.gemini/config/AGENTS.md on sync
     └── skills/            # 36 skills + _shared (underscore names)
 ```
 

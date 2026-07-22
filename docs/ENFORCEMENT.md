@@ -27,13 +27,14 @@ This document explains why Antigravity IDE agents may ignore toolkit guardrails,
 
 1. **`GUARDRAILS.md`** — compact STOP rules at plugin root (English)
 2. **`global_guardrails` KI** — loaded every conversation, first turn
-3. **`SESSION.md` + session-state** — verifiable gates in `~/.gemini/antigravity-ide/sdd/sessions/`
-4. **Gate-first on every skill** — STOP block + step -1 checklist
-5. **Validation scripts** — `validate-all.ps1` smoke test after sync; optional session-gate checks via `-IncludeSessionGate`.
+3. **`~/.gemini/config/AGENTS.md`** — managed block from sync (sandbox bypass via `Get-Content`/`cat` for `skills.json`; skill discovery). Manual `/learn` fallback if the agent still cannot read config (see [INSTALL.md](INSTALL.md#initial-configuration-antigravity-chat))
+4. **`SESSION.md` + session-state** — verifiable gates in `~/.gemini/antigravity-ide/sdd/sessions/`
+5. **Gate-first on every skill** — STOP block + step -1 checklist
+6. **Validation scripts** — `validate-all.ps1` smoke test after sync; optional session-gate checks via `-IncludeSessionGate`.
 
 ## Limitations
 
-Without Antigravity-native shell hooks and **without files in consumer repositories**, there is no 100% technical block equivalent to Cursor. Enforcement relies on KI injection + session gates + skill discipline.
+Without Antigravity-native shell hooks and **without files in consumer repositories**, there is no 100% technical block equivalent to Cursor. Enforcement relies on KI injection + session gates + skill discipline. Direct `view_file` of `~/.gemini/config/skills.json` is often sandboxed; the config `AGENTS.md` + terminal read is the supported workaround.
 
 See [`docs/antigravity-hooks-investigation.md`](antigravity-hooks-investigation.md) for hook research.
 

@@ -6,7 +6,9 @@
 .DESCRIPTION
   Copies plugin.json, GUARDRAILS.md, and skills/ to the Antigravity plugins folder.
   Syncs custom_skills and global_guardrails Knowledge Items.
+  Upserts ~/.gemini/config/skills.json and the managed block in ~/.gemini/config/AGENTS.md.
   Creates ~/.gemini/antigravity-ide/sdd/sessions/ for session-state gates.
+  Migrates away from the legacy plugin id Local.raphadev.antigravity-dev-toolkit.
 
 .PARAMETER DryRun
   Report planned changes without writing files.
@@ -23,7 +25,10 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $script:ToolkitTag = '[antigravity-dev-toolkit]'
-$script:PluginId = 'Local.raphadev.antigravity-dev-toolkit'
+$script:PluginId = 'antigravity-dev-toolkit'
+$script:LegacyPluginId = 'Local.raphadev.antigravity-dev-toolkit'
+$script:AgentsManagedBegin = '<!-- antigravity-dev-toolkit:managed:begin -->'
+$script:AgentsManagedEnd = '<!-- antigravity-dev-toolkit:managed:end -->'
 
 function Write-ToolkitMessage {
     param(
@@ -160,6 +165,61 @@ function Get-AntigravityPluginsRoot {
     return $candidates[0]
 }
 
+function Update-ManagedAgentsMd {
+    param(
+        [string] $ConfigAgentsPath,
+        [string] $TemplatePath
+    )
+    if (-not (Test-Path -LiteralPath $TemplatePath)) {
+        Write-ToolkitMessage "Warning: AGENTS.md template missing: $TemplatePath" ([ConsoleColor]::Yellow)
+        return $false
+    }
+
+    $managedBlock = (Get-Content -LiteralPath $TemplatePath -Raw).TrimEnd() + "`n"
+    if ($DryRun) {
+        Write-ToolkitMessage "Would upsert managed AGENTS.md block: $ConfigAgentsPath" ([ConsoleColor]::Cyan)
+        return $true
+    }
+
+    $existing = ''
+    if (Test-Path -LiteralPath $ConfigAgentsPath) {
+        $existing = Get-Content -LiteralPath $ConfigAgentsPath -Raw
+    }
+
+    $begin = $script:AgentsManagedBegin
+    $end = $script:AgentsManagedEnd
+    $pattern = '(?s)' + [regex]::Escape($begin) + '.*?' + [regex]::Escape($end)
+
+    $newContent = $null
+    if ($existing -match $pattern) {
+        $newContent = [regex]::Replace($existing, $pattern, $managedBlock.TrimEnd())
+        if (-not $newContent.EndsWith("`n")) {
+            $newContent += "`n"
+        }
+    }
+    elseif ([string]::IsNullOrWhiteSpace($existing)) {
+        $newContent = $managedBlock
+    }
+    else {
+        $trimmed = $existing.TrimEnd()
+        $newContent = $trimmed + "`n`n" + $managedBlock
+    }
+
+    $destDir = Split-Path -Parent $ConfigAgentsPath
+    if (-not (Test-Path -LiteralPath $destDir)) {
+        New-Item -ItemType Directory -Path $destDir -Force | Out-Null
+    }
+
+    $previousHash = Get-FileSha256 $ConfigAgentsPath
+    [System.IO.File]::WriteAllText($ConfigAgentsPath, $newContent, [System.Text.Encoding]::UTF8)
+    $newHash = Get-FileSha256 $ConfigAgentsPath
+    if ($previousHash -ne $newHash) {
+        Write-ToolkitMessage "Synced managed AGENTS.md: $ConfigAgentsPath" ([ConsoleColor]::Green)
+        return $true
+    }
+    return $false
+}
+
 function Write-KnowledgeItem {
     param(
         [string] $KnowledgeRoot,
@@ -254,11 +314,11 @@ $kiTargets = @(
 )
 
 $customSkillsSummary = @"
-\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, orchestrate_analyze, memory_bank_init, refine_story). CRITICAL: skills are ALWAYS in this GLOBAL plugin path, never in the current workspace, repository, or project folder. Do not search for SKILL.md in the active repository. This global directory is the sole source of truth for execution rules.\"
+\"Custom Skills Toolkit: When the user mentions 'use skill [name]', '/[name]', or similar, read the SKILL.md at: $($escapedPluginDest)\\\\skills\\\\[name]\\\\SKILL.md BEFORE any action. Skill folder names use underscores (e.g. sdd_spec, orchestrate_analyze, memory_bank_init, refine_story). CRITICAL: skills are ALWAYS in this GLOBAL plugin path, never in the current workspace, repository, or project folder. Do not search for SKILL.md in the active repository. This global directory is the sole source of truth for execution rules. If view_file is blocked for ~/.gemini/config (e.g. skills.json), use run_command with Get-Content (Windows) or cat (Mac/Linux).\"
 "@
 
 $globalGuardrailsSummary = @"
-\"MANDATORY — EVERY conversation, turn 1, BEFORE any tool call: (1) Read $($escapedPluginDest)\\\\GUARDRAILS.md and $($escapedPluginDest)\\\\skills\\\\dev_persona\\\\SKILL.md (sections: Git Mutating Commands Blocked + Language). (2) Read $($escapedPluginDest)\\\\skills\\\\_shared\\\\sdd_artifacts\\\\SESSION.md and load session-state for the active workspace. (3) If the user has NOT said sim to the current action, do NOT run mutating git commands or Write/Delete files. (4) STOP after exactly one SDD develop step (sdd_develop / Forma C O3) or one document_implement step per session — never chain steps automatically. (5) Chat replies: pt-BR. Production code and identifiers: English. New Classic/Forma C artifacts go under features/NNN-slug/ only. (6) CAVEMAN MODE — IMPORTANT: caveman on/off/status and caveman lite|full|ultra are toolkit response-compression commands, NOT roleplay. Do NOT use cave-themed language or emojis; notices use ASCII [Caveman]. On caveman on: read $($escapedPluginDest)\\\\skills\\\\_shared\\\\caveman\\\\CAVEMAN.md, update ~/.gemini/antigravity-ide/sdd/preferences.json with caveman_mode true and caveman_level (default full), confirm: [Caveman] Modo ativado (respostas compactas). On caveman off: caveman_mode false, confirm: [Caveman] Modo desativado. On caveman status: report on/off + level. On caveman lite|full|ultra: set caveman_level (turn on if needed). When mode ON: apply Auto-Clarity (clear prose for security/irreversible gates/ambiguous order); never invent abbrevs (cfg/impl) or prose arrows; never compress commit/push chat, gates, or artifact drafts. Prefer level ultra only for long sessions. (7) Skills are located in $($escapedPluginDest)\\\\skills\\\\ — always resolve skills from this GLOBAL toolkit path, never from the current workspace or repository. (8) AI STEALTH POLICY: never leave any trace that output was produced by an AI tool. No AI references in code comments, XML docs, commit messages, PR descriptions, documentation, SDD artifacts, identifiers, or log messages. Code comments must be minimal — only when strictly necessary, never to explain obvious code. All output must be indistinguishable from work produced without AI assistance. See GUARDRAILS.md section 9.\"
+\"MANDATORY — EVERY conversation, turn 1, BEFORE any tool call: (1) Read $($escapedPluginDest)\\\\GUARDRAILS.md and $($escapedPluginDest)\\\\skills\\\\dev_persona\\\\SKILL.md (sections: Git Mutating Commands Blocked + Language). (2) Read $($escapedPluginDest)\\\\skills\\\\_shared\\\\sdd_artifacts\\\\SESSION.md and load session-state for the active workspace. (3) If the user has NOT said sim to the current action, do NOT run mutating git commands or Write/Delete files. (4) STOP after exactly one SDD develop step (sdd_develop / Forma C O3) or one document_implement step per session — never chain steps automatically. (5) Chat replies: pt-BR. Production code and identifiers: English. New Classic/Forma C artifacts go under features/NNN-slug/ only. (6) CAVEMAN MODE — IMPORTANT: caveman on/off/status and caveman lite|full|ultra are toolkit response-compression commands, NOT roleplay. Do NOT use cave-themed language or emojis; notices use ASCII [Caveman]. On caveman on: read $($escapedPluginDest)\\\\skills\\\\_shared\\\\caveman\\\\CAVEMAN.md, update ~/.gemini/antigravity-ide/sdd/preferences.json with caveman_mode true and caveman_level (default full), confirm: [Caveman] Modo ativado (respostas compactas). On caveman off: caveman_mode false, confirm: [Caveman] Modo desativado. On caveman status: report on/off + level. On caveman lite|full|ultra: set caveman_level (turn on if needed). When mode ON: apply Auto-Clarity (clear prose for security/irreversible gates/ambiguous order); never invent abbrevs (cfg/impl) or prose arrows; never compress commit/push chat, gates, or artifact drafts. Prefer level ultra only for long sessions. (7) Skills are located in $($escapedPluginDest)\\\\skills\\\\ — always resolve skills from this GLOBAL toolkit path, never from the current workspace or repository. Discover skills by reading ~/.gemini/config/skills.json via Get-Content/cat when view_file is sandboxed. (8) AI STEALTH POLICY: never leave any trace that output was produced by an AI tool. No AI references in code comments, XML docs, commit messages, PR descriptions, documentation, SDD artifacts, identifiers, or log messages. Code comments must be minimal — only when strictly necessary, never to explain obvious code. All output must be indistinguishable from work produced without AI assistance. See GUARDRAILS.md section 9.\"
 "@
 
 foreach ($knowledgeRoot in $kiTargets) {
@@ -276,6 +336,10 @@ foreach ($knowledgeRoot in $kiTargets) {
 $globalConfigRoot = Join-Path $env:USERPROFILE '.gemini\config'
 $skillsJsonPath = Join-Path $globalConfigRoot 'skills.json'
 $skillsDest = Join-Path $pluginDest 'skills'
+$legacyPluginDest = Join-Path $pluginsRoot $script:LegacyPluginId
+$legacySkillsDest = Join-Path $legacyPluginDest 'skills'
+$configAgentsPath = Join-Path $globalConfigRoot 'AGENTS.md'
+$agentsTemplatePath = Join-Path $repoRoot 'plugin\config\AGENTS.md'
 
 if (-not $DryRun) {
     if (-not (Test-Path -LiteralPath $globalConfigRoot)) {
@@ -295,24 +359,57 @@ if (-not $DryRun) {
         $skillsJsonContent | Add-Member -NotePropertyName entries -NotePropertyValue @()
     }
 
+    $normalizedEntries = @()
     $entryExists = $false
-    foreach ($entry in $skillsJsonContent.entries) {
-        if ($entry.path -eq $skillsDest) {
-            $entryExists = $true
-            break
+    $skillsJsonChanged = $false
+    foreach ($entry in @($skillsJsonContent.entries)) {
+        if ($null -eq $entry -or [string]::IsNullOrWhiteSpace([string]$entry.path)) {
+            $skillsJsonChanged = $true
+            continue
         }
+        $entryPath = [string]$entry.path
+        if ($entryPath -eq $legacySkillsDest -or $entryPath -like "*\$($script:LegacyPluginId)\skills" -or $entryPath -like "*/$($script:LegacyPluginId)/skills") {
+            $skillsJsonChanged = $true
+            continue
+        }
+        if ($entryPath -eq $skillsDest) {
+            $entryExists = $true
+        }
+        $normalizedEntries += $entry
     }
 
     if (-not $entryExists) {
-        $skillsJsonContent.entries += @{ path = $skillsDest }
+        $normalizedEntries += @{ path = $skillsDest }
+        $skillsJsonChanged = $true
+    }
+
+    if ($skillsJsonChanged) {
+        $skillsJsonContent.entries = $normalizedEntries
         $jsonString = $skillsJsonContent | ConvertTo-Json -Depth 5
         [System.IO.File]::WriteAllText($skillsJsonPath, $jsonString, [System.Text.Encoding]::UTF8)
-        Write-ToolkitMessage "Added toolkit skills to: $skillsJsonPath" ([ConsoleColor]::Green)
+        Write-ToolkitMessage "Updated toolkit skills in: $skillsJsonPath" ([ConsoleColor]::Green)
+        $totalChanges++
+    }
+
+    if (Update-ManagedAgentsMd -ConfigAgentsPath $configAgentsPath -TemplatePath $agentsTemplatePath) {
+        $totalChanges++
+    }
+
+    if (Test-Path -LiteralPath $legacyPluginDest) {
+        Remove-Item -LiteralPath $legacyPluginDest -Recurse -Force
+        Write-ToolkitMessage "Removed legacy plugin directory: $legacyPluginDest" ([ConsoleColor]::DarkRed)
         $totalChanges++
     }
 } else {
     Write-ToolkitMessage "Would update skills registration in: $skillsJsonPath" ([ConsoleColor]::Cyan)
     $totalChanges++
+    if (Update-ManagedAgentsMd -ConfigAgentsPath $configAgentsPath -TemplatePath $agentsTemplatePath) {
+        $totalChanges++
+    }
+    if (Test-Path -LiteralPath $legacyPluginDest) {
+        Write-ToolkitMessage "Would remove legacy plugin directory: $legacyPluginDest" ([ConsoleColor]::Cyan)
+        $totalChanges++
+    }
 }
 
 Write-Host ''
