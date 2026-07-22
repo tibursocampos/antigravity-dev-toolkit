@@ -33,20 +33,28 @@ function Write-ToolkitMessage {
     Write-Host "$script:ToolkitTag $Message" -ForegroundColor $Color
 }
 
-function Get-AntigravityPluginsRoot {
-    $candidates = @(
+function Get-AntigravityPluginsRootCandidates {
+    return @(
         (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\plugins'),
         (Join-Path $env:APPDATA 'antigravity-ide\plugins'),
         (Join-Path $env:LOCALAPPDATA 'Google\antigravity-ide\plugins'),
         (Join-Path $env:APPDATA 'antigravity\plugins'),
         (Join-Path $env:LOCALAPPDATA 'Google\antigravity\plugins')
     )
+}
+
+function Get-AntigravityPluginsRoots {
+    $candidates = Get-AntigravityPluginsRootCandidates
+    $roots = @()
     foreach ($c in $candidates) {
         if (Test-Path -LiteralPath $c) {
-            return $c
+            $roots += $c
         }
     }
-    return $candidates[0]
+    if ($roots.Count -eq 0) {
+        $roots = @($candidates[0])
+    }
+    return $roots
 }
 
 function Remove-ManagedAgentsBlock {
@@ -82,11 +90,10 @@ function Remove-ManagedAgentsBlock {
     return $true
 }
 
-$pluginsRoot = Get-AntigravityPluginsRoot
-$pluginDest = Join-Path $pluginsRoot $script:PluginId
-$legacyPluginDest = Join-Path $pluginsRoot $script:LegacyPluginId
+$pluginsRoots = @(Get-AntigravityPluginsRoots)
+$canonicalPluginsRoot = (Get-AntigravityPluginsRootCandidates)[0]
+$pluginDest = Join-Path $canonicalPluginsRoot $script:PluginId
 $skillsDest = Join-Path $pluginDest 'skills'
-$legacySkillsDest = Join-Path $legacyPluginDest 'skills'
 
 $kiTargets = @(
     (Join-Path $env:USERPROFILE '.gemini\antigravity-ide\knowledge'),
@@ -112,16 +119,19 @@ foreach ($knowledgeRoot in $kiTargets) {
     }
 }
 
-# 2. Remove Plugin Directory (current + legacy)
-foreach ($dest in @($pluginDest, $legacyPluginDest)) {
-    if (Test-Path -LiteralPath $dest) {
-        if ($DryRun) {
-            Write-ToolkitMessage "Would remove plugin directory: $dest" ([ConsoleColor]::Cyan)
-            $totalChanges++
-        } else {
-            Remove-Item -LiteralPath $dest -Recurse -Force
-            Write-ToolkitMessage "Removed plugin directory: $dest" ([ConsoleColor]::DarkRed)
-            $totalChanges++
+# 2. Remove Plugin Directory (current + legacy) on every known plugins root
+foreach ($pluginsRoot in $pluginsRoots) {
+    foreach ($id in @($script:PluginId, $script:LegacyPluginId)) {
+        $dest = Join-Path $pluginsRoot $id
+        if (Test-Path -LiteralPath $dest) {
+            if ($DryRun) {
+                Write-ToolkitMessage "Would remove plugin directory: $dest" ([ConsoleColor]::Cyan)
+                $totalChanges++
+            } else {
+                Remove-Item -LiteralPath $dest -Recurse -Force
+                Write-ToolkitMessage "Removed plugin directory: $dest" ([ConsoleColor]::DarkRed)
+                $totalChanges++
+            }
         }
     }
 }
@@ -143,7 +153,6 @@ if (Test-Path -LiteralPath $skillsJsonPath) {
         foreach ($entry in $skillsJsonContent.entries) {
             $entryPath = [string]$entry.path
             $isToolkit = ($entryPath -eq $skillsDest) -or
-                ($entryPath -eq $legacySkillsDest) -or
                 ($entryPath -like "*\$($script:LegacyPluginId)\skills") -or
                 ($entryPath -like "*/$($script:LegacyPluginId)/skills") -or
                 ($entryPath -like "*\$($script:PluginId)\skills") -or

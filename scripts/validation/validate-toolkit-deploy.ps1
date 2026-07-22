@@ -125,6 +125,20 @@ else {
     $failed = $true
 }
 
+# Fail if legacy plugin id still exists on any known plugins root
+$legacyId = 'Local.raphadev.antigravity-dev-toolkit'
+$legacyRoots = @(
+    (Join-Path $env:USERPROFILE ".gemini\antigravity-ide\plugins\$legacyId"),
+    (Join-Path $env:APPDATA "antigravity-ide\plugins\$legacyId"),
+    (Join-Path $env:LOCALAPPDATA "Google\antigravity-ide\plugins\$legacyId")
+)
+foreach ($legacyPath in $legacyRoots) {
+    if (Test-Path -LiteralPath $legacyPath) {
+        Write-Host "[MISSING] legacy plugin folder still present - $legacyPath (re-run sync-antigravity.ps1)" -ForegroundColor Red
+        $failed = $true
+    }
+}
+
 $skillCount = (Get-ChildItem -LiteralPath (Join-Path $repoRoot 'plugin\skills') -Directory |
     Where-Object { $_.Name -ne '_shared' }).Count
 Write-Host "Skills in repo: $skillCount"
