@@ -3,7 +3,7 @@
 Single source of truth for Caveman Mode behavior across all participating skills.
 Load on demand from skills at step -1 - do not pre-load.
 
-Install path after sync: `~/.gemini/antigravity-ide/plugins/Local.raphadev.antigravity-dev-toolkit/skills/_shared/caveman/CAVEMAN.md`
+Install path after sync: `~/.gemini/antigravity-ide/plugins/antigravity-dev-toolkit/skills/_shared/caveman/CAVEMAN.md`
 
 Inspired by: https://github.com/juliusbrussee/caveman  
 Portable contract only — not a full port of that repository.
